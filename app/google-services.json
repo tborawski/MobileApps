@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "469046714926",
+    "firebase_url": "https://meetme-4e667.firebaseio.com",
+    "project_id": "meetme-4e667",
+    "storage_bucket": "meetme-4e667.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:469046714926:android:c5708103cc3209cb",
+        "android_client_info": {
+          "package_name": "com.example.meetme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "469046714926-331mf98svfb60itbdfrdgoai1rr65qqu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meetme",
+            "certificate_hash": "480b1ecc8a10cff1d68822ffae490a317e16d9d4"
+          }
+        },
+        {
+          "client_id": "469046714926-hbbhvcrt6040vlhoe4rfou28o6q5oins.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAc9pTEtLLT5Ftx7fLvi_dqWbCAJnVu1-A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "469046714926-hbbhvcrt6040vlhoe4rfou28o6q5oins.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
