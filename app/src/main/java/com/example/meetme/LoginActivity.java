@@ -1,33 +1,13 @@
 package com.example.meetme;
 
-
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,10 +18,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -52,7 +28,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private EditText mEmailField;
     private EditText mPasswordField;
-    private TextView mSucces;
+    private TextView mSuccess;
 
     private FirebaseAuth mAuth;
 
@@ -63,22 +39,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mEmailField = findViewById(R.id.email);
         mPasswordField = findViewById(R.id.password);
-        mSucces = findViewById(R.id.approved);
+        mSuccess = findViewById(R.id.approved);
 
-        findViewById(R.id.login).setOnClickListener(this);
-        mEmailField = findViewById(R.id.email);
-        mPasswordField = findViewById(R.id.password);
-        findViewById(R.id.login).setOnClickListener(this);
-        findViewById(R.id.signup).setOnClickListener(this);
-        findViewById(R.id.signout).setOnClickListener(this);
+        findViewById(R.id.sign_in).setOnClickListener(this);
+        findViewById(R.id.sign_up).setOnClickListener(this);
+        findViewById(R.id.sign_out).setOnClickListener(this);
 
-        findViewById(R.id.signout).setVisibility(View.GONE);
-        mSucces.setVisibility(View.GONE);
+        findViewById(R.id.sign_out).setVisibility(View.GONE);
+        mSuccess.setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
-
-
-
     }
 
     @Override
@@ -102,7 +72,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     updateUI(user);
                 } else {
                     Log.w(TAG, "sign in failure", task.getException());
-                    Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 280);
+                    toast.show();
                     updateUI(null);
                 }
             }
@@ -123,7 +95,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     updateUI(user);
                 }else {
                     Log.w(TAG, "Create user failure", task.getException());
-                    Toast.makeText(LoginActivity.this, "Authenication failed.", Toast.LENGTH_SHORT).show();
+                    Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 280);
+                    toast.show();
                     updateUI(null);
                 }
             }
@@ -132,21 +106,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void updateUI(FirebaseUser user){
         if(user != null){
-            mSucces.setVisibility(View.VISIBLE);
-            mSucces.setText(user.getEmail());
-            findViewById(R.id.email).setVisibility(View.GONE);
-            findViewById(R.id.password).setVisibility(View.GONE);
-            findViewById(R.id.login).setVisibility(View.GONE);
-            findViewById(R.id.signup).setVisibility(View.GONE);
-            findViewById(R.id.signout).setVisibility(View.VISIBLE);
+            mSuccess.setVisibility(View.VISIBLE);
+            mSuccess.setText(user.getEmail());
+
+            findViewById(R.id.login_form).setVisibility(View.GONE);
+            findViewById(R.id.sign_out).setVisibility(View.VISIBLE);
         } else{
-            mSucces.setVisibility(View.GONE);
-            mSucces.setText("");
-            findViewById(R.id.signout).setVisibility(View.GONE);
-            findViewById(R.id.email).setVisibility(View.VISIBLE);
-            findViewById(R.id.password).setVisibility(View.VISIBLE);
-            findViewById(R.id.login).setVisibility(View.VISIBLE);
-            findViewById(R.id.signup).setVisibility(View.VISIBLE);
+            mSuccess.setVisibility(View.GONE);
+            mSuccess.setText("");
+
+            findViewById(R.id.sign_out).setVisibility(View.GONE);
+            findViewById(R.id.login_form).setVisibility(View.VISIBLE);
         }
     }
 
@@ -159,14 +129,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
+
+        // Check if email is valid.
         if(TextUtils.isEmpty(email)){
             mEmailField.setError("Required.");
+            valid = false;
+        } else if(!email.contains("@")) {
+            mEmailField.setError("Email does not meet requirements.");
             valid = false;
         } else {
             mEmailField.setError(null);
         }
-        if(TextUtils.isEmpty(password)){
+
+        // Check if password is valid.
+        if(TextUtils.isEmpty(password)) {
             mPasswordField.setError("Required.");
+            valid = false;
+        }
+        else if(!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")) {
+            mPasswordField.setError("Password does not meet requirements.");
             valid = false;
         } else {
             mPasswordField.setError(null);
@@ -177,11 +158,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v){
         int i = v.getId();
-        if(i == R.id.login){
+        if(i == R.id.sign_in){
             signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
-        } else if(i == R.id.signup){
+        } else if(i == R.id.sign_up){
             createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
-        } else if(i == R.id.signout){
+        } else if(i == R.id.sign_out){
             signOut();
         }
     }
