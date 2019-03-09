@@ -4,6 +4,7 @@ package com.example.meetme;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -33,13 +34,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -55,6 +63,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView mSucces;
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,8 +107,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onComplete(@NonNull Task<AuthResult> task){
                 if(task.isSuccessful()){
                     Log.d(TAG, "Sign in success");
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
+                    //FirebaseUser user = mAuth.getCurrentUser();
+                    //updateUI(user);
+                    Intent intent = new Intent(LoginActivity.this, UserActivity.class);
+                    startActivity(intent);
                 } else {
                     Log.w(TAG, "sign in failure", task.getException());
                     Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -117,13 +128,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if(task.isSuccessful()) {
                     Log.d(TAG, "Create user success");
                     FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
-                }else {
-                    Log.w(TAG, "Create user failure", task.getException());
-                    Toast.makeText(LoginActivity.this, "Authenication failed.", Toast.LENGTH_SHORT).show();
+                    Map<String, Object> addUser = new HashMap<>();
+                    addUser.put("Email", mAuth.getCurrentUser().getEmail());
+                    db.collection("users").document(user.getEmail()).set(addUser);
+                    //updateUI(user);
+                    Intent intent = new Intent(LoginActivity.this, UserActivity.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(LoginActivity.this, "Failed to add user", Toast.LENGTH_SHORT).show();
                     updateUI(null);
                 }
             }
@@ -133,12 +148,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void updateUI(FirebaseUser user){
         if(user != null){
             mSucces.setVisibility(View.VISIBLE);
-            mSucces.setText(user.getEmail());
             findViewById(R.id.email).setVisibility(View.GONE);
             findViewById(R.id.password).setVisibility(View.GONE);
             findViewById(R.id.login).setVisibility(View.GONE);
             findViewById(R.id.signup).setVisibility(View.GONE);
             findViewById(R.id.signout).setVisibility(View.VISIBLE);
+            DocumentReference userDoc = db.collection("users").document(user.getEmail());
+            userDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        DocumentSnapshot doc = task.getResult();
+                        mSucces.setText(doc.get("Email").toString());
+                    } else {
+                        updateUI(null);
+                        Toast.makeText(LoginActivity.this, "Failed to get user email", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         } else{
             mSucces.setVisibility(View.GONE);
             mSucces.setText("");
