@@ -1,18 +1,38 @@
 package com.example.meetme;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "Document";
     private TextView mUser;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    List<String> userEvents = new ArrayList();
+    //String[] userEvents = new String[2];
+    //int i = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +44,31 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
 
         findViewById(R.id.user_sign_out).setOnClickListener(this);
         findViewById(R.id.create_event_button).setOnClickListener(this);
+
+        db.collection("Events").document(mAuth.getCurrentUser().getEmail())
+                .collection("uEvents").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot document : task.getResult()){
+                                Log.d(TAG, document.getId());
+                                userEvents.add(document.getId());
+
+                            }
+                        }
+                        Log.d(TAG, userEvents.toString());
+                        setList();
+                    }
+                });
+
+
+    }
+
+    private void setList(){
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.user_event_listview, userEvents);
+        ListView listView = findViewById(R.id.user_event_list);
+        listView.setAdapter(adapter);
     }
 
     private void signOut(){

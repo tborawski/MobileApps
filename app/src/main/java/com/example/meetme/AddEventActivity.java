@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.User;
 
@@ -99,7 +100,8 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         newEvent.put("Name", mName.getText().toString());
         newEvent.put("Date", mDate.getText());
         newEvent.put("Time", mTime.getText());
-        db.collection("Events").document(mAuth.getCurrentUser().getEmail()).set(newEvent);
+        DocumentReference userEvents = db.collection("Events").document(mAuth.getCurrentUser().getEmail());
+        userEvents.collection("uEvents").document(mName.getText().toString()).set(newEvent);
         Intent intent = new Intent(AddEventActivity.this, UserActivity.class);
         startActivity(intent);
     }
