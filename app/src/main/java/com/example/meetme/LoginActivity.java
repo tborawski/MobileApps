@@ -1,5 +1,6 @@
 package com.example.meetme;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
@@ -18,13 +19,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "EmailPassword";
+    public static String email = "";
 
     private EditText mEmailField;
     private EditText mPasswordField;
@@ -43,9 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         findViewById(R.id.sign_in).setOnClickListener(this);
         findViewById(R.id.sign_up).setOnClickListener(this);
-        findViewById(R.id.sign_out).setOnClickListener(this);
 
-        findViewById(R.id.sign_out).setVisibility(View.GONE);
         mSuccess.setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
@@ -54,8 +53,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart(){
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
     }
 
     private void signIn(String email, String password){
@@ -69,13 +66,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if(task.isSuccessful()){
                     Log.d(TAG, "Sign in success");
                     FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
                 } else {
-                    Log.w(TAG, "sign in failure", task.getException());
+                    Log.w(TAG, "Sign in failure", task.getException());
                     Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 0, 280);
+                    toast.setGravity(Gravity.CENTER, 0, 150);
                     toast.show();
-                    updateUI(null);
                 }
             }
         });
@@ -92,42 +87,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if(task.isSuccessful()){
                     Log.d(TAG, "Create user success");
                     FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
                 }else {
                     Log.w(TAG, "Create user failure", task.getException());
                     Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 0, 280);
+                    toast.setGravity(Gravity.CENTER, 0, 150);
                     toast.show();
-                    updateUI(null);
                 }
             }
         });
     }
 
-    private void updateUI(FirebaseUser user){
-        if(user != null){
-            mSuccess.setVisibility(View.VISIBLE);
-            mSuccess.setText(user.getEmail());
-
-            findViewById(R.id.login_form).setVisibility(View.GONE);
-            findViewById(R.id.sign_out).setVisibility(View.VISIBLE);
-        } else{
-            mSuccess.setVisibility(View.GONE);
-            mSuccess.setText("");
-
-            findViewById(R.id.sign_out).setVisibility(View.GONE);
-            findViewById(R.id.login_form).setVisibility(View.VISIBLE);
-        }
-    }
-
     private void signOut(){
         mAuth.signOut();
-        updateUI(null);
     }
     private boolean validateForm(){
         boolean valid = true;
 
-        String email = mEmailField.getText().toString();
+        email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
         // Check if email is valid.
@@ -160,9 +136,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         int i = v.getId();
         if(i == R.id.sign_in){
             signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
+            Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
+            startActivity(intent);
         } else if(i == R.id.sign_up){
             createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
-        } else if(i == R.id.sign_out){
+            Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
+            startActivity(intent);
+        } else if(i == R.id.sign_out_button){
             signOut();
         }
     }

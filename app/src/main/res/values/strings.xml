@@ -2,6 +2,31 @@
     <string name="app_name">MeetMe</string>
     <string name="copyright">\u00a9 2019 Meet Me</string>
 
+    <!-- Strings related to other activities -->
+    <string name="activity_name">Activity</string>
+    <string name="date_picker">Date</string>
+    <string name="time_picker">Time</string>
+    <string name="place_picker">Place</string>
+    <string name="create_group_button">Create Group</string>
+    <string name="add_button">Add</string>
+    <string name="back_button">Back</string>
+    <string name="next_button">Next</string>
+    <string name="add_schedule_button">Schedule</string>
+    <string name="settings_button">Settings</string>
+    <string name="search_text">Search</string>
+    <string name="buildings_text">Buildings</string>
+    <string name="join_group_button">Join</string>
+    <string name="notifications_text">Notifications</string>
+    <string name="sounds_text">Sounds</string>
+    <string name="version_button">Version</string>
+    <string name="profile_picture">User\'s profile picture</string>
+    <string name="group_name">Group Name</string>
+    <string name="group_description">Description</string>
+    <string name="private_text">Private</string>
+    <string name="join_text">Join Group</string>
+    <string name="schedule_text">Schedule</string>
+    <string name="settings_text">Settings</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
