@@ -39,13 +39,13 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     /** Called when the user taps the Back button */
-    public void openMainPageActivity(View view) {
+    public void goBackToMainPageActivity(View view) {
         Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
         startActivity(intent);
     }
 
     /** Called when the user taps the Sign Out button */
-    public void openLoginActivity(View view) {
+    public void goBackToLoginActivity(View view) {
         Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
         startActivity(intent);
     }

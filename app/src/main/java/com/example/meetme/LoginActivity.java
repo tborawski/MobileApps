@@ -25,11 +25,11 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "EmailPassword";
+
     public static String email = "";
 
     private EditText mEmailField;
     private EditText mPasswordField;
-    private TextView mSuccess;
 
     private FirebaseAuth mAuth;
 
@@ -40,12 +40,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mEmailField = findViewById(R.id.email);
         mPasswordField = findViewById(R.id.password);
-        mSuccess = findViewById(R.id.approved);
+        TextView success = findViewById(R.id.approved);
 
         findViewById(R.id.sign_in).setOnClickListener(this);
         findViewById(R.id.sign_up).setOnClickListener(this);
 
-        mSuccess.setVisibility(View.GONE);
+        success.setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
     }
@@ -66,10 +66,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if(task.isSuccessful()){
                     Log.d(TAG, "Sign in success");
                     FirebaseUser user = mAuth.getCurrentUser();
+                    Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
+                    startActivity(intent);
                 } else {
                     Log.w(TAG, "Sign in failure", task.getException());
                     Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 0, 150);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
             }
@@ -87,10 +89,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if(task.isSuccessful()){
                     Log.d(TAG, "Create user success");
                     FirebaseUser user = mAuth.getCurrentUser();
+                    Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
+                    startActivity(intent);
                 }else {
                     Log.w(TAG, "Create user failure", task.getException());
                     Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 0, 150);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
             }
@@ -100,6 +104,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void signOut(){
         mAuth.signOut();
     }
+
     private boolean validateForm(){
         boolean valid = true;
 
@@ -136,12 +141,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         int i = v.getId();
         if(i == R.id.sign_in){
             signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
-            Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
-            startActivity(intent);
         } else if(i == R.id.sign_up){
             createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
-            Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
-            startActivity(intent);
         } else if(i == R.id.sign_out_button){
             signOut();
         }

@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:onClick="openMainPageActivity"
+            android:onClick="goBackToMainPageActivity"
             android:text="@string/back_button"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
@@ -43,7 +43,8 @@
             android:id="@+id/settings_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="170dp"
+            android:layout_marginStart="135dp"
+            android:layout_marginEnd="40dp"
             android:textSize="30sp"
             android:textStyle="bold"
             android:textColor="@android:color/black"
@@ -120,7 +121,7 @@
         android:id="@+id/sign_out_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="openLoginActivity"
+        android:onClick="goBackToLoginActivity"
         android:text="@string/action_sign_out"
         android:textColor="@android:color/black"
         android:textStyle="bold" />

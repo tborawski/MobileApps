@@ -22,16 +22,36 @@
         android:textStyle="bold"
         android:textColor="@android:color/black"/>
 
-    <Button
-        android:id="@+id/settings_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginBottom="10dp"
-        android:onClick="openSettingsActivity"
-        android:text="@string/settings_button"
-        android:textColor="@android:color/black"
-        android:textStyle="bold" />
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginBottom="10dp"
+            android:onClick="goToSettingsActivity"
+            android:text="@string/settings_button"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/schedule_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="200dp"
+            android:onClick="goToScheduleActivity"
+            android:text="@string/add_schedule_button"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -51,27 +71,20 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/schedule_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:onClick="openScheduleActivity"
-        android:text="@string/add_schedule_button"
-        android:textColor="@android:color/black"
-        android:textStyle="bold" />
-
-    <ImageView
-        android:layout_width="250dp"
+    <ListView
+        android:id="@+id/user_event_listView"
+        android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:src="@mipmap/ic_meetme_logo" />
+        android:layout_marginBottom="20dp">
+
+    </ListView>
 
     <Button
         android:id="@+id/join_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:onClick="openJoinActivity"
+        android:onClick="goToJoinActivity"
         android:text="@string/join_group_button"
         android:textColor="@android:color/black"
         android:textStyle="bold" />
@@ -83,7 +96,7 @@
         android:layout_gravity="end"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:onClick="openCreateGroupActivity"
+        android:onClick="goToCreateGroupActivity"
         android:text="@string/create_group_button"
         android:textColor="@android:color/black"
         android:textStyle="bold" />
