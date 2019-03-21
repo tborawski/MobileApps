@@ -48,6 +48,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         success.setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() != null){
+            Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override

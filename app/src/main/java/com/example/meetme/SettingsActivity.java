@@ -11,17 +11,22 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class SettingsActivity extends AppCompatActivity {
 
     private TextView mTextView;
     private ImageView mImageView;
     private View mView;
     private Snackbar mPopUp;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        mAuth = FirebaseAuth.getInstance();
 
         // Display user's username on the top right corner of the screen.
         String username = LoginActivity.email;
@@ -68,6 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     /** Called when the user taps the Sign Out button */
     public void goBackToLoginActivity(View view) {
+        mAuth.signOut();
         Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
         startActivity(intent);
     }
