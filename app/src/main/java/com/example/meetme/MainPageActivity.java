@@ -32,12 +32,12 @@ public class MainPageActivity extends AppCompatActivity {
     private static final String TAG = "Document";
 
     private ListView mListView;
-    private ArrayAdapter adapter;
+    private EventAdapter adapter;
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    ArrayList userEvents = new ArrayList();
+    ArrayList<Event> userEvents = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +77,8 @@ public class MainPageActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 Log.d(TAG, document.getId());
-                                userEvents.add(document.getId());
+                                Event e = new Event(document);
+                                userEvents.add(e);
 
                             }
                         }
@@ -85,11 +86,6 @@ public class MainPageActivity extends AppCompatActivity {
                         setList();
                     }
                 });
-    }
-
-    private void setList() {
-        adapter = new ArrayAdapter<String>(this, R.layout.user_event_listview, userEvents);
-        mListView.setAdapter(adapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -133,6 +129,12 @@ public class MainPageActivity extends AppCompatActivity {
                 builder.create().show();
             }
         });
+    }
+
+    private void setList() {
+        adapter = new EventAdapter(this, userEvents);
+        mListView.setAdapter(adapter);
+
     }
 
     /** Called when the user taps Settings button */
