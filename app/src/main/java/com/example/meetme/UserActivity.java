@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,7 +23,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,7 +34,7 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    List<String> userEvents = new ArrayList();
+    ArrayList<Event> userEvents = new ArrayList();
     //String[] userEvents = new String[2];
     //int i = 0;
     @Override
@@ -53,11 +57,11 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
                         if(task.isSuccessful()){
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 Log.d(TAG, document.getId());
-                                userEvents.add(document.getId());
+                                Event e = new Event(document);
+                                userEvents.add(e);
 
                             }
                         }
-                        Log.d(TAG, userEvents.toString());
                         setList();
                     }
                 });
@@ -66,7 +70,7 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setList(){
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.user_event_listview, userEvents);
+        EventAdapter adapter = new EventAdapter(this, userEvents);
         ListView listView = findViewById(R.id.user_event_list);
         listView.setAdapter(adapter);
     }
@@ -89,7 +93,7 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
 
         if(i == R.id.user_sign_out){
             signOut();
-        }else if(i == R.id.create_event_button){
+        }else if(i == R.id.create_event_button) {
             addEvent();
         }
     }
