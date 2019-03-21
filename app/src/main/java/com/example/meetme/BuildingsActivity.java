@@ -6,22 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class BuildingsActivity extends AppCompatActivity {
 
     public static final String KEY="Address";
 
-    private List<HashMap<String, String>>  mListItems;
+    private ArrayList<String>  mAddresses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,104 +25,87 @@ public class BuildingsActivity extends AppCompatActivity {
 
         ListView listView = (ListView) findViewById(R.id.buildings_listView);
 
-        HashMap<String, String> addresses = new HashMap<>();
+        mAddresses = new ArrayList<>();
 
-        addresses.put("Adventure Recreation Center (ARC)", "855 Woody Hayes Dr");
-        addresses.put("Animal Science Building", "2029 Fyffe Rd");
-        addresses.put("Archer House", "2130 Neil Ave");
-        addresses.put("Aronoff Laboratory", "318 W 12th Ave");
-        addresses.put("Baker Hall", "93, 113, & 129 W 12th Ave");
-        addresses.put("Baker Systems Engineering", "1971 Neil Ave");
-        addresses.put("Blackburn House", "136 W Woodruff Ave");
-        addresses.put("Bolz Hall", "2036 Neil Ave Mall");
-        addresses.put("Bradley Hall", "221 W 12th Ave");
-        addresses.put("Busch House", "2115 N High St");
-        addresses.put("Caldwell Laboratory", "2024 Neil Ave");
-        addresses.put("Campbell Hall", "1787 Neil Ave");
-        addresses.put("Canfield Hall", "236 W 11th Ave");
-        addresses.put("Celeste Laboratory of Chemistry", "120 W 18th Ave");
-        addresses.put("Cockins Hall", "1958 Neil Ave");
-        addresses.put("Cunz Hall", "1841 Neil Ave");
-        addresses.put("Curl Hall", "80 W Woodruff Ave");
-        addresses.put("Denney Hall", "164 Annie & John Glenn Ave");
-        addresses.put("Derby Hall", "154 N Oval Mall");
-        addresses.put("Dreese Laboratories", "2015 Neil Ave");
-        addresses.put("Drinko Hall", "55 W 12th Ave");
-        addresses.put("Eighteenth Avenue Library", "175 W 18th Ave");
-        addresses.put("Enarson Classroom Building", "2009 Millikin Rd");
-        addresses.put("Evans Hall", "520 King Ave");
-        addresses.put("Evans Laboratory", "88 W 18th Ave");
-        addresses.put("Fawcett Center for Tomorrow", "2400 Olentangy River Rd");
-        addresses.put("Fisher Hall", "2100 Neil Ave");
-        addresses.put("Fontana Laboratories", "116 W 19th Ave");
-        addresses.put("Hagerty Hall", "1775 College Rd");
-        addresses.put("Hitchcock Hall", "2070 Neil Ave");
-        addresses.put("Hopkins Hall", "128 N Oval Mall");
-        addresses.put("Houston House", "97 W Lane Ave");
-        addresses.put("Independence Hall", "1923 Neil Ave Mall");
-        addresses.put("Jennings Hall", "1735 Neil Ave");
-        addresses.put("Journalism Building", "242 W 18th Ave");
-        addresses.put("Kennedy Commons", "251 W 12th Ave");
-        addresses.put("Knowlton Hall", "275 W Woodruff Ave");
-        addresses.put("Lincoln Tower", "1800 Cannon Dr");
-        addresses.put("MacQuigg Laboratory", "105 W Woodruff Ave");
-        addresses.put("Mason Hall", "250 W Woodruff Ave");
-        addresses.put("McPherson Chemical Laboratory", "140 W 18th Ave");
-        addresses.put("Mendenhall Laboratory", "125 S Oval Mall");
-        addresses.put("Morril Tower", "1900 Cannon Dr");
-        addresses.put("Morrison Tower", "196 W 11th Ave");
-        addresses.put("North Recreation Center", "149 W Lane Ave");
-        addresses.put("Norton House", "2114 Neil Ave");
-        addresses.put("Nosker House", "124 W Woodruff Ave");
-        addresses.put("Ohio Union", "1739 N High St");
-        addresses.put("Park-Stradley Hall", "120 W 11th Ave");
-        addresses.put("Paterson Hall", "191 W 12th Ave");
-        addresses.put("Physical Activity and Education Services (PAES)", "305 Annie & John Glenn Ave");
-        addresses.put("Physics Research Building", "191 W Woodruff Ave");
-        addresses.put("Psychology Building", "1835 Neil Ave");
-        addresses.put("Recreation and Physical Activity Center (RPAC)", "337 Annie & John Glenn Ave");
-        addresses.put("Residences on Tenth", "230 W 10th Ave");
-        addresses.put("Riverwatch Tower", "364 W Lane Ave");
-        addresses.put("Schoenbaum Hall", "210 W Woodruff Ave");
-        addresses.put("Scott House", "160 W Woodruff Ave");
-        addresses.put("Scott Laboratory", "201 W 19th Ave");
-        addresses.put("Siebert Hall", "184 W 11th Ave");
-        addresses.put("Smith Laboratory", "174 W 18th Ave");
-        addresses.put("Smith-Steeb Hall", "80 W 11th Ave");
-        addresses.put("Stillman Hall", "1947 College Rd");
-        addresses.put("Taylor Tower", "55 W Lane Ave");
-        addresses.put("Thompson Library", "1858 Neil Ave Mall");
-        addresses.put("Torres House", "187 W Lane Ave");
-        addresses.put("University Hall", "230 N Oval Mall");
-        addresses.put("Younkin Success Center", "1640 Neil Ave");
+        mAddresses.add("Adventure Recreation Center (ARC)\n855 Woody Hayes Dr");
+        mAddresses.add("Animal Science Building\n2029 Fyffe Rd");
+        mAddresses.add("Archer House\n2130 Neil Ave");
+        mAddresses.add("Aronoff Laboratory\n318 W 12th Ave");
+        mAddresses.add("Baker Hall\n93, 113, & 129 W 12th Ave");
+        mAddresses.add("Baker Systems Engineering\n1971 Neil Ave");
+        mAddresses.add("Blackburn House\n136 W Woodruff Ave");
+        mAddresses.add("Bolz Hall\n2036 Neil Ave Mall");
+        mAddresses.add("Bradley Hall\n221 W 12th Ave");
+        mAddresses.add("Busch House\n2115 N High St");
+        mAddresses.add("Caldwell Laboratory\n2024 Neil Ave");
+        mAddresses.add("Campbell Hall\n1787 Neil Ave");
+        mAddresses.add("Canfield Hall\n236 W 11th Ave");
+        mAddresses.add("Celeste Laboratory of Chemistry\n120 W 18th Ave");
+        mAddresses.add("Cockins Hall\n1958 Neil Ave");
+        mAddresses.add("Cunz Hall\n1841 Neil Ave");
+        mAddresses.add("Curl Hall\n80 W Woodruff Ave");
+        mAddresses.add("Denney Hall\n164 Annie & John Glenn Ave");
+        mAddresses.add("Derby Hall\n154 N Oval Mall");
+        mAddresses.add("Dreese Laboratories\n2015 Neil Ave");
+        mAddresses.add("Drinko Hall\n55 W 12th Ave");
+        mAddresses.add("Eighteenth Avenue Library\n175 W 18th Ave");
+        mAddresses.add("Enarson Classroom Building\n2009 Millikin Rd");
+        mAddresses.add("Evans Hall\n520 King Ave");
+        mAddresses.add("Evans Laboratory\n88 W 18th Ave");
+        mAddresses.add("Fawcett Center for Tomorrow\n2400 Olentangy River Rd");
+        mAddresses.add("Fisher Hall\n2100 Neil Ave");
+        mAddresses.add("Fontana Laboratories\n116 W 19th Ave");
+        mAddresses.add("Hagerty Hall\n1775 College Rd");
+        mAddresses.add("Hitchcock Hall\n2070 Neil Ave");
+        mAddresses.add("Hopkins Hall\n128 N Oval Mall");
+        mAddresses.add("Houston House\n97 W Lane Ave");
+        mAddresses.add("Independence Hall\n1923 Neil Ave Mall");
+        mAddresses.add("Jennings Hall\n1735 Neil Ave");
+        mAddresses.add("Journalism Building\n242 W 18th Ave");
+        mAddresses.add("Kennedy Commons\n251 W 12th Ave");
+        mAddresses.add("Knowlton Hall\n275 W Woodruff Ave");
+        mAddresses.add("Lincoln Tower\n1800 Cannon Dr");
+        mAddresses.add("MacQuigg Laboratory\n105 W Woodruff Ave");
+        mAddresses.add("Mason Hall\n250 W Woodruff Ave");
+        mAddresses.add("McPherson Chemical Laboratory\n140 W 18th Ave");
+        mAddresses.add("Mendenhall Laboratory\n125 S Oval Mall");
+        mAddresses.add("Morril Tower\n1900 Cannon Dr");
+        mAddresses.add("Morrison Tower\n196 W 11th Ave");
+        mAddresses.add("North Recreation Center\n149 W Lane Ave");
+        mAddresses.add("Norton House\n2114 Neil Ave");
+        mAddresses.add("Nosker House\n124 W Woodruff Ave");
+        mAddresses.add("Ohio Union\n1739 N High St");
+        mAddresses.add("Park-Stradley Hall\n120 W 11th Ave");
+        mAddresses.add("Paterson Hall\n191 W 12th Ave");
+        mAddresses.add("Physical Activity and Education Services (PAES)\n305 Annie & John Glenn Ave");
+        mAddresses.add("Physics Research Building\n191 W Woodruff Ave");
+        mAddresses.add("Psychology Building\n1835 Neil Ave");
+        mAddresses.add("Recreation and Physical Activity Center (RPAC)\n337 Annie & John Glenn Ave");
+        mAddresses.add("Residences on Tenth\n230 W 10th Ave");
+        mAddresses.add("Riverwatch Tower\n364 W Lane Ave");
+        mAddresses.add("Schoenbaum Hall\n210 W Woodruff Ave");
+        mAddresses.add("Scott House\n160 W Woodruff Ave");
+        mAddresses.add("Scott Laboratory\n201 W 19th Ave");
+        mAddresses.add("Siebert Hall\n184 W 11th Ave");
+        mAddresses.add("Smith Laboratory\n174 W 18th Ave");
+        mAddresses.add("Smith-Steeb Hall\n80 W 11th Ave");
+        mAddresses.add("Stillman Hall\n1947 College Rd");
+        mAddresses.add("Taylor Tower\n55 W Lane Ave");
+        mAddresses.add("Thompson Library\n1858 Neil Ave Mall");
+        mAddresses.add("Torres House\n187 W Lane Ave");
+        mAddresses.add("University Hall\n230 N Oval Mall");
+        mAddresses.add("Younkin Success Center\n1640 Neil Ave");
 
-        mListItems = new ArrayList<>();
-        SimpleAdapter adapter = new SimpleAdapter(this, mListItems, R.layout.list_item,
-                new String[]{"First Line", "Second Line"},
-                new int[]{R.id.item_textView, R.id.sub_item_textView});
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mAddresses);
 
-        Iterator iterator = addresses.entrySet().iterator();
-        while(iterator.hasNext()) {
-            HashMap<String, String> mResultMap = new HashMap<>();
-            Map.Entry pair = (Map.Entry) iterator.next();
-            mResultMap.put("First Line", pair.getKey().toString());
-            mResultMap.put("Second Line", pair.getValue().toString());
-            mListItems.add(mResultMap);
-        }
-
-        Collections.sort(mListItems, new Comparator<HashMap<String, String>>() {
-            @Override
-            public int compare(HashMap<String, String> o1, HashMap<String, String> o2) {
-                return o1.get("First Line").compareToIgnoreCase(o2.get("First Line"));
-            }
-        });
+        Collections.sort(mAddresses);
 
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String tempListView = mListItems.get(position).toString();
+                String tempListView = mAddresses.get(position);
 
                 Intent returnIntent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
                 returnIntent.putExtra(KEY, tempListView);

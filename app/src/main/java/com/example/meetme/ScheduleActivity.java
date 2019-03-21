@@ -39,6 +39,7 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
 
     private TextView mDate;
     private TextView mTime;
+    private TextView mPlace;
     private TextView mStartTime;
     private TextView mEndTime;
 
@@ -97,11 +98,9 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
             public void onClick(View view) {
                 Intent intent = new Intent(ScheduleActivity.this, BuildingsActivity.class);
                 startActivityForResult(intent, 1);
-
-                TextView addressView = (TextView) findViewById(R.id.place_textView);
-                addressView.setText(result);
             }
         });
+
 
         Button addButton = (Button) findViewById(R.id.add_event_button);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -110,9 +109,10 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
                 if(canSubmit) {
                     Map<String, Object> newEvent = new HashMap<>();
                     newEvent.put("Name", mName.getText().toString());
-                    newEvent.put("Date", mDate.getText());
                     newEvent.put("Start Time", mStartTime.getText());
                     newEvent.put("End Time", mEndTime.getText());
+                    newEvent.put("Date", mDate.getText());
+                    newEvent.put("Place", mPlace.getText());
 
                     DocumentReference userEvents = db.collection("Events").document(mAuth.getCurrentUser().getEmail());
                     userEvents.collection("uEvents").document(mName.getText().toString()).set(newEvent);
@@ -175,6 +175,8 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 result = data.getStringExtra(KEY);
+                mPlace = (TextView) findViewById(R.id.place_textView);
+                mPlace.setText(result);
             }
             //Write your code if there's no result
         }
