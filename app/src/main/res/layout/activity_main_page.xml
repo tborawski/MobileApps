@@ -35,18 +35,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginBottom="10dp"
-            android:onClick="goToSettingsActivity"
+            android:onClick="onClick"
             android:text="@string/settings_button"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/schedule_button"
+            android:id="@+id/add_schedule_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginStart="200dp"
-            android:onClick="goToScheduleActivity"
+            android:onClick="onClick"
             android:text="@string/add_schedule_button"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
@@ -84,19 +84,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:onClick="goToJoinActivity"
+        android:onClick="onClick"
         android:text="@string/join_group_button"
         android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/add_button"
+        android:id="@+id/create_group_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:onClick="goToCreateGroupActivity"
+        android:onClick="onClick"
         android:text="@string/create_group_button"
         android:textColor="@android:color/black"
         android:textStyle="bold" />

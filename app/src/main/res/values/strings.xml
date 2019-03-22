@@ -23,12 +23,14 @@
     <string name="sounds_text">Sounds</string>
     <string name="version_button">Version</string>
     <string name="profile_picture">User\'s profile picture</string>
+    <string name="group_profile_picture">Group\'s profile picture</string>
     <string name="group_name">Group Name</string>
     <string name="group_description">Description</string>
     <string name="private_text">Private</string>
     <string name="join_text">Join Group</string>
     <string name="schedule_text">Event</string>
     <string name="settings_text">Settings</string>
+    <string name="edit_picture">Edit Picture</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

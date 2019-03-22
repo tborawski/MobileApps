@@ -25,38 +25,52 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="40dp"
         android:orientation="horizontal"
         android:gravity="center">
 
         <Button
-            android:id="@+id/back_button"
+            android:id="@+id/create_group_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="openMainPageActivity"
+            android:onClick="onClick"
             android:text="@string/back_button"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/next_button"
+            android:id="@+id/create_group_next_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="200dp"
-            android:onClick="openAddMembersActivity"
+            android:onClick="onClick"
             android:text="@string/next_button"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/profile_imageView"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_gravity="center"
-        android:contentDescription="@string/profile_picture" />
+        android:layout_gravity="center">
+
+        <ImageView
+            android:id="@+id/group_imageView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:contentDescription="@string/group_profile_picture" />
+
+        <Button
+            android:id="@+id/upload_group_picture_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/group_imageView"
+            android:background="@android:color/transparent"
+            android:hint="@string/edit_picture" />
+
+    </RelativeLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -112,7 +126,7 @@
             android:id="@+id/private_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="200dp"
+            android:layout_marginStart="220dp"
             android:textStyle="bold"/>
 
     </LinearLayout>

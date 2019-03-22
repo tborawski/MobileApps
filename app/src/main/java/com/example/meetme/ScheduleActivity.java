@@ -27,7 +27,7 @@ import java.util.Map;
 
 import static com.example.meetme.BuildingsActivity.KEY;
 
-public class ScheduleActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class ScheduleActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, View.OnClickListener {
 
     public static String result;
 
@@ -51,6 +51,11 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
 
+        // Display user's username on the top right corner of the screen.
+        String username = LoginActivity.email;
+        TextView textView = findViewById(R.id.username_textView);
+        textView.setText(username);
+
         mAuth = FirebaseAuth.getInstance();
 
         mName = findViewById(R.id.activity_name);
@@ -58,70 +63,13 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
         mStartTime = findViewById(R.id.start_time_textView);
         mEndTime = findViewById(R.id.end_time_textView);
 
-        // Display user's username on the top right corner of the screen.
-        String username = LoginActivity.email;
-        final TextView textView = findViewById(R.id.username_textView);
-        textView.setText(username);
 
-        Button dateButton = (Button) findViewById(R.id.date_picker_button);
-        dateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DialogFragment datePicker = new DatePickerFragment();
-                datePicker.show(getSupportFragmentManager(), "date picker");
-            }
-        });
+        findViewById(R.id.date_picker_button).setOnClickListener(this);
+        findViewById(R.id.start_time_picker_button).setOnClickListener(this);
+        findViewById(R.id.end_time_picker_button).setOnClickListener(this);
+        findViewById(R.id.place_picker_button).setOnClickListener(this);
+        findViewById(R.id.add_event_button).setOnClickListener(this);
 
-        final Button startTimeButton = (Button) findViewById(R.id.start_time_picker_button);
-        startTimeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startOrEnd = 0;
-                DialogFragment timePicker = new TimePickerFragment();
-                timePicker.show(getSupportFragmentManager(), "time picker");
-            }
-        });
-
-        Button endTimeButton = (Button) findViewById(R.id.end_time_picker_button);
-        endTimeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startOrEnd = 1;
-                DialogFragment timePicker = new TimePickerFragment();
-                timePicker.show(getSupportFragmentManager(), "time picker");
-            }
-        });
-
-        Button placeButton = (Button) findViewById(R.id.place_picker_button);
-        placeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ScheduleActivity.this, BuildingsActivity.class);
-                startActivityForResult(intent, 1);
-            }
-        });
-
-
-        Button addButton = (Button) findViewById(R.id.add_event_button);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(canSubmit) {
-                    Map<String, Object> newEvent = new HashMap<>();
-                    newEvent.put("Name", mName.getText().toString());
-                    newEvent.put("Start Time", mStartTime.getText());
-                    newEvent.put("End Time", mEndTime.getText());
-                    newEvent.put("Date", mDate.getText());
-                    newEvent.put("Place", mPlace.getText());
-
-                    DocumentReference userEvents = db.collection("Events").document(mAuth.getCurrentUser().getEmail());
-                    userEvents.collection("uEvents").document(mName.getText().toString()).set(newEvent);
-
-                    Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
-                    startActivity(intent);
-                }
-            }
-        });
     }
 
     @Override
@@ -157,7 +105,10 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
                 mTime.setText(new StringBuilder().append(hourOfDay).append(" : ").append(minute).append(" PM").toString());
             }
         } else {
-            if(minute == 0) {
+            if(hourOfDay < 10) {
+                mTime.setText(new StringBuilder().append("0").append(hourOfDay).append(" : ").append(minute).append("0 AM").toString());
+            }
+            else if(minute == 0) {
                 mTime.setText(new StringBuilder().append(hourOfDay).append(" : ").append(minute).append("0 AM").toString());
             }
             else if(minute < 10) {
@@ -170,6 +121,21 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
         canSubmit = mTime.getText() != "";
     }
 
+    private void submitEvent(){
+        Map<String, Object> newEvent = new HashMap<>();
+        newEvent.put("Name", mName.getText().toString());
+        newEvent.put("Start Time", mStartTime.getText());
+        newEvent.put("End Time", mEndTime.getText());
+        newEvent.put("Date", mDate.getText());
+        newEvent.put("Place", mPlace.getText());
+
+        DocumentReference userEvents = db.collection("Events").document(mAuth.getCurrentUser().getEmail());
+        userEvents.collection("uEvents").document(mName.getText().toString()).set(newEvent);
+
+        Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
@@ -178,13 +144,34 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
                 mPlace = (TextView) findViewById(R.id.place_textView);
                 mPlace.setText(result);
             }
-            //Write your code if there's no result
         }
     }
 
-    /** Called when the user taps the Back button */
-    public void goBackToMainPageActivity(View view) {
-        Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
-        startActivity(intent);
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+
+        if(i == R.id.schedule_back_button) {
+            Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
+            startActivity(intent);
+        } else if(i == R.id.date_picker_button) {
+            DialogFragment datePicker = new DatePickerFragment();
+            datePicker.show(getSupportFragmentManager(), "date picker");
+        } else if(i == R.id.start_time_picker_button) {
+            startOrEnd = 0;
+            DialogFragment timePicker = new TimePickerFragment();
+            timePicker.show(getSupportFragmentManager(), "time picker");
+        } else if(i == R.id.end_time_picker_button) {
+            startOrEnd = 1;
+            DialogFragment timePicker = new TimePickerFragment();
+            timePicker.show(getSupportFragmentManager(), "time picker");
+        } else if(i == R.id.place_picker_button) {
+            Intent intent = new Intent(ScheduleActivity.this, BuildingsActivity.class);
+            startActivityForResult(intent, 1);
+        } else if(i == R.id.add_event_button) {
+            if(canSubmit) {
+                submitEvent();
+            }
+        }
     }
 }

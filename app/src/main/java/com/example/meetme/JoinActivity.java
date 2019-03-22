@@ -21,18 +21,19 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class JoinActivity extends AppCompatActivity {
+public class JoinActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "Document";
 
     private ListView mListView;
+    private EventAdapter mAdapter;
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    List<String> userEvents = new ArrayList();
+    ArrayList<Event> userEvents = new ArrayList();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,25 +54,20 @@ public class JoinActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 Log.d(TAG, document.getId());
-                                userEvents.add(document.getId());
-
+                                Event e = new Event(document);
+                                userEvents.add(e);
                             }
                         }
                         Log.d(TAG, userEvents.toString());
                         setList();
                     }
                 });
-    }
-
-    private void setList() {
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.user_event_listview, userEvents);
-        mListView.setAdapter(adapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(JoinActivity.this);
-                builder.setTitle(userEvents.get(position).toString());
+                builder.setTitle(userEvents.get(position).name);
 
                 builder.setMessage("Would you like to join this Group?");
                 builder.setPositiveButton("Join", new DialogInterface.OnClickListener() {
@@ -91,9 +87,18 @@ public class JoinActivity extends AppCompatActivity {
         });
     }
 
-    /** Called when the user taps the Back button */
-    public void goBackToMainPageActivity(View view) {
-        Intent intent = new Intent(JoinActivity.this, MainPageActivity.class);
-        startActivity(intent);
+    private void setList() {
+        mAdapter = new EventAdapter(this, userEvents);
+        mListView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+
+        if (i == R.id.join_back_button) {
+            Intent intent = new Intent(JoinActivity.this, MainPageActivity.class);
+            startActivity(intent);
+        }
     }
 }

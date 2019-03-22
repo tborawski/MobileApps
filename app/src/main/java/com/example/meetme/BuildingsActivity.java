@@ -12,7 +12,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class BuildingsActivity extends AppCompatActivity {
+public class BuildingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String KEY="Address";
 
@@ -116,9 +116,13 @@ public class BuildingsActivity extends AppCompatActivity {
 
     }
 
-    /** Called when the user taps the Back button */
-    public void goBackToScheduleActivity(View view) {
-        Intent intent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
-        startActivity(intent);
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+
+        if(i == R.id.buildings_back_button) {
+            Intent intent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
+            startActivity(intent);
+        }
     }
 }
