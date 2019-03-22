@@ -6,9 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,6 +32,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     private static final String TAG = "Document";
 
     private ListView mListView;
+    private EditText mFilter;
     private EventAdapter mAdapter;
 
     private FirebaseAuth mAuth;
@@ -41,6 +46,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_main_page);
 
         mListView = (ListView) findViewById(R.id.user_event_listView);
+        mFilter = (EditText) findViewById(R.id.search_event);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -53,6 +59,12 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.join_button).setOnClickListener(this);
         findViewById(R.id.create_group_button).setOnClickListener(this);
 
+        addEvent();
+        checkEvent();
+        searchEvent();
+    }
+
+    private void addEvent() {
         db.collection("Events").document(mAuth.getCurrentUser().getEmail()).collection("uEvents").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -68,7 +80,9 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                         setList();
                     }
                 });
+    }
 
+    private void checkEvent() {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -112,6 +126,10 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                 builder.create().show();
             }
         });
+    }
+
+    private void searchEvent() {
+       //Search for a particular Event.
     }
 
     private void setList() {

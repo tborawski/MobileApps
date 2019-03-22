@@ -27,10 +27,10 @@ import java.util.ArrayList;
 public class AddMembersActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ListView mListView;
+    private EditText mFilter;
+    private ArrayAdapter mAdapter;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-    private ArrayAdapter mAdapter;
 
     ArrayList<String> members = new ArrayList<>();
 
@@ -46,11 +46,17 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         textView.setText(auth.getCurrentUser().getEmail());
 
         mListView = (ListView) findViewById(R.id.add_members_listView);
-        EditText filter = (EditText) findViewById(R.id.search_filter);
+        mFilter = (EditText) findViewById(R.id.search_filter);
 
         findViewById(R.id.add_members_back_button).setOnClickListener(this);
         findViewById(R.id.skip_button).setOnClickListener(this);
 
+       addUsersToArray();
+       addMember();
+       searchUser();
+    }
+
+    private void addUsersToArray() {
         db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -62,7 +68,9 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                 setList();
             }
         });
+    }
 
+    private void addMember() {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -86,10 +94,12 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                 builder.create().show();
             }
         });
+    }
 
+    private void searchUser() {
         mAdapter = new ArrayAdapter<>(this, R.layout.user_list_layout, members);
 
-        filter.addTextChangedListener(new TextWatcher() {
+        mFilter.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //Do nothing.
