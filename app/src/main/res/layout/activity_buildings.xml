@@ -14,11 +14,11 @@
     <!--MainPageActivity-->
 
     <Button
-        android:id="@+id/back_button"
+        android:id="@+id/buildings_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:onClick="goBackToScheduleActivity"
+        android:onClick="onClick"
         android:text="@string/back_button"
         android:textColor="@android:color/black"
         android:textStyle="bold" />
@@ -59,8 +59,6 @@
         android:id="@+id/buildings_listView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-
-    </ListView>
+        android:layout_marginTop="10dp" />
 
 </LinearLayout>

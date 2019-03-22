@@ -13,12 +13,9 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private TextView mTextView;
     private ImageView mImageView;
-    private View mView;
-    private Snackbar mPopUp;
     private FirebaseAuth mAuth;
 
     @Override
@@ -35,26 +32,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         mImageView = (ImageView) findViewById(R.id.profile_imageView);
 
-        Button version = (Button) findViewById(R.id.version_button);
-        version.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPopUp = Snackbar.make(v, "Version 1.0.0", Snackbar.LENGTH_LONG).setAction("Action",null);
-                mView = mPopUp.getView();
-                mTextView = (TextView) mView.findViewById(android.support.design.R.id.snackbar_text);
-                mTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                mPopUp.show();
-            }
-        });
-
-        Button uploadPicture = (Button) findViewById(R.id.upload_button);
-        uploadPicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto, 1);
-            }
-        });
+        findViewById(R.id.version_button).setOnClickListener(this);
+        findViewById(R.id.upload_button).setOnClickListener(this);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
@@ -65,16 +44,26 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    /** Called when the user taps the Back button */
-    public void goBackToMainPageActivity(View view) {
-        Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
-        startActivity(intent);
-    }
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
 
-    /** Called when the user taps the Sign Out button */
-    public void goBackToLoginActivity(View view) {
-        mAuth.signOut();
-        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-        startActivity(intent);
+        if(i == R.id.settings_back_button) {
+            Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
+            startActivity(intent);
+        } else if(i == R.id.sign_out_button) {
+            mAuth.signOut();
+            Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+            startActivity(intent);
+        } else if(i == R.id.version_button) {
+            Snackbar popUp = Snackbar.make(v, "Version 1.0.0", Snackbar.LENGTH_LONG).setAction("Action", null);
+            View view = popUp.getView();
+            TextView textView = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            popUp.show();
+        } else if(i == R.id.upload_button) {
+            Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(pickPhoto, 1);
+        }
     }
 }
