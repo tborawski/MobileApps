@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +25,12 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buildings);
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        // Display user's username on the top right corner of the screen.
+        TextView textView = findViewById(R.id.username_textView);
+        textView.setText(auth.getCurrentUser().getEmail());
 
         ListView listView = (ListView) findViewById(R.id.buildings_listView);
 

@@ -30,10 +30,10 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     private ListView mListView;
     private EventAdapter mAdapter;
 
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    ArrayList<Event> userEvents = new ArrayList();
+    ArrayList<Event> userEvents = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +42,11 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
         mListView = (ListView) findViewById(R.id.user_event_listView);
 
+        mAuth = FirebaseAuth.getInstance();
+
         // Display user's username on the top right corner of the screen.
-        String username = LoginActivity.email;
         TextView textView = (TextView) findViewById(R.id.username_textView);
-        textView.setText(username);
+        textView.setText(mAuth.getCurrentUser().getEmail());
 
         findViewById(R.id.settings_button).setOnClickListener(this);
         findViewById(R.id.add_schedule_button).setOnClickListener(this);

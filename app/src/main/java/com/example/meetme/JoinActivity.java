@@ -27,12 +27,10 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "Document";
 
     private ListView mListView;
-    private EventAdapter mAdapter;
 
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    ArrayList<Event> userEvents = new ArrayList();
+    ArrayList<Event> userEvents = new ArrayList<>();
 
 
     @Override
@@ -42,10 +40,11 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
 
         mListView = findViewById(R.id.user_event_listView);
 
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
         // Display user's username on the top right corner of the screen.
-        String username = LoginActivity.email;
         TextView textView = (TextView) findViewById(R.id.username_textView);
-        textView.setText(username);
+        textView.setText(mAuth.getCurrentUser().getEmail());
 
         db.collection("Events").document(mAuth.getCurrentUser().getEmail()).collection("uEvents").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -88,8 +87,8 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setList() {
-        mAdapter = new EventAdapter(this, userEvents);
-        mListView.setAdapter(mAdapter);
+        EventAdapter adapter = new EventAdapter(this, userEvents);
+        mListView.setAdapter(adapter);
     }
 
     @Override

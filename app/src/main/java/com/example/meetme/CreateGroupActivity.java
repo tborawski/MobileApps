@@ -13,19 +13,17 @@ import com.google.firebase.auth.FirebaseAuth;
 public class CreateGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView mImageView;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
 
         // Display user's username on the top right corner of the screen.
-        String username = LoginActivity.email;
         TextView textView = (TextView) findViewById(R.id.username_textView);
-        textView.setText(username);
+        textView.setText(auth.getCurrentUser().getEmail());
 
         mImageView = (ImageView) findViewById(R.id.group_imageView);
 
