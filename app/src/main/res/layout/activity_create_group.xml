@@ -29,22 +29,22 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <Button
+        <ImageButton
             android:id="@+id/create_group_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onClick"
-            android:text="@string/back_button"
+            android:src="@drawable/ic_back"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
-        <Button
+        <ImageButton
             android:id="@+id/create_group_next_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="200dp"
+            android:layout_marginStart="260dp"
             android:onClick="onClick"
-            android:text="@string/next_button"
+            android:src="@drawable/ic_next"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 

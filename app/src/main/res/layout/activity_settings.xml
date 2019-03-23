@@ -19,13 +19,13 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <Button
+        <ImageButton
             android:id="@+id/settings_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:onClick="onClick"
-            android:text="@string/back_button"
+            android:src="@drawable/ic_back"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
@@ -33,7 +33,7 @@
             android:id="@+id/settings_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="135dp"
+            android:layout_marginStart="170dp"
             android:layout_marginEnd="40dp"
             android:text="@string/settings_text"
             android:textColor="@android:color/black"

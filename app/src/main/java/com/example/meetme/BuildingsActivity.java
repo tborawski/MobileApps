@@ -28,6 +28,8 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
+        findViewById(R.id.buildings_back_button).setOnClickListener(this);
+
         TextView textView = findViewById(R.id.username_textView);
         textView.setText(auth.getCurrentUser().getEmail());
 

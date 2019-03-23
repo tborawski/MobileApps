@@ -59,7 +59,7 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
         mStartTime = findViewById(R.id.start_time_textView);
         mEndTime = findViewById(R.id.end_time_textView);
 
-
+        findViewById(R.id.schedule_back_button).setOnClickListener(this);
         findViewById(R.id.date_picker_button).setOnClickListener(this);
         findViewById(R.id.start_time_picker_button).setOnClickListener(this);
         findViewById(R.id.end_time_picker_button).setOnClickListener(this);

@@ -29,13 +29,13 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <Button
+        <ImageButton
             android:id="@+id/join_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:onClick="onClick"
-            android:text="@string/back_button"
+            android:src="@drawable/ic_back"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
             android:id="@+id/join_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="100dp"
+            android:layout_marginStart="130dp"
             android:layout_marginEnd="40dp"
             android:textSize="30sp"
             android:textStyle="bold"

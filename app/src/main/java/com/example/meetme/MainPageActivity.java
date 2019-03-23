@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -62,15 +64,44 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         TextView textView = (TextView) findViewById(R.id.username_textView);
         textView.setText(mAuth.getCurrentUser().getEmail());
 
-        findViewById(R.id.settings_button).setOnClickListener(this);
-        findViewById(R.id.add_schedule_button).setOnClickListener(this);
         findViewById(R.id.join_button).setOnClickListener(this);
         findViewById(R.id.create_group_button).setOnClickListener(this);
 
         setActionBarDrawerToggle();
+        handleNavigationClickEvents();
         addEvent();
         checkEvent();
         searchEvent();
+    }
+
+    private void handleNavigationClickEvents() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+                        int i = menuItem.getItemId();
+                        if(i == R.id.home) {
+
+                        } else if(i == R.id.add_event) {
+                            Intent intent = new Intent(MainPageActivity.this, ScheduleActivity.class);
+                            startActivity(intent);
+                        } else if(i == R.id.my_groups) {
+
+                        } else if(i == R.id.settings) {
+                            Intent intent = new Intent(MainPageActivity.this, SettingsActivity.class);
+                            startActivity(intent);
+                        }
+                        return true;
+                    }
+                });
+
     }
 
     private void setActionBarDrawerToggle() {
@@ -162,13 +193,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v){
         int i = v.getId();
 
-        if(i == R.id.settings_button) {
-            Intent intent = new Intent(MainPageActivity.this, SettingsActivity.class);
-            startActivity(intent);
-        } else if(i == R.id.add_schedule_button) {
-            Intent intent = new Intent(MainPageActivity.this, ScheduleActivity.class);
-            startActivity(intent);
-        } else if(i == R.id.join_button) {
+        if(i == R.id.join_button) {
             Intent intent = new Intent(MainPageActivity.this, JoinActivity.class);
             startActivity(intent);
         } else if(i == R.id.create_group_button) {

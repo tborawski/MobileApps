@@ -28,6 +28,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         mImageView = (ImageView) findViewById(R.id.profile_imageView);
 
+        findViewById(R.id.settings_back_button).setOnClickListener(this);
+        findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.version_button).setOnClickListener(this);
         findViewById(R.id.upload_button).setOnClickListener(this);
     }

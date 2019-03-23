@@ -29,13 +29,13 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <Button
+        <ImageButton
             android:id="@+id/schedule_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:onClick="onClick"
-            android:text="@string/back_button"
+            android:src="@drawable/ic_back"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
             android:id="@+id/schedule_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="160dp"
+            android:layout_marginStart="200dp"
             android:layout_marginEnd="50dp"
             android:text="@string/schedule_text"
             android:textColor="@android:color/black"
