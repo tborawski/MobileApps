@@ -60,7 +60,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         mProgress = new ProgressDialog(this);
-        mProgress.setTitle("Loading");
         mProgress.setMessage("Wait while loading...");
         mProgress.setCancelable(false); // disable dismiss by tapping outside of the dialog
     }
