@@ -20,15 +20,21 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddMembersActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "Memebers";
     private ListView mListView;
+    private String groupName;
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     ArrayList<String> members = new ArrayList();
+    ArrayList<String> currentMembers = new ArrayList();
+    private ArrayAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +43,22 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
 
         mListView = (ListView) findViewById(R.id.add_members_listView);
         EditText filter = (EditText) findViewById(R.id.search_filter);
+        groupName = getIntent().getStringExtra("GROUP_NAME");
 
         findViewById(R.id.add_members_back_button).setOnClickListener(this);
         findViewById(R.id.skip_button).setOnClickListener(this);
+
+        db.collection("Groups").document(groupName).collection("groupUsers").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot cUser : task.getResult()){
+                                currentMembers.add(cUser.getId());
+                            }
+                        }
+                    }
+                });
 
         //Add users to arrayList
         db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -47,7 +66,9 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
                     for(QueryDocumentSnapshot document : task.getResult()) {
-                        members.add(document.getId());
+                        if(!currentMembers.contains(document.getId())){
+                            members.add(document.getId());
+                        }
                     }
                 }
                 setList();
@@ -59,13 +80,17 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddMembersActivity.this);
                 builder.setTitle("");
-
+                final String name = members.get(position);
                 builder.setMessage("Would you like to add this member to your group?");
 
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //Add member to group
+                        Map<String, Object> newMember = new HashMap<>();
+                        newMember.put("Base User", name);
+                        db.collection("Groups").document(groupName).collection("groupUsers").document(name).set(newMember);
+                        members.remove(position);
+                        mAdapter.notifyDataSetChanged();
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -80,8 +105,8 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setList() {
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, members);
-        mListView.setAdapter(adapter);
+        mAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, members);
+        mListView.setAdapter(mAdapter);
     }
 
     public void onClick(View v) {

@@ -53,9 +53,8 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
         setContentView(R.layout.activity_schedule);
 
         // Display user's username on the top right corner of the screen.
-        String username = LoginActivity.email;
         TextView textView = findViewById(R.id.username_textView);
-        textView.setText(username);
+        textView.setText(mAuth.getCurrentUser().getEmail());
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -171,7 +170,11 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
             startActivityForResult(intent, 1);
         } else if(i == R.id.add_event_button) {
             if(canSubmit) {
-                submitEvent();
+                if(!TextUtils.isEmpty(mName.getText().toString())) {
+                    submitEvent();
+                } else{
+                    mName.setError("Name cannot be blank");
+                }
             }
         }
     }

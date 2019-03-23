@@ -26,9 +26,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mAuth = FirebaseAuth.getInstance();
 
         // Display user's username on the top right corner of the screen.
-        String username = LoginActivity.email;
         TextView textView = (TextView) findViewById(R.id.username_textView);
-        textView.setText(username);
+        textView.setText(mAuth.getCurrentUser().getEmail());
 
         mImageView = (ImageView) findViewById(R.id.profile_imageView);
 

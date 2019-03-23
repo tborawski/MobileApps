@@ -43,9 +43,8 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         mListView = (ListView) findViewById(R.id.user_event_listView);
 
         // Display user's username on the top right corner of the screen.
-        String username = LoginActivity.email;
-        TextView textView = (TextView) findViewById(R.id.username_textView);
-        textView.setText(username);
+        TextView userName = (TextView) findViewById(R.id.username_textView);
+        userName.setText(mAuth.getCurrentUser().getEmail());
 
         findViewById(R.id.settings_button).setOnClickListener(this);
         findViewById(R.id.add_schedule_button).setOnClickListener(this);

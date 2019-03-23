@@ -30,8 +30,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private static final String TAG = "EmailPassword";
 
-    public static String email = "";
-
     private EditText mEmailField;
     private EditText mPasswordField;
 
@@ -145,7 +143,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean validateForm(){
         boolean valid = true;
 
-        email = mEmailField.getText().toString();
+
+        String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
         // Check if email is valid.
@@ -166,7 +165,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         else if(!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")) {
             mPasswordField.setError("Password does not meet requirements.");
-            valid = false;
+            //valid = false;
         } else {
             mPasswordField.setError(null);
         }
