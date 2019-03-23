@@ -1,5 +1,6 @@
 package com.example.meetme;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText mEmailField;
     private EditText mPasswordField;
 
+    private ProgressDialog mProgress;
+
     private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -55,6 +58,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
             startActivity(intent);
         }
+
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Loading");
+        mProgress.setMessage("Wait while loading...");
+        mProgress.setCancelable(false); // disable dismiss by tapping outside of the dialog
     }
 
     @Override
@@ -97,11 +105,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onComplete(@NonNull Task<AuthResult> task){
                 if(task.isSuccessful()){
                     Log.d(TAG, "Sign in success");
-                    FirebaseUser user = mAuth.getCurrentUser();
+                    mProgress.dismiss();
                     Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
                     startActivity(intent);
                 } else {
                     Log.w(TAG, "Sign in failure", task.getException());
+                    mProgress.dismiss();
                     Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
@@ -120,6 +129,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Log.d(TAG, "Create user success");
+                    mProgress.dismiss();
                     FirebaseUser user = mAuth.getCurrentUser();
                     Map<String, Object> addUser = new HashMap<>();
                     addUser.put("Email", mAuth.getCurrentUser().getEmail());
@@ -128,6 +138,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     startActivity(intent);
                 }else {
                     Log.w(TAG, "Create user failure", task.getException());
+                    mProgress.dismiss();
                     Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
@@ -174,9 +185,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v){
         int i = v.getId();
+
         if(i == R.id.sign_in){
+            mProgress.show();
             signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
         } else if(i == R.id.sign_up){
+            mProgress.show();
             createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
         } else if(i == R.id.sign_out_button){
             signOut();
