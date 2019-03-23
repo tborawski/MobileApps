@@ -42,7 +42,6 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-        // Display user's username on the top right corner of the screen.
         TextView textView = (TextView) findViewById(R.id.username_textView);
         textView.setText(mAuth.getCurrentUser().getEmail());
 

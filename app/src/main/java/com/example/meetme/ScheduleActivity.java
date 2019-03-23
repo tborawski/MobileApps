@@ -51,7 +51,6 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
 
         mAuth = FirebaseAuth.getInstance();
 
-        // Display user's username on the top right corner of the screen.
         TextView textView = findViewById(R.id.username_textView);
         textView.setText(mAuth.getCurrentUser().getEmail());
 

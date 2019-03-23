@@ -4,8 +4,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +26,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class MainPageActivity extends AppCompatActivity implements View.OnClickListener {
@@ -29,11 +35,14 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     private static final String TAG = "Document";
 
     private ListView mListView;
-    private EditText mFilter;
     private EventAdapter mAdapter;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private Toolbar mToolbar;
 
     ArrayList<Event> userEvents = new ArrayList<>();
 
@@ -42,12 +51,14 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
-        mListView = (ListView) findViewById(R.id.user_event_listView);
-        mFilter = (EditText) findViewById(R.id.search_event);
-
         mAuth = FirebaseAuth.getInstance();
 
-        // Display user's username on the top right corner of the screen.
+        mListView = (ListView) findViewById(R.id.user_event_listView);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(mToolbar);
+
         TextView textView = (TextView) findViewById(R.id.username_textView);
         textView.setText(mAuth.getCurrentUser().getEmail());
 
@@ -56,10 +67,17 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.join_button).setOnClickListener(this);
         findViewById(R.id.create_group_button).setOnClickListener(this);
 
+        setActionBarDrawerToggle();
         addEvent();
         checkEvent();
         searchEvent();
     }
+
+    private void setActionBarDrawerToggle() {
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
+        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
 
     private void addEvent() {
         db.collection("Events").document(mAuth.getCurrentUser().getEmail()).collection("uEvents").get()
@@ -135,10 +153,16 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mActionBarDrawerToggle.syncState();
+    }
+
+    @Override
     public void onClick(View v){
         int i = v.getId();
 
-        if(i == R.id.settings_button){
+        if(i == R.id.settings_button) {
             Intent intent = new Intent(MainPageActivity.this, SettingsActivity.class);
             startActivity(intent);
         } else if(i == R.id.add_schedule_button) {

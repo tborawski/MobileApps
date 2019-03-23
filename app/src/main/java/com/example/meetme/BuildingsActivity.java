@@ -28,7 +28,6 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        // Display user's username on the top right corner of the screen.
         TextView textView = findViewById(R.id.username_textView);
         textView.setText(auth.getCurrentUser().getEmail());
 
