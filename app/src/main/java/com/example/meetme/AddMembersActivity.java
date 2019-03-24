@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -56,24 +57,11 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                             for(QueryDocumentSnapshot cUser : task.getResult()){
                                 currentMembers.add(cUser.getId());
                             }
+                            getNonMembers();
                         }
                     }
                 });
 
-        //Add users to arrayList
-        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()) {
-                    for(QueryDocumentSnapshot document : task.getResult()) {
-                        if(!currentMembers.contains(document.getId())){
-                            members.add(document.getId());
-                        }
-                    }
-                }
-                setList();
-            }
-        });
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -87,7 +75,8 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Map<String, Object> newMember = new HashMap<>();
-                        newMember.put("Base User", name);
+                        newMember.put("Level", "Base");
+                        newMember.put("User", name);
                         db.collection("Groups").document(groupName).collection("groupUsers").document(name).set(newMember);
                         members.remove(position);
                         mAdapter.notifyDataSetChanged();
@@ -107,6 +96,24 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     private void setList() {
         mAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, members);
         mListView.setAdapter(mAdapter);
+    }
+
+    private void getNonMembers(){
+        //Add users to arrayList
+        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    for(QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d(TAG, document.getId());
+                        if(!currentMembers.contains(document.getId())){
+                            members.add(document.getId());
+                        }
+                    }
+                }
+                setList();
+            }
+        });
     }
 
     public void onClick(View v) {

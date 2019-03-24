@@ -2,6 +2,7 @@ package com.example.meetme;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,8 +11,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -25,6 +31,9 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private EditText mGroupName;
     private EditText mGroupDes;
+    private ToggleButton mPrivateButton;
+
+    private String createdID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         textView.setText(mAuth.getCurrentUser().getEmail());
 
         mImageView = (ImageView) findViewById(R.id.group_imageView);
+        mPrivateButton = findViewById(R.id.private_button);
 
         findViewById(R.id.create_group_back_button).setOnClickListener(this);
         findViewById(R.id.create_group_next_button).setOnClickListener(this);
@@ -65,14 +75,18 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     }
 
     public void toAddUsers(){
-        Map<String, Object> description = new HashMap<>();
-        description.put("Description", mGroupDes.getText().toString());
-        db.collection("Groups").document(mGroupName.getText().toString()).set(description);
+        Map<String, Object> docInfo = new HashMap<>();
+        docInfo.put("Name", mGroupName.getText().toString());
+        docInfo.put("Description", mGroupDes.getText().toString());
+        docInfo.put("isPrivate", mPrivateButton.getText());
+        DocumentReference newGroupRef = db.collection("Groups").document();
+        newGroupRef.set(docInfo);
         Map<String, Object> users = new HashMap<>();
-        users.put("Owner", mAuth.getCurrentUser().getEmail());
-        db.collection("Groups").document(mGroupName.getText().toString()).collection("groupUsers").document(mAuth.getCurrentUser().getEmail()).set(users);
+        users.put("Level", "Creator");
+        users.put("User", mAuth.getCurrentUser().getEmail());
+        newGroupRef.collection("groupUsers").document(mAuth.getCurrentUser().getEmail()).set(users);
         Intent intent = new Intent(CreateGroupActivity.this, AddMembersActivity.class);
-        intent.putExtra("GROUP_NAME", mGroupName.getText().toString());
+        intent.putExtra("GROUP_NAME", newGroupRef.getId());
         startActivity(intent);
     }
 
