@@ -15,9 +15,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,8 +25,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -61,9 +57,6 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
         setSupportActionBar(mToolbar);
 
-        TextView textView = (TextView) findViewById(R.id.username_textView);
-        textView.setText(mAuth.getCurrentUser().getEmail());
-
         findViewById(R.id.join_button).setOnClickListener(this);
         findViewById(R.id.create_group_button).setOnClickListener(this);
 
@@ -84,16 +77,16 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                         menuItem.setChecked(true);
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
-                        int i = menuItem.getItemId();
-                        if(i == R.id.home) {
 
+                        int i = menuItem.getItemId();
+
+                        if(i == R.id.home) {
+                            //Go to Home page if not there already.
                         } else if(i == R.id.add_event) {
                             Intent intent = new Intent(MainPageActivity.this, ScheduleActivity.class);
                             startActivity(intent);
                         } else if(i == R.id.my_groups) {
-
+                            //Go to MyGroups Activity.
                         } else if(i == R.id.settings) {
                             Intent intent = new Intent(MainPageActivity.this, SettingsActivity.class);
                             startActivity(intent);

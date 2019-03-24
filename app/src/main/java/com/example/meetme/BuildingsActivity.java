@@ -2,38 +2,45 @@ package com.example.meetme;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class BuildingsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String KEY="Address";
+    public static final String KEY = "Address";
 
-    private ArrayList<String>  mAddresses;
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private Toolbar mToolbar;
+
+    private ArrayList<String> mAddresses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buildings);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-
         findViewById(R.id.buildings_back_button).setOnClickListener(this);
 
-        TextView textView = findViewById(R.id.username_textView);
-        textView.setText(auth.getCurrentUser().getEmail());
-
         ListView listView = (ListView) findViewById(R.id.buildings_listView);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(mToolbar);
 
         mAddresses = new ArrayList<>();
 
@@ -124,13 +131,57 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
             }
         });
 
+        setActionBarDrawerToggle();
+        handleNavigationClickEvents();
+    }
+
+    private void handleNavigationClickEvents() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+
+                        int i = menuItem.getItemId();
+
+                        if (i == R.id.home) {
+                            Intent intent = new Intent(BuildingsActivity.this, MainPageActivity.class);
+                            startActivity(intent);
+                        } else if (i == R.id.add_event) {
+                            Intent intent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
+                            startActivity(intent);
+                        } else if (i == R.id.my_groups) {
+                            //Go to MyGroups Activity.
+                        } else if (i == R.id.settings) {
+                            Intent intent = new Intent(BuildingsActivity.this, SettingsActivity.class);
+                            startActivity(intent);
+                        }
+                        return true;
+                    }
+                });
+
+    }
+
+    private void setActionBarDrawerToggle() {
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
+        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mActionBarDrawerToggle.syncState();
     }
 
     @Override
     public void onClick(View v) {
         int i = v.getId();
 
-        if(i == R.id.buildings_back_button) {
+        if (i == R.id.buildings_back_button) {
             Intent intent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
             startActivity(intent);
         }
