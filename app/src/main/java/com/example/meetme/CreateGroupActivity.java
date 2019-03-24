@@ -9,13 +9,26 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView mImageView;
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private EditText mGroupName;
+    private EditText mGroupDes;
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -26,6 +39,9 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
+        mAuth = FirebaseAuth.getInstance();
+        mGroupName = findViewById(R.id.group_name);
+        mGroupDes = findViewById(R.id.group_description);
         mImageView = (ImageView) findViewById(R.id.group_imageView);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -54,17 +70,19 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
                         int i = menuItem.getItemId();
 
-                        if (i == R.id.home) {
-                            Intent intent = new Intent(CreateGroupActivity.this, MainPageActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.add_event) {
-                            Intent intent = new Intent(CreateGroupActivity.this, ScheduleActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.my_groups) {
-                            //Go to MyGroups Activity.
-                        } else if (i == R.id.settings) {
-                            Intent intent = new Intent(CreateGroupActivity.this, SettingsActivity.class);
-                            startActivity(intent);
+                        switch (i) {
+                            case R.id.home:
+                                goHome();
+                                break;
+                            case R.id.add_event:
+                                addEvent();
+                                break;
+                            case R.id.my_groups:
+                                //Go to MyGroups Activity.
+                                break;
+                            case R.id.settings:
+                                openSettings();
+                                break;
                         }
                         return true;
                     }
@@ -75,6 +93,43 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     private void setActionBarDrawerToggle() {
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    public void goHome() {
+        Intent intent = new Intent(CreateGroupActivity.this, MainPageActivity.class);
+        startActivity(intent);
+    }
+
+    public void addEvent() {
+        Intent intent = new Intent(CreateGroupActivity.this, ScheduleActivity.class);
+        startActivity(intent);
+    }
+
+    public void openSettings() {
+        Intent intent = new Intent(CreateGroupActivity.this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void toAddUsers(){
+        Map<String, Object> description = new HashMap<>();
+        description.put("Description", mGroupDes.getText().toString());
+        db.collection("Groups").document(mGroupName.getText().toString()).set(description);
+        Map<String, Object> users = new HashMap<>();
+        users.put("Owner", mAuth.getCurrentUser().getEmail());
+        db.collection("Groups").document(mGroupName.getText().toString()).collection("groupUsers").document(mAuth.getCurrentUser().getEmail()).set(users);
+        Intent intent = new Intent(CreateGroupActivity.this, AddMembersActivity.class);
+        intent.putExtra("GROUP_NAME", mGroupName.getText().toString());
+        startActivity(intent);
+    }
+
+    public void uploadPicture(){
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickPhoto, 1);
+    }
+
+    public void back(){
+        Intent intent = new Intent(CreateGroupActivity.this, MainPageActivity.class);
+        startActivity(intent);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
@@ -95,17 +150,23 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         int i = v.getId();
 
-        if (i == R.id.create_group_back_button) {
-            Intent intent = new Intent(CreateGroupActivity.this, MainPageActivity.class);
-            startActivity(intent);
-        } else if (i == R.id.create_group_next_button) {
-            Intent intent = new Intent(CreateGroupActivity.this, AddMembersActivity.class);
-            startActivity(intent);
-        } else if (i == R.id.upload_group_picture_button) {
-            Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(pickPhoto, 1);
-        } else if (i == R.id.private_button) {
-            //Do something to make group private.
+        switch (i) {
+            case R.id.create_group_back_button:
+                back();
+                break;
+            case R.id.create_group_next_button:
+                if(TextUtils.isEmpty(mGroupName.getText().toString())) {
+                    mGroupName.setError("Name must not be blank");
+                } else{
+                    toAddUsers();
+                }
+                break;
+            case R.id.upload_group_picture_button:
+                uploadPicture();
+                break;
+            case R.id.private_button:
+                //Do something to make group private.
+                break;
         }
     }
 }

@@ -64,17 +64,19 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                         int i = menuItem.getItemId();
 
-                        if (i == R.id.home) {
-                            Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.add_event) {
-                            Intent intent = new Intent(SettingsActivity.this, ScheduleActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.my_groups) {
-                            //Go to MyGroups Activity.
-                        } else if (i == R.id.settings) {
-                            Intent intent = new Intent(SettingsActivity.this, SettingsActivity.class);
-                            startActivity(intent);
+                        switch (i) {
+                            case R.id.home:
+                                goHome();
+                                break;
+                            case R.id.add_event:
+                                addEvent();
+                                break;
+                            case R.id.my_groups:
+                                //Go to MyGroups Activity.
+                                break;
+                            case R.id.settings:
+                                openSettings();
+                                break;
                         }
                         return true;
                     }
@@ -85,6 +87,21 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private void setActionBarDrawerToggle() {
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    public void goHome() {
+        Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
+        startActivity(intent);
+    }
+
+    public void addEvent() {
+        Intent intent = new Intent(SettingsActivity.this, ScheduleActivity.class);
+        startActivity(intent);
+    }
+
+    public void openSettings() {
+        Intent intent = new Intent(SettingsActivity.this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
@@ -105,22 +122,27 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         int i = v.getId();
 
-        if(i == R.id.settings_back_button) {
-            Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
-            startActivity(intent);
-        } else if(i == R.id.sign_out_button) {
-            mAuth.signOut();
-            Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-            startActivity(intent);
-        } else if(i == R.id.version_button) {
-            Snackbar popUp = Snackbar.make(v, "Version 1.0.0", Snackbar.LENGTH_LONG).setAction("Action", null);
-            View view = popUp.getView();
-            TextView textView = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            popUp.show();
-        } else if(i == R.id.upload_button) {
-            Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(pickPhoto, 1);
+        switch (i) {
+            case R.id.settings_back_button:
+                Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.sign_out_button:
+                mAuth.signOut();
+                Intent signOut = new Intent(SettingsActivity.this, LoginActivity.class);
+                startActivity(signOut);
+                break;
+            case R.id.version_button:
+                Snackbar popUp = Snackbar.make(v, "Version 1.0.0", Snackbar.LENGTH_LONG).setAction("Action", null);
+                View view = popUp.getView();
+                TextView textView = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                popUp.show();
+                break;
+            case R.id.upload_button:
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPhoto, 1);
+                break;
         }
     }
 }

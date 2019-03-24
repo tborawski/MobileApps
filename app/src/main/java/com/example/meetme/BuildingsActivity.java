@@ -148,17 +148,19 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
                         int i = menuItem.getItemId();
 
-                        if (i == R.id.home) {
-                            Intent intent = new Intent(BuildingsActivity.this, MainPageActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.add_event) {
-                            Intent intent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.my_groups) {
-                            //Go to MyGroups Activity.
-                        } else if (i == R.id.settings) {
-                            Intent intent = new Intent(BuildingsActivity.this, SettingsActivity.class);
-                            startActivity(intent);
+                        switch (i) {
+                            case R.id.home:
+                                goHome();
+                                break;
+                            case R.id.add_event:
+                                addEvent();
+                                break;
+                            case R.id.my_groups:
+                                //Go to MyGroups Activity.
+                                break;
+                            case R.id.settings:
+                                openSettings();
+                                break;
                         }
                         return true;
                     }
@@ -171,6 +173,21 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
     }
 
+    public void goHome() {
+        Intent intent = new Intent(BuildingsActivity.this, MainPageActivity.class);
+        startActivity(intent);
+    }
+
+    public void addEvent() {
+        Intent intent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
+        startActivity(intent);
+    }
+
+    public void openSettings() {
+        Intent intent = new Intent(BuildingsActivity.this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -181,9 +198,11 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         int i = v.getId();
 
-        if (i == R.id.buildings_back_button) {
-            Intent intent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
-            startActivity(intent);
+        switch (i) {
+            case R.id.buildings_back_button:
+                Intent intent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 }

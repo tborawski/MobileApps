@@ -112,17 +112,19 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
 
                         int i = menuItem.getItemId();
 
-                        if (i == R.id.home) {
-                            Intent intent = new Intent(JoinActivity.this, MainPageActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.add_event) {
-                            Intent intent = new Intent(JoinActivity.this, ScheduleActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.my_groups) {
-                            //Go to MyGroups Activity.
-                        } else if (i == R.id.settings) {
-                            Intent intent = new Intent(JoinActivity.this, SettingsActivity.class);
-                            startActivity(intent);
+                        switch (i) {
+                            case R.id.home:
+                                goHome();
+                                break;
+                            case R.id.add_event:
+                                addEvent();
+                                break;
+                            case R.id.my_groups:
+                                //Go to MyGroups Activity.
+                                break;
+                            case R.id.settings:
+                                openSettings();
+                                break;
                         }
                         return true;
                     }
@@ -140,6 +142,21 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         mListView.setAdapter(adapter);
     }
 
+    public void goHome() {
+        Intent intent = new Intent(JoinActivity.this, MainPageActivity.class);
+        startActivity(intent);
+    }
+
+    public void addEvent() {
+        Intent intent = new Intent(JoinActivity.this, ScheduleActivity.class);
+        startActivity(intent);
+    }
+
+    public void openSettings() {
+        Intent intent = new Intent(JoinActivity.this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -150,9 +167,11 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         int i = v.getId();
 
-        if (i == R.id.join_back_button) {
-            Intent intent = new Intent(JoinActivity.this, MainPageActivity.class);
-            startActivity(intent);
+        switch (i) {
+            case R.id.join_back_button:
+                Intent intent = new Intent(JoinActivity.this, MainPageActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 }

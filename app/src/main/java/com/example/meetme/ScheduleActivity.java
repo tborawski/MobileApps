@@ -93,17 +93,19 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
 
                         int i = menuItem.getItemId();
 
-                        if (i == R.id.home) {
-                            Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.add_event) {
-                            Intent intent = new Intent(ScheduleActivity.this, ScheduleActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.my_groups) {
-                            //Go to MyGroups Activity.
-                        } else if (i == R.id.settings) {
-                            Intent intent = new Intent(ScheduleActivity.this, SettingsActivity.class);
-                            startActivity(intent);
+                        switch (i) {
+                            case R.id.home:
+                                goHome();
+                                break;
+                            case R.id.add_event:
+                                addEvent();
+                                break;
+                            case R.id.my_groups:
+                                //Go to MyGroups Activity.
+                                break;
+                            case R.id.settings:
+                                openSettings();
+                                break;
                         }
                         return true;
                     }
@@ -128,6 +130,21 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
         userEvents.collection("uEvents").document(mName.getText().toString()).set(newEvent);
 
         Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
+        startActivity(intent);
+    }
+
+    public void goHome() {
+        Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
+        startActivity(intent);
+    }
+
+    public void addEvent() {
+        Intent intent = new Intent(ScheduleActivity.this, ScheduleActivity.class);
+        startActivity(intent);
+    }
+
+    public void openSettings() {
+        Intent intent = new Intent(ScheduleActivity.this, SettingsActivity.class);
         startActivity(intent);
     }
 
@@ -201,27 +218,34 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
     public void onClick(View v) {
         int i = v.getId();
 
-        if(i == R.id.schedule_back_button) {
-            Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
-            startActivity(intent);
-        } else if(i == R.id.date_picker_button) {
-            DialogFragment datePicker = new DatePickerFragment();
-            datePicker.show(getSupportFragmentManager(), "date picker");
-        } else if(i == R.id.start_time_picker_button) {
-            startOrEnd = 0;
-            DialogFragment timePicker = new TimePickerFragment();
-            timePicker.show(getSupportFragmentManager(), "time picker");
-        } else if(i == R.id.end_time_picker_button) {
-            startOrEnd = 1;
-            DialogFragment timePicker = new TimePickerFragment();
-            timePicker.show(getSupportFragmentManager(), "time picker");
-        } else if(i == R.id.place_picker_button) {
-            Intent intent = new Intent(ScheduleActivity.this, BuildingsActivity.class);
-            startActivityForResult(intent, 1);
-        } else if(i == R.id.add_event_button) {
-            if(canSubmit) {
-                submitEvent();
-            }
+        switch (i) {
+            case R.id.schedule_back_button:
+                Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.date_picker_button:
+                DialogFragment datePicker = new DatePickerFragment();
+                datePicker.show(getSupportFragmentManager(), "date picker");
+                break;
+            case R.id.start_time_picker_button:
+                startOrEnd = 0;
+                DialogFragment sTimePicker = new TimePickerFragment();
+                sTimePicker.show(getSupportFragmentManager(), "time picker");
+                break;
+            case R.id.end_time_picker_button:
+                startOrEnd = 1;
+                DialogFragment eTimePicker = new TimePickerFragment();
+                eTimePicker.show(getSupportFragmentManager(), "time picker");
+                break;
+            case R.id.place_picker_button:
+                Intent pickPlace = new Intent(ScheduleActivity.this, BuildingsActivity.class);
+                startActivityForResult(pickPlace, 1);
+                break;
+            case R.id.add_event_button:
+                if(canSubmit) {
+                    submitEvent();
+                }
+                break;
         }
     }
 }

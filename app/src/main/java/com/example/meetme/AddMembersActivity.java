@@ -19,6 +19,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 
 public class AddMembersActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private String groupName;
     private ListView mListView;
     private EditText mFilter;
     private ArrayAdapter mAdapter;
@@ -41,6 +44,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     private Toolbar mToolbar;
 
     ArrayList<String> members = new ArrayList<>();
+    ArrayList<String> currentMembers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +55,24 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         mFilter = (EditText) findViewById(R.id.search_filter);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
         setSupportActionBar(mToolbar);
+
+        groupName = getIntent().getStringExtra("GROUP_NAME");
 
         findViewById(R.id.add_members_back_button).setOnClickListener(this);
         findViewById(R.id.skip_button).setOnClickListener(this);
+
+        db.collection("Groups").document(groupName).collection("groupUsers").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot cUser : task.getResult()){
+                                currentMembers.add(cUser.getId());
+                            }
+                        }
+                    }
+                });
 
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
@@ -70,24 +87,25 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
                         menuItem.setChecked(true);
-                        // close drawer when item is tapped
+
                         mDrawerLayout.closeDrawers();
 
                         int i = menuItem.getItemId();
 
-                        if (i == R.id.home) {
-                            Intent intent = new Intent(AddMembersActivity.this, MainPageActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.add_event) {
-                            Intent intent = new Intent(AddMembersActivity.this, ScheduleActivity.class);
-                            startActivity(intent);
-                        } else if (i == R.id.my_groups) {
-                            //Go to MyGroups Activity.
-                        } else if (i == R.id.settings) {
-                            Intent intent = new Intent(AddMembersActivity.this, SettingsActivity.class);
-                            startActivity(intent);
+                        switch (i) {
+                            case R.id.home:
+                                goHome();
+                                break;
+                            case R.id.add_event:
+                                addEvent();
+                                break;
+                            case R.id.my_groups:
+                                //Go to MyGroups Activity.
+                                break;
+                            case R.id.settings:
+                                openSettings();
+                                break;
                         }
                         return true;
                     }
@@ -106,7 +124,9 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        members.add(document.getId());
+                        if(!currentMembers.contains(document.getId())){
+                            members.add(document.getId());
+                        }
                     }
                 }
                 setList();
@@ -121,12 +141,19 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddMembersActivity.this);
                 builder.setTitle("");
 
+                final String name = members.get(position);
+
                 builder.setMessage("Would you like to add this member to your group?");
 
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //Add member to group
+                        Map<String, Object> newMember = new HashMap<>();
+                        newMember.put("Base User", name);
+
+                        db.collection("Groups").document(groupName).collection("groupUsers").document(name).set(newMember);
+                        members.remove(position);
+                        mAdapter.notifyDataSetChanged();
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -163,8 +190,23 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setList() {
-        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, members);
-        mListView.setAdapter(adapter);
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, members);
+        mListView.setAdapter(mAdapter);
+    }
+
+    public void goHome() {
+        Intent intent = new Intent(AddMembersActivity.this, MainPageActivity.class);
+        startActivity(intent);
+    }
+
+    public void addEvent() {
+        Intent intent = new Intent(AddMembersActivity.this, ScheduleActivity.class);
+        startActivity(intent);
+    }
+
+    public void openSettings() {
+        Intent intent = new Intent(AddMembersActivity.this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -177,11 +219,14 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         int i = v.getId();
 
-        if (i == R.id.add_members_back_button) {
-            Intent intent = new Intent(AddMembersActivity.this, CreateGroupActivity.class);
-            startActivity(intent);
-        } else if (i == R.id.skip_button) {
-            //Do something to skip adding members
+        switch (i) {
+            case R.id.add_members_back_button:
+                Intent intent = new Intent(AddMembersActivity.this, CreateGroupActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.skip_button:
+                //Do something to skip adding members
+                break;
         }
     }
 }

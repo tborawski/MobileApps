@@ -62,7 +62,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
-        addEvent();
+        addUserEvent();
         checkEvent();
         searchEvent();
     }
@@ -80,16 +80,16 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
                         int i = menuItem.getItemId();
 
-                        if(i == R.id.home) {
-                            //Go to Home page if not there already.
-                        } else if(i == R.id.add_event) {
-                            Intent intent = new Intent(MainPageActivity.this, ScheduleActivity.class);
-                            startActivity(intent);
-                        } else if(i == R.id.my_groups) {
-                            //Go to MyGroups Activity.
-                        } else if(i == R.id.settings) {
-                            Intent intent = new Intent(MainPageActivity.this, SettingsActivity.class);
-                            startActivity(intent);
+                        switch (i) {
+                            case R.id.add_event:
+                                addEvent();
+                                break;
+                            case R.id.my_groups:
+                                //Go to MyGroups Activity.
+                                break;
+                            case R.id.settings:
+                                openSettings();
+                                break;
                         }
                         return true;
                     }
@@ -102,14 +102,13 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
     }
 
-
-    private void addEvent() {
+    private void addUserEvent() {
         db.collection("Events").document(mAuth.getCurrentUser().getEmail()).collection("uEvents").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            for(QueryDocumentSnapshot document : task.getResult()){
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId());
                                 Event e = new Event(document);
                                 userEvents.add(e);
@@ -168,12 +167,22 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void searchEvent() {
-       //Search for a particular Event.
+        //Search for a particular Event.
     }
 
     private void setList() {
         mAdapter = new EventAdapter(this, userEvents);
         mListView.setAdapter(mAdapter);
+    }
+
+    public void addEvent() {
+        Intent intent = new Intent(MainPageActivity.this, ScheduleActivity.class);
+        startActivity(intent);
+    }
+
+    public void openSettings() {
+        Intent intent = new Intent(MainPageActivity.this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -183,15 +192,18 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onClick(View v){
+    public void onClick(View v) {
         int i = v.getId();
 
-        if(i == R.id.join_button) {
-            Intent intent = new Intent(MainPageActivity.this, JoinActivity.class);
-            startActivity(intent);
-        } else if(i == R.id.create_group_button) {
-            Intent intent = new Intent(MainPageActivity.this, CreateGroupActivity.class);
-            startActivity(intent);
+        switch (i) {
+            case R.id.join_button:
+                Intent join = new Intent(MainPageActivity.this, JoinActivity.class);
+                startActivity(join);
+                break;
+            case R.id.create_group_button:
+                Intent createGroup = new Intent(MainPageActivity.this, CreateGroupActivity.class);
+                startActivity(createGroup);
+                break;
         }
     }
 }
