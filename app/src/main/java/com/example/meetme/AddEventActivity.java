@@ -70,7 +70,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
 
         setSupportActionBar(mToolbar);
 
-        findViewById(R.id.schedule_back_button).setOnClickListener(this);
+        findViewById(R.id.add_event_back_button).setOnClickListener(this);
         findViewById(R.id.date_picker_button).setOnClickListener(this);
         findViewById(R.id.start_time_picker_button).setOnClickListener(this);
         findViewById(R.id.end_time_picker_button).setOnClickListener(this);
@@ -215,7 +215,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         int i = v.getId();
 
         switch (i) {
-            case R.id.schedule_back_button:
+            case R.id.add_event_back_button:
                 Intent intent = new Intent(AddEventActivity.this, MainPageActivity.class);
                 startActivity(intent);
                 break;

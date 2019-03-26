@@ -93,7 +93,7 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
 
         switch (i) {
             case R.id.my_groups_back_button:
-                Intent intent = new Intent(MyGroupsActivity.this, AddEventActivity.class);
+                Intent intent = new Intent(MyGroupsActivity.this, MainPageActivity.class);
                 startActivity(intent);
                 break;
         }
