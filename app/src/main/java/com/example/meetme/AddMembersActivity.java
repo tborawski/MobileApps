@@ -51,10 +51,10 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_members);
 
-        mListView = (ListView) findViewById(R.id.add_members_listView);
-        mFilter = (EditText) findViewById(R.id.search_filter);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mListView = findViewById(R.id.add_members_listView);
+        mFilter = findViewById(R.id.search_filter);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
         groupName = getIntent().getStringExtra("GROUP_NAME");
@@ -70,6 +70,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                             for(QueryDocumentSnapshot cUser : task.getResult()){
                                 currentMembers.add(cUser.getId());
                             }
+                            getNonMembers();
                         }
                     }
                 });
@@ -88,7 +89,6 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         menuItem.setChecked(true);
-
                         mDrawerLayout.closeDrawers();
 
                         int i = menuItem.getItemId();
@@ -101,7 +101,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                                 addEvent();
                                 break;
                             case R.id.my_groups:
-                                //Go to MyGroups Activity.
+                                myGroups();
                                 break;
                             case R.id.settings:
                                 openSettings();
@@ -149,7 +149,8 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Map<String, Object> newMember = new HashMap<>();
-                        newMember.put("Base User", name);
+                        newMember.put("Level", "Base");
+                        newMember.put("User", name);
 
                         db.collection("Groups").document(groupName).collection("groupUsers").document(name).set(newMember);
                         members.remove(position);
@@ -163,6 +164,23 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                     }
                 });
                 builder.create().show();
+            }
+        });
+    }
+
+    private void getNonMembers(){
+        //Add users to arrayList
+        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    for(QueryDocumentSnapshot document : task.getResult()) {
+                        if(!currentMembers.contains(document.getId())){
+                            members.add(document.getId());
+                        }
+                    }
+                }
+                setList();
             }
         });
     }
@@ -200,7 +218,12 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void addEvent() {
-        Intent intent = new Intent(AddMembersActivity.this, ScheduleActivity.class);
+        Intent intent = new Intent(AddMembersActivity.this, AddEventActivity.class);
+        startActivity(intent);
+    }
+
+    public void myGroups() {
+        Intent intent = new Intent(AddMembersActivity.this, MyGroupsActivity.class);
         startActivity(intent);
     }
 

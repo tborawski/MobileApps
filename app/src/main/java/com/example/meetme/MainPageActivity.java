@@ -51,9 +51,9 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
         mAuth = FirebaseAuth.getInstance();
 
-        mListView = (ListView) findViewById(R.id.user_event_listView);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mListView = findViewById(R.id.user_event_listView);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
 
@@ -73,9 +73,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
                         menuItem.setChecked(true);
-                        // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
                         int i = menuItem.getItemId();
@@ -85,7 +83,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                                 addEvent();
                                 break;
                             case R.id.my_groups:
-                                //Go to MyGroups Activity.
+                                myGroups();
                                 break;
                             case R.id.settings:
                                 openSettings();
@@ -176,7 +174,12 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void addEvent() {
-        Intent intent = new Intent(MainPageActivity.this, ScheduleActivity.class);
+        Intent intent = new Intent(MainPageActivity.this, AddEventActivity.class);
+        startActivity(intent);
+    }
+
+    public void myGroups() {
+        Intent intent = new Intent(MainPageActivity.this, MyGroupsActivity.class);
         startActivity(intent);
     }
 

@@ -14,8 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ToggleButton;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -24,11 +26,12 @@ import java.util.Map;
 public class CreateGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView mImageView;
+    private EditText mGroupName;
+    private EditText mGroupDes;
+    private ToggleButton mPrivateButton;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private EditText mGroupName;
-    private EditText mGroupDes;
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -42,9 +45,10 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         mAuth = FirebaseAuth.getInstance();
         mGroupName = findViewById(R.id.group_name);
         mGroupDes = findViewById(R.id.group_description);
-        mImageView = (ImageView) findViewById(R.id.group_imageView);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mImageView = findViewById(R.id.group_imageView);
+        mPrivateButton = findViewById(R.id.private_button);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
 
@@ -63,9 +67,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
                         menuItem.setChecked(true);
-                        // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
                         int i = menuItem.getItemId();
@@ -78,7 +80,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                                 addEvent();
                                 break;
                             case R.id.my_groups:
-                                //Go to MyGroups Activity.
+                                myGroups();
                                 break;
                             case R.id.settings:
                                 openSettings();
@@ -95,36 +97,48 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
     }
 
-    public void goHome() {
-        Intent intent = new Intent(CreateGroupActivity.this, MainPageActivity.class);
-        startActivity(intent);
-    }
-
-    public void addEvent() {
-        Intent intent = new Intent(CreateGroupActivity.this, ScheduleActivity.class);
-        startActivity(intent);
-    }
-
-    public void openSettings() {
-        Intent intent = new Intent(CreateGroupActivity.this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
     public void toAddUsers(){
-        Map<String, Object> description = new HashMap<>();
-        description.put("Description", mGroupDes.getText().toString());
-        db.collection("Groups").document(mGroupName.getText().toString()).set(description);
+        Map<String, Object> docInfo = new HashMap<>();
+        docInfo.put("Name", mGroupName.getText().toString());
+        docInfo.put("Description", mGroupDes.getText().toString());
+        docInfo.put("isPrivate", mPrivateButton.getText());
+
+        DocumentReference newGroupRef = db.collection("Groups").document();
+        newGroupRef.set(docInfo);
+
         Map<String, Object> users = new HashMap<>();
-        users.put("Owner", mAuth.getCurrentUser().getEmail());
-        db.collection("Groups").document(mGroupName.getText().toString()).collection("groupUsers").document(mAuth.getCurrentUser().getEmail()).set(users);
+        users.put("Level", "Creator");
+        users.put("User", mAuth.getCurrentUser().getEmail());
+        newGroupRef.collection("groupUsers").document(mAuth.getCurrentUser().getEmail()).set(users);
+
         Intent intent = new Intent(CreateGroupActivity.this, AddMembersActivity.class);
-        intent.putExtra("GROUP_NAME", mGroupName.getText().toString());
+        intent.putExtra("GROUP_NAME", newGroupRef.getId());
         startActivity(intent);
     }
 
     public void uploadPicture(){
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(pickPhoto, 1);
+    }
+
+    public void goHome() {
+        Intent intent = new Intent(CreateGroupActivity.this, MainPageActivity.class);
+        startActivity(intent);
+    }
+
+    public void addEvent() {
+        Intent intent = new Intent(CreateGroupActivity.this, AddEventActivity.class);
+        startActivity(intent);
+    }
+
+    public void myGroups() {
+        Intent intent = new Intent(CreateGroupActivity.this, MyGroupsActivity.class);
+        startActivity(intent);
+    }
+
+    public void openSettings() {
+        Intent intent = new Intent(CreateGroupActivity.this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     public void back(){
@@ -156,7 +170,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.create_group_next_button:
                 if(TextUtils.isEmpty(mGroupName.getText().toString())) {
-                    mGroupName.setError("Name must not be blank");
+                    mGroupName.setError("Name must not be blank.");
                 } else{
                     toAddUsers();
                 }

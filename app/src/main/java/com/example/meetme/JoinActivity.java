@@ -15,9 +15,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -49,8 +47,8 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_join);
 
         mListView = findViewById(R.id.user_event_listView);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
 
@@ -105,9 +103,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
                         menuItem.setChecked(true);
-                        // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
                         int i = menuItem.getItemId();
@@ -120,7 +116,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                                 addEvent();
                                 break;
                             case R.id.my_groups:
-                                //Go to MyGroups Activity.
+                                myGroups();
                                 break;
                             case R.id.settings:
                                 openSettings();
@@ -148,7 +144,12 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void addEvent() {
-        Intent intent = new Intent(JoinActivity.this, ScheduleActivity.class);
+        Intent intent = new Intent(JoinActivity.this, AddEventActivity.class);
+        startActivity(intent);
+    }
+
+    public void myGroups() {
+        Intent intent = new Intent(JoinActivity.this, MyGroupsActivity.class);
         startActivity(intent);
     }
 

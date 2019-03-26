@@ -33,12 +33,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         mAuth = FirebaseAuth.getInstance();
 
-        TextView textView = (TextView) findViewById(R.id.username_textView);
+        TextView textView = findViewById(R.id.username_textView);
         textView.setText(mAuth.getCurrentUser().getEmail());
 
-        mImageView = (ImageView) findViewById(R.id.profile_imageView);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mImageView = findViewById(R.id.profile_imageView);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
 
@@ -57,9 +57,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
                         menuItem.setChecked(true);
-                        // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
                         int i = menuItem.getItemId();
@@ -72,10 +70,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                 addEvent();
                                 break;
                             case R.id.my_groups:
-                                //Go to MyGroups Activity.
-                                break;
-                            case R.id.settings:
-                                openSettings();
+                                myGroups();
                                 break;
                         }
                         return true;
@@ -95,12 +90,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void addEvent() {
-        Intent intent = new Intent(SettingsActivity.this, ScheduleActivity.class);
+        Intent intent = new Intent(SettingsActivity.this, AddEventActivity.class);
         startActivity(intent);
     }
 
-    public void openSettings() {
-        Intent intent = new Intent(SettingsActivity.this, SettingsActivity.class);
+    public void myGroups() {
+        Intent intent = new Intent(SettingsActivity.this, MyGroupsActivity.class);
         startActivity(intent);
     }
 

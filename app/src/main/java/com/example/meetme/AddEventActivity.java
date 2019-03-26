@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -31,7 +32,7 @@ import java.util.Map;
 
 import static com.example.meetme.BuildingsActivity.KEY;
 
-public class ScheduleActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, View.OnClickListener {
+public class AddEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, View.OnClickListener {
 
     public static String result;
 
@@ -57,15 +58,15 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_schedule);
+        setContentView(R.layout.activity_add_event);
 
         mAuth = FirebaseAuth.getInstance();
 
         mName = findViewById(R.id.activity_name);
         mStartTime = findViewById(R.id.start_time_textView);
         mEndTime = findViewById(R.id.end_time_textView);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
 
@@ -86,9 +87,7 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
                         menuItem.setChecked(true);
-                        // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
                         int i = menuItem.getItemId();
@@ -97,11 +96,8 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
                             case R.id.home:
                                 goHome();
                                 break;
-                            case R.id.add_event:
-                                addEvent();
-                                break;
                             case R.id.my_groups:
-                                //Go to MyGroups Activity.
+                                myGroups();
                                 break;
                             case R.id.settings:
                                 openSettings();
@@ -129,22 +125,22 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
         DocumentReference userEvents = db.collection("Events").document(mAuth.getCurrentUser().getEmail());
         userEvents.collection("uEvents").document(mName.getText().toString()).set(newEvent);
 
-        Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
+        Intent intent = new Intent(AddEventActivity.this, MainPageActivity.class);
         startActivity(intent);
     }
 
     public void goHome() {
-        Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
+        Intent intent = new Intent(AddEventActivity.this, MainPageActivity.class);
         startActivity(intent);
     }
 
-    public void addEvent() {
-        Intent intent = new Intent(ScheduleActivity.this, ScheduleActivity.class);
+    public void myGroups() {
+        Intent intent = new Intent(AddEventActivity.this, MyGroupsActivity.class);
         startActivity(intent);
     }
 
     public void openSettings() {
-        Intent intent = new Intent(ScheduleActivity.this, SettingsActivity.class);
+        Intent intent = new Intent(AddEventActivity.this, SettingsActivity.class);
         startActivity(intent);
     }
 
@@ -220,7 +216,7 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
 
         switch (i) {
             case R.id.schedule_back_button:
-                Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
+                Intent intent = new Intent(AddEventActivity.this, MainPageActivity.class);
                 startActivity(intent);
                 break;
             case R.id.date_picker_button:
@@ -238,12 +234,16 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
                 eTimePicker.show(getSupportFragmentManager(), "time picker");
                 break;
             case R.id.place_picker_button:
-                Intent pickPlace = new Intent(ScheduleActivity.this, BuildingsActivity.class);
+                Intent pickPlace = new Intent(AddEventActivity.this, BuildingsActivity.class);
                 startActivityForResult(pickPlace, 1);
                 break;
             case R.id.add_event_button:
                 if(canSubmit) {
-                    submitEvent();
+                    if(TextUtils.isEmpty(mName.getText().toString())) {
+                        mName.setError("Name must not be blank.");
+                    } else{
+                        submitEvent();
+                    }
                 }
                 break;
         }

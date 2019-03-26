@@ -35,10 +35,10 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
         findViewById(R.id.buildings_back_button).setOnClickListener(this);
 
-        ListView listView = (ListView) findViewById(R.id.buildings_listView);
+        ListView listView = findViewById(R.id.buildings_listView);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
 
@@ -124,7 +124,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String tempListView = mAddresses.get(position);
 
-                Intent returnIntent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
+                Intent returnIntent = new Intent(BuildingsActivity.this, AddEventActivity.class);
                 returnIntent.putExtra(KEY, tempListView);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
@@ -141,9 +141,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
                         menuItem.setChecked(true);
-                        // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
                         int i = menuItem.getItemId();
@@ -156,7 +154,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
                                 addEvent();
                                 break;
                             case R.id.my_groups:
-                                //Go to MyGroups Activity.
+                                myGroups();
                                 break;
                             case R.id.settings:
                                 openSettings();
@@ -179,7 +177,12 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     }
 
     public void addEvent() {
-        Intent intent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
+        Intent intent = new Intent(BuildingsActivity.this, AddEventActivity.class);
+        startActivity(intent);
+    }
+
+    public void myGroups() {
+        Intent intent = new Intent(BuildingsActivity.this, MyGroupsActivity.class);
         startActivity(intent);
     }
 
@@ -200,7 +203,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
         switch (i) {
             case R.id.buildings_back_button:
-                Intent intent = new Intent(BuildingsActivity.this, ScheduleActivity.class);
+                Intent intent = new Intent(BuildingsActivity.this, AddEventActivity.class);
                 startActivity(intent);
                 break;
         }
