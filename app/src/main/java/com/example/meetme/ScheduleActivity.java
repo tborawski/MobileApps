@@ -44,7 +44,7 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
     private TextView mStartTime;
     private TextView mEndTime;
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -56,7 +56,6 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
         TextView textView = findViewById(R.id.username_textView);
         textView.setText(mAuth.getCurrentUser().getEmail());
 
-        mAuth = FirebaseAuth.getInstance();
 
         mName = findViewById(R.id.activity_name);
 
@@ -130,7 +129,7 @@ public class ScheduleActivity extends AppCompatActivity implements DatePickerDia
         newEvent.put("Place", mPlace.getText());
 
         DocumentReference userEvents = db.collection("Events").document(mAuth.getCurrentUser().getEmail());
-        userEvents.collection("uEvents").document(mName.getText().toString()).set(newEvent);
+        userEvents.collection("uEvents").document().set(newEvent);
 
         Intent intent = new Intent(ScheduleActivity.this, MainPageActivity.class);
         startActivity(intent);
