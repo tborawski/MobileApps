@@ -43,7 +43,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
 
-    ArrayList<String> members = new ArrayList<>();
+    ArrayList<String> nonMembers = new ArrayList<>();
     ArrayList<String> currentMembers = new ArrayList<>();
 
     @Override
@@ -77,7 +77,6 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
 
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
-        addUsersToArray();
         addMember();
         searchUser();
     }
@@ -118,21 +117,6 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
     }
 
-    private void addUsersToArray() {
-        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        if(!currentMembers.contains(document.getId())){
-                            members.add(document.getId());
-                        }
-                    }
-                }
-                setList();
-            }
-        });
-    }
 
     private void addMember() {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -141,7 +125,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddMembersActivity.this);
                 builder.setTitle("");
 
-                final String name = members.get(position);
+                final String name = nonMembers.get(position);
 
                 builder.setMessage("Would you like to add this member to your group?");
 
@@ -153,7 +137,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                         newMember.put("User", name);
 
                         db.collection("Groups").document(groupName).collection("groupUsers").document(name).set(newMember);
-                        members.remove(position);
+                        nonMembers.remove(position);
                         mAdapter.notifyDataSetChanged();
                     }
                 });
@@ -176,7 +160,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                 if(task.isSuccessful()) {
                     for(QueryDocumentSnapshot document : task.getResult()) {
                         if(!currentMembers.contains(document.getId())){
-                            members.add(document.getId());
+                            nonMembers.add(document.getId());
                         }
                     }
                 }
@@ -186,7 +170,6 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void searchUser() {
-        mAdapter = new ArrayAdapter<>(this, R.layout.user_list_layout, members);
 
         mFilter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -208,7 +191,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setList() {
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, members);
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, nonMembers);
         mListView.setAdapter(mAdapter);
     }
 

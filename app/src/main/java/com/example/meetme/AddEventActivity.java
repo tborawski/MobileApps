@@ -123,7 +123,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         newEvent.put("Place", mPlace.getText());
 
         DocumentReference userEvents = db.collection("Events").document(mAuth.getCurrentUser().getEmail());
-        userEvents.collection("uEvents").document(mName.getText().toString()).set(newEvent);
+        userEvents.collection("uEvents").document().set(newEvent);
 
         Intent intent = new Intent(AddEventActivity.this, MainPageActivity.class);
         startActivity(intent);

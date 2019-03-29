@@ -1,6 +1,7 @@
 package com.example.meetme;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -10,12 +11,33 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 
 public class MyGroupsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private String uEmail = mAuth.getCurrentUser().getEmail();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    ArrayAdapter mAdapter;
+
+    ArrayList<String> groupIds = new ArrayList();
+    ArrayList<String> groupNames = new ArrayList();
+    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +48,45 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
+        mListView = findViewById(R.id.my_group_list);
 
         setSupportActionBar(mToolbar);
 
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+
+        setList();
+
+        db.collection("Groups").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(final QueryDocumentSnapshot group : task.getResult()){
+                        group.getReference().collection("groupUsers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()){
+                                    for(QueryDocumentSnapshot unames : task.getResult()){
+                                        if(unames.getId().equals(uEmail)){
+                                            groupNames.add(group.get("Name").toString());
+                                            groupIds.add(group.getId());
+                                            mAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
+    private void setList(){
+        mAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, groupNames);
+        mListView.setAdapter(mAdapter);
+
+    }
     private void handleNavigationClickEvents() {
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(
