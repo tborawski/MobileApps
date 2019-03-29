@@ -1,5 +1,6 @@
 package com.example.meetme;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText mEmailField;
     private EditText mPasswordField;
 
+    private ProgressDialog mProgress;
+
     private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -51,14 +54,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         success.setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() != null){
+        if (mAuth.getCurrentUser() != null) {
             Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
             startActivity(intent);
         }
+
+        setUpProgressDialog();
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart() called");
     }
@@ -87,21 +92,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.d(TAG, "onDestroy() called");
     }
 
-    private void signIn(String email, String password){
+    public void setUpProgressDialog() {
+        mProgress = new ProgressDialog(this);
+        mProgress.setMessage("Wait while loading...");
+        mProgress.setCancelable(false);
+    }
+
+    private void signIn(String email, String password) {
         Log.d(TAG, "signIn: " + email);
-        if(!validateForm()){
+        if (!validateForm()) {
             return;
         }
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>(){
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task){
-                if(task.isSuccessful()){
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
                     Log.d(TAG, "Sign in success");
-                    FirebaseUser user = mAuth.getCurrentUser();
+                    mProgress.dismiss();
                     Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
                     startActivity(intent);
                 } else {
                     Log.w(TAG, "Sign in failure", task.getException());
+                    mProgress.dismiss();
                     Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
@@ -110,24 +122,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private void createAccount(String email, String password){
+    private void createAccount(String email, String password) {
         Log.d(TAG, "CreateAccount: " + email);
-        if(!validateForm()){
+        if (!validateForm()) {
             return;
         }
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     Log.d(TAG, "Create user success");
+                    mProgress.dismiss();
                     FirebaseUser user = mAuth.getCurrentUser();
                     Map<String, Object> addUser = new HashMap<>();
                     addUser.put("Email", mAuth.getCurrentUser().getEmail());
                     db.collection("users").document(user.getEmail()).set(addUser);
                     Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
                     startActivity(intent);
-                }else {
+                } else {
                     Log.w(TAG, "Create user failure", task.getException());
+                    mProgress.dismiss();
                     Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
@@ -136,22 +150,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private void signOut(){
+    private void signOut() {
         mAuth.signOut();
     }
 
-    private boolean validateForm(){
+    private boolean validateForm() {
         boolean valid = true;
-
 
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
         // Check if email is valid.
-        if(TextUtils.isEmpty(email)){
+        if (TextUtils.isEmpty(email)) {
             mEmailField.setError("Required.");
             valid = false;
-        } else if(!email.contains("@")) {
+        } else if (!email.contains("@")) {
             mEmailField.setError("Email does not meet requirements.");
             valid = false;
         } else {
@@ -159,13 +172,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         // Check if password is valid.
-        if(TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(password)) {
             mPasswordField.setError("Required.");
             valid = false;
-        }
-        else if(!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")) {
+        } else if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")) {
             mPasswordField.setError("Password does not meet requirements.");
-            //valid = false;
+            valid = false;
         } else {
             mPasswordField.setError(null);
         }
@@ -173,14 +185,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    public void onClick(View v){
+    public void onClick(View v) {
         int i = v.getId();
-        if(i == R.id.sign_in){
-            signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
-        } else if(i == R.id.sign_up){
-            createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
-        } else if(i == R.id.sign_out_button){
-            signOut();
+
+        switch (i) {
+            case R.id.sign_in:
+                mProgress.show();
+                signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                break;
+            case R.id.sign_up:
+                mProgress.show();
+                createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                break;
+            case R.id.sign_out_button:
+                signOut();
+                break;
         }
     }
 
