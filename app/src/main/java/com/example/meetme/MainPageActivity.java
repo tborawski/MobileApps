@@ -136,7 +136,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         db.collection("Events").document(mAuth.getCurrentUser().getEmail())
-                                .collection("uEvents").document(userEvents.get(position).name).delete()
+                                .collection("uEvents").document(userEvents.get(position).id).delete()
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {

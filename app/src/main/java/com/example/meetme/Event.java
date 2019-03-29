@@ -8,6 +8,7 @@ public class Event {
     public String startTime;
     public String endTime;
     public String loc;
+    public String id;
 
     public Event(QueryDocumentSnapshot doc){
         this.name = doc.getData().get("Name").toString();
@@ -15,5 +16,6 @@ public class Event {
         this.startTime = doc.getData().get("Start Time").toString();
         this.endTime = doc.getData().get("End Time").toString();
         this.loc = doc.getData().get("Place").toString();
+        this.id = doc.getId();
     }
 }
