@@ -130,7 +130,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             case R.id.version_button:
                 Snackbar popUp = Snackbar.make(v, "Version 1.0.0", Snackbar.LENGTH_LONG).setAction("Action", null);
                 View view = popUp.getView();
-                TextView textView = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
                 textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 popUp.show();
                 break;

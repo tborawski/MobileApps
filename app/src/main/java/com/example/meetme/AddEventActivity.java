@@ -153,7 +153,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
 
         String currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
 
-        mDate = (TextView) findViewById(R.id.date_textView);
+        mDate = findViewById(R.id.date_textView);
         mDate.setText(currentDate);
 
         canSubmit = mDate.getText() != "";
@@ -162,9 +162,9 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         if(startOrEnd == 0) {
-            mTime = (TextView) findViewById(R.id.start_time_textView);
+            mTime = findViewById(R.id.start_time_textView);
         } else if(startOrEnd == 1) {
-            mTime = (TextView) findViewById(R.id.end_time_textView);
+            mTime = findViewById(R.id.end_time_textView);
         }
 
         if(hourOfDay >= 12) {
@@ -204,7 +204,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 result = data.getStringExtra(KEY);
-                mPlace = (TextView) findViewById(R.id.place_textView);
+                mPlace = findViewById(R.id.place_textView);
                 mPlace.setText(result);
             }
         }

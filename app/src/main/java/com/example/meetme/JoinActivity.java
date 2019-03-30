@@ -31,8 +31,6 @@ import java.util.Map;
 
 public class JoinActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "Join";
-
     private ListView mListView;
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
@@ -45,9 +43,9 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
 
     private ArrayAdapter mAdapter;
 
-    ArrayList<String> groupList = new ArrayList();
-    ArrayList<String> docList = new ArrayList();
-    ArrayList<String> userGroups = new ArrayList();
+    ArrayList<String> groupList = new ArrayList<>();
+    ArrayList<String> docList = new ArrayList<>();
+    ArrayList<String> userGroups = new ArrayList<>();
 
 
     @Override

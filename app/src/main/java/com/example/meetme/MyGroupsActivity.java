@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,8 +34,8 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
 
     ArrayAdapter mAdapter;
 
-    ArrayList<String> groupIds = new ArrayList();
-    ArrayList<String> groupNames = new ArrayList();
+    ArrayList<String> groupIds = new ArrayList<>();
+    ArrayList<String> groupNames = new ArrayList<>();
     private ListView mListView;
 
     @Override
@@ -83,7 +82,7 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setList(){
-        mAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, groupNames);
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, groupNames);
         mListView.setAdapter(mAdapter);
 
     }

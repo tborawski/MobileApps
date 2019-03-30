@@ -153,7 +153,6 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void getNonMembers(){
-        //Add users to arrayList
         db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -185,7 +184,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void afterTextChanged(Editable s) {
-                //Do nothing
+                //Do nothing.
             }
         });
     }
