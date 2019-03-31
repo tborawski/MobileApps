@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -20,12 +22,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +41,7 @@ import static com.example.meetme.BuildingsActivity.KEY;
 
 public class AddEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, View.OnClickListener {
 
+    public final static String TAG = "Schedule";
     public static String result;
 
     private boolean canSubmit = false;
@@ -47,6 +55,10 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
     private TextView mPlace;
     private TextView mStartTime;
     private TextView mEndTime;
+
+    private String mGroupId;
+    private boolean groupEvent = false;
+    ArrayList<String> members = new ArrayList<>();
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -67,6 +79,23 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         mEndTime = findViewById(R.id.end_time_textView);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
+
+        if(getIntent().hasExtra("GROUP_ID")){
+            mGroupId = getIntent().getStringExtra("GROUP_ID");
+            groupEvent = true;
+            db.collection("Groups").document(mGroupId).collection("groupUsers").get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                for(QueryDocumentSnapshot user : task.getResult()){
+                                    members.add(user.getId());
+                                }
+                            }
+                        }
+                    });
+            Log.d(TAG, mGroupId);
+        }
 
         setSupportActionBar(mToolbar);
 
@@ -122,8 +151,14 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         newEvent.put("Date", mDate.getText());
         newEvent.put("Place", mPlace.getText());
 
-        DocumentReference userEvents = db.collection("Events").document(mAuth.getCurrentUser().getEmail());
-        userEvents.collection("uEvents").document().set(newEvent);
+        if(groupEvent){
+            for(String mem : members){
+                db.collection("Events").document(mem).collection("uEvents").document().set(newEvent);
+            }
+        } else {
+            DocumentReference userEvents = db.collection("Events").document(mAuth.getCurrentUser().getEmail());
+            userEvents.collection("uEvents").document().set(newEvent);
+        }
 
         Intent intent = new Intent(AddEventActivity.this, MainPageActivity.class);
         startActivity(intent);

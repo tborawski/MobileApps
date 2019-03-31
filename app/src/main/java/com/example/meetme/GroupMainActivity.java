@@ -68,6 +68,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         mMessage = findViewById(R.id.chat_message);
         findViewById(R.id.send_chat).setOnClickListener(this);
         findViewById(R.id.leave_group).setOnClickListener(this);
+        findViewById(R.id.create_group_activity).setOnClickListener(this);
 
 
         getGroupInfo();
@@ -162,6 +163,12 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
+    private void createGroupEvent(){
+        Intent intent = new Intent(GroupMainActivity.this, AddEventActivity.class);
+        intent.putExtra("GROUP_ID", mGroupId);
+        startActivity(intent);
+    }
+
     @Override
     public void onClick(View v){
         int i = v.getId();
@@ -170,6 +177,8 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
             postChat();
         }else if(i == R.id.leave_group){
             leaveGroup();
+        }else if(i == R.id.create_group_activity){
+            createGroupEvent();
         }
 
     }
