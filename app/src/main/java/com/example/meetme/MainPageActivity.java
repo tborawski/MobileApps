@@ -11,10 +11,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,7 +37,8 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     private static final String TAG = "Document";
 
     private ListView mListView;
-    private EventAdapter mAdapter;
+    private EventAdapter mEventAdapter;
+    private EditText mFilter;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -52,6 +57,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         mAuth = FirebaseAuth.getInstance();
 
         mListView = findViewById(R.id.user_event_listView);
+        mFilter = findViewById(R.id.search_event);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
 
@@ -142,7 +148,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                                     public void onSuccess(Void aVoid) {
                                         Log.d(TAG, "DocumentSnapshot successfully deleted!");
                                         userEvents.remove(position);
-                                        mAdapter.notifyDataSetChanged();
+                                        mEventAdapter.notifyDataSetChanged();
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -165,12 +171,29 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void searchEvent() {
-        //Search for a particular Event.
+        // NOT DONE YET
+        mFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(final CharSequence s, final int start, int before, int count) {
+                mListView.setAdapter(mEventAdapter);
+                (MainPageActivity.this).mEventAdapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Do nothing.
+            }
+        });
     }
 
     private void setList() {
-        mAdapter = new EventAdapter(this, userEvents);
-        mListView.setAdapter(mAdapter);
+        mEventAdapter = new EventAdapter(this, userEvents);
+        mListView.setAdapter(mEventAdapter);
     }
 
     public void addEvent() {

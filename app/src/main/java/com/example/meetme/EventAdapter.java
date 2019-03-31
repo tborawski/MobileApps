@@ -10,7 +10,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class EventAdapter extends ArrayAdapter<Event> {
-    private static final String TAG = "Event";
     public EventAdapter(Context context, ArrayList<Event> events){
         super(context, 0, events);
     }

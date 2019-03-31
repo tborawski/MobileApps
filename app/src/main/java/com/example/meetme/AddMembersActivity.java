@@ -169,7 +169,6 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void searchUser() {
-
         mFilter.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
