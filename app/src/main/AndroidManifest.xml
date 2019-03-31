@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MyGroupsActivity"></activity>
+        <activity android:name=".GroupMainActivity"></activity>
+        <activity android:name=".MyGroupsActivity" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name">
