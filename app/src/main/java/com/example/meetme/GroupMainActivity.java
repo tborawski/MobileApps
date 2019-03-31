@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -66,6 +67,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
 
         mMessage = findViewById(R.id.chat_message);
         findViewById(R.id.send_chat).setOnClickListener(this);
+        findViewById(R.id.leave_group).setOnClickListener(this);
 
 
         getGroupInfo();
@@ -149,12 +151,25 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    private void leaveGroup(){
+        db.collection("Groups").document(mGroupId).collection("groupUsers").document(mAuth.getCurrentUser().getEmail())
+                .delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Intent intent = new Intent(GroupMainActivity.this, MainPageActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
     @Override
     public void onClick(View v){
         int i = v.getId();
 
         if(i == R.id.send_chat){
             postChat();
+        }else if(i == R.id.leave_group){
+            leaveGroup();
         }
 
     }
