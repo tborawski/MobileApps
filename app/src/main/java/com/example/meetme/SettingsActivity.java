@@ -42,7 +42,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         setSupportActionBar(mToolbar);
 
-        findViewById(R.id.settings_back_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.version_button).setOnClickListener(this);
         findViewById(R.id.upload_button).setOnClickListener(this);
@@ -99,6 +98,25 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         startActivity(intent);
     }
 
+    public void signOutOfApp() {
+        mAuth.signOut();
+        Intent signOut = new Intent(SettingsActivity.this, LoginActivity.class);
+        startActivity(signOut);
+    }
+
+    public void showVersion(View v) {
+        Snackbar popUp = Snackbar.make(v, "Version 1.0.0", Snackbar.LENGTH_LONG).setAction("Action", null);
+        View view = popUp.getView();
+        TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        popUp.show();
+    }
+
+    public void uploadPicture() {
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickPhoto, 1);
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         if(requestCode == 1 && resultCode == RESULT_OK) {
@@ -118,25 +136,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         int i = v.getId();
 
         switch (i) {
-            case R.id.settings_back_button:
-                Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
-                startActivity(intent);
-                break;
             case R.id.sign_out_button:
-                mAuth.signOut();
-                Intent signOut = new Intent(SettingsActivity.this, LoginActivity.class);
-                startActivity(signOut);
+                signOutOfApp();
                 break;
             case R.id.version_button:
-                Snackbar popUp = Snackbar.make(v, "Version 1.0.0", Snackbar.LENGTH_LONG).setAction("Action", null);
-                View view = popUp.getView();
-                TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
-                textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                popUp.show();
+                showVersion(v);
                 break;
             case R.id.upload_button:
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto, 1);
+                uploadPicture();
                 break;
         }
     }

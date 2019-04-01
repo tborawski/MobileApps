@@ -66,7 +66,6 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         mMessage = findViewById(R.id.chat_message);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
-        mListView = findViewById(R.id.my_group_list);
 
         findViewById(R.id.send_chat).setOnClickListener(this);
         findViewById(R.id.leave_group).setOnClickListener(this);
@@ -239,12 +238,16 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         int i = v.getId();
 
-        if (i == R.id.send_chat) {
-            postChat();
-        } else if (i == R.id.leave_group) {
-            leaveGroup();
-        } else if (i == R.id.create_group_activity) {
-            createGroupEvent();
+        switch (i) {
+            case R.id.send_chat:
+                postChat();
+                break;
+            case R.id.leave_group:
+                leaveGroup();
+                break;
+            case R.id.create_group_activity:
+                createGroupEvent();
+                break;
         }
     }
 }

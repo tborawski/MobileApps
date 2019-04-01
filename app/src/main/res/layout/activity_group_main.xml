@@ -37,13 +37,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/view_group_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -64,14 +66,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="90dp"
-                    android:text="@string/leave_group" />
+                    android:text="@string/leave_group"
+                    android:textColor="@color/Red" />
 
             </LinearLayout>
 
             <ListView
                 android:id="@+id/chat_view"
                 android:layout_width="match_parent"
-                android:layout_height="350dp" />
+                android:layout_height="380dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"

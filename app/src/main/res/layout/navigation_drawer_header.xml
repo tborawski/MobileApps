@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="180dp"
-    android:background="@color/colorPrimary">
+    android:background="@color/LightSalmon">
 
     <ImageView
         android:id="@+id/profile_picture"
@@ -21,6 +21,7 @@
         android:layout_marginTop="50dp"
         android:layout_toEndOf="@+id/profile_picture"
         android:text="John Doe"
+        android:textColor="@color/Black"
         android:textSize="25sp"
         android:textStyle="bold" />
 
@@ -33,6 +34,7 @@
         android:layout_marginTop="15dp"
         android:layout_toEndOf="@+id/profile_picture"
         android:text="testing@gmail.com"
+        android:textColor="@color/Black"
         android:textSize="20sp"
         android:textStyle="bold" />
 

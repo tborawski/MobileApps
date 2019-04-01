@@ -44,8 +44,6 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_groups);
 
-        findViewById(R.id.my_groups_back_button).setOnClickListener(this);
-
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
         mListView = findViewById(R.id.my_group_list);
@@ -154,10 +152,7 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
         int i = v.getId();
 
         switch (i) {
-            case R.id.my_groups_back_button:
-                Intent intent = new Intent(MyGroupsActivity.this, MainPageActivity.class);
-                startActivity(intent);
-                break;
+            // In case we still need onClick.
         }
     }
 }

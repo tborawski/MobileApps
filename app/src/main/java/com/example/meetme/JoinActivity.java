@@ -200,10 +200,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         int i = v.getId();
 
         switch (i) {
-            case R.id.join_back_button:
-                Intent intent = new Intent(JoinActivity.this, MainPageActivity.class);
-                startActivity(intent);
-                break;
+            // Just in case we still need onClick.
         }
     }
 }
