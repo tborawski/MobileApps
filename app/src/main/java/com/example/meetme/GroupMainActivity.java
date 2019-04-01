@@ -59,6 +59,11 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_main);
 
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
+
         mGroupId = getIntent().getStringExtra("GROUP_ID");
         mGroupNameView = findViewById(R.id.view_group_name);
         mGroupDes = findViewById(R.id.view_group_description);

@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,7 +31,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     private EditText mGroupDes;
     private ToggleButton mPrivateButton;
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
@@ -42,7 +43,11 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
-        mAuth = FirebaseAuth.getInstance();
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
+
         mGroupName = findViewById(R.id.group_name);
         mGroupDes = findViewById(R.id.group_description);
         mImageView = findViewById(R.id.group_imageView);

@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,7 +39,6 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     private Toolbar mToolbar;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private ArrayAdapter mAdapter;
@@ -53,6 +53,11 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join);
 
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
+
         mListView = findViewById(R.id.user_event_listView);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
@@ -64,21 +69,21 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         db.collection("Groups").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(final QueryDocumentSnapshot document : task.getResult()){
+                if (task.isSuccessful()) {
+                    for (final QueryDocumentSnapshot document : task.getResult()) {
                         document.getReference().collection("groupUsers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if(task.isSuccessful()){
+                                if (task.isSuccessful()) {
                                     boolean found = false;
-                                    for(QueryDocumentSnapshot doc : task.getResult()){
-                                        if(doc.getId().equals(mAuth.getCurrentUser().getEmail())){
+                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                        if (doc.getId().equals(mAuth.getCurrentUser().getEmail())) {
                                             found = true;
                                         }
-                                        if(found){
+                                        if (found) {
                                             userGroups.add(document.getId());
-                                        } else{
-                                            if(document.get("isPrivate").toString().equals("OFF")){
+                                        } else {
+                                            if (document.get("isPrivate").toString().equals("OFF")) {
                                                 groupList.add(document.get("Name").toString());
                                                 docList.add(document.getId());
                                                 mAdapter.notifyDataSetChanged();
@@ -92,7 +97,6 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-
 
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

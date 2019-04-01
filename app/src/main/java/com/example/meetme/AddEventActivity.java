@@ -64,7 +64,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -72,7 +72,10 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
-        mAuth = FirebaseAuth.getInstance();
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
 
         mName = findViewById(R.id.activity_name);
         mStartTime = findViewById(R.id.start_time_textView);
@@ -98,7 +101,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         }
 
         setSupportActionBar(mToolbar);
-        
+
         findViewById(R.id.date_picker_button).setOnClickListener(this);
         findViewById(R.id.start_time_picker_button).setOnClickListener(this);
         findViewById(R.id.end_time_picker_button).setOnClickListener(this);
