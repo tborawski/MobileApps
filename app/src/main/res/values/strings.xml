@@ -36,6 +36,12 @@
     <string name="drawer_open">drawer_open</string>
     <string name="drawer_close">drawer_close</string>
     <string name="back_button_description">Back button</string>
+    <string name="chat_message">Message</string>
+    <string name="send_chat">Send</string>
+    <string name="leave_group">Leave Group</string>
+    <string name="create_group_event">Create Group Event</string>
+    <string name="chat_sender">Text</string>
+    <string name="chat_message_text">TextView</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

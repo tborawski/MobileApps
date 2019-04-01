@@ -110,6 +110,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         users.put("Level", "Creator");
         users.put("User", mAuth.getCurrentUser().getEmail());
         newGroupRef.collection("groupUsers").document(mAuth.getCurrentUser().getEmail()).set(users);
+        newGroupRef.collection("groupUsers").document().set(users);
 
         Intent intent = new Intent(CreateGroupActivity.this, AddMembersActivity.class);
         intent.putExtra("GROUP_NAME", newGroupRef.getId());

@@ -199,7 +199,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
                     }
                 });
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -53,7 +54,6 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
 
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
-
         setList();
 
         db.collection("Groups").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -79,13 +79,22 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         });
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MyGroupsActivity.this, GroupMainActivity.class);
+                intent.putExtra("GROUP_ID", groupIds.get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     private void setList(){
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, groupNames);
         mListView.setAdapter(mAdapter);
-
     }
+
     private void handleNavigationClickEvents() {
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(

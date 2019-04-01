@@ -165,7 +165,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setList() {
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, groupList);
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, groupList);
         mListView.setAdapter(mAdapter);
     }
 
