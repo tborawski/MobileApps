@@ -39,19 +39,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
+                    android:background="@color/Transparent"
                     android:onClick="onClick"
                     android:src="@drawable/ic_back"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/skip_button"
+                <ImageButton
+                    android:id="@+id/done_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:layout_marginStart="240dp"
+                    android:layout_marginStart="320dp"
+                    android:background="@color/Transparent"
                     android:onClick="onClick"
-                    android:text="@string/skip_text"
+                    android:src="@drawable/ic_done"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
 

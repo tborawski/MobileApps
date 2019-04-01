@@ -60,7 +60,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         groupName = getIntent().getStringExtra("GROUP_NAME");
 
         findViewById(R.id.add_members_back_button).setOnClickListener(this);
-        findViewById(R.id.skip_button).setOnClickListener(this);
+        findViewById(R.id.done_button).setOnClickListener(this);
 
         db.collection("Groups").document(groupName).collection("groupUsers").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -228,7 +228,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                 Intent intent = new Intent(AddMembersActivity.this, CreateGroupActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.skip_button:
+            case R.id.done_button:
                 //Do something to skip adding members
                 break;
         }

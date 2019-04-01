@@ -10,7 +10,6 @@
     <string name="place_picker">Place</string>
     <string name="create_group_button">Create Group</string>
     <string name="add_button">Add Event</string>
-    <string name="skip_text">Skip</string>
     <string name="my_groups_text">My Groups</string>
     <string name="add_members_text">Add Members</string>
     <string name="add_schedule_button">+</string>
