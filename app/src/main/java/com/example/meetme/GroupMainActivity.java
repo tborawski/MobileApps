@@ -211,7 +211,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
                         .delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Intent intent = new Intent(GroupMainActivity.this, MainPageActivity.class);
+                        Intent intent = new Intent(GroupMainActivity.this, MyGroupsActivity.class);
                         startActivity(intent);
                     }
                 });

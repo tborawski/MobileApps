@@ -240,7 +240,8 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                 startActivity(intent);
                 break;
             case R.id.done_button:
-                //Do something to skip adding members
+                Intent myGroups = new Intent(AddMembersActivity.this, MyGroupsActivity.class);
+                startActivity(myGroups);
                 break;
         }
     }
