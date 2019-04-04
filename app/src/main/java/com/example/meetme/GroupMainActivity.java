@@ -200,7 +200,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void leaveGroup() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GroupMainActivity.this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(GroupMainActivity.this);
         builder.setTitle("");
 
         builder.setMessage("Are you sure you wanna leave this group?");

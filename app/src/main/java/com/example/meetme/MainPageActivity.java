@@ -27,11 +27,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MainPageActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -39,6 +44,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
     private ListView mListView;
     private EventAdapter mEventAdapter;
+    private ArrayAdapter mAdapter;
     private EditText mFilter;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -49,6 +55,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     private Toolbar mToolbar;
 
     ArrayList<Event> userEvents = new ArrayList<>();
+    ArrayList<String> eventNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +79,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        addEventNames();
         addUserEvent();
         checkEvent();
         searchEvent();
@@ -110,6 +118,25 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
     }
 
+    private void addEventNames() {
+        db.collection("Events").document(mAuth.getCurrentUser().getEmail()).collection("uEvents").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if(document.exists()) {
+                                    Log.d(TAG, document.getId());
+                                    Object e = document.get("Name");
+                                    eventNames.add(e.toString());
+                                }
+                            }
+                        }
+                        setEventNameList();
+                    }
+                });
+    }
+
     private void addUserEvent() {
         db.collection("Events").document(mAuth.getCurrentUser().getEmail()).collection("uEvents").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -145,28 +172,13 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                 builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        db.collection("Events").document(mAuth.getCurrentUser().getEmail())
-                                .collection("uEvents").document(userEvents.get(position).id).delete()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
-                                        userEvents.remove(position);
-                                        mEventAdapter.notifyDataSetChanged();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w(TAG, "Error deleting document", e);
-                                    }
-                                });
+                        deleteEvent(position);
                     }
                 });
                 builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        updateEvent();
                     }
                 });
                 builder.create().show();
@@ -174,8 +186,30 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
+    private void deleteEvent(final int pos) {
+        db.collection("Events").document(mAuth.getCurrentUser().getEmail())
+                .collection("uEvents").document(userEvents.get(pos).id).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                        userEvents.remove(pos);
+                        mEventAdapter.notifyDataSetChanged();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
+    }
+
+    private void updateEvent() {
+        // DO something to allow user to update event.
+    }
+
     private void searchEvent() {
-        // NOT DONE YET
         mFilter.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -184,8 +218,8 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onTextChanged(final CharSequence s, final int start, int before, int count) {
-                mListView.setAdapter(mEventAdapter);
-                (MainPageActivity.this).mEventAdapter.getFilter().filter(s);
+                mListView.setAdapter(mAdapter);
+                (MainPageActivity.this).mAdapter.getFilter().filter(s);
             }
 
             @Override
@@ -198,6 +232,11 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     private void setList() {
         mEventAdapter = new EventAdapter(this, userEvents);
         mListView.setAdapter(mEventAdapter);
+    }
+
+    private void setEventNameList() {
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventNames);
+        mListView.setAdapter(mAdapter);
     }
 
     public void addEvent() {
