@@ -15,11 +15,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -40,7 +43,9 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
-
+    private ListView mListView;
+    private EditText mFilter;
+    private ArrayAdapter mAdapter;
     private ArrayList<String> mAddresses;
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -49,9 +54,6 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation;
     private String mCurrentLocation;
-
-    public BuildingsActivity() {
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,15 +69,102 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
         findViewById(R.id.buildings_back_button).setOnClickListener(this);
 
-        ListView listView = findViewById(R.id.buildings_listView);
-
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
+        mFilter = findViewById(R.id.search_text);
+        mListView = findViewById(R.id.buildings_listView);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
 
+        currentLocation();
+        setActionBarDrawerToggle();
+        handleNavigationClickEvents();
+        handleSelectedItem();
+        setUpList();
+        setList();
+        searchBuilding();
+    }
+
+    private void handleNavigationClickEvents() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        menuItem.setChecked(true);
+                        mDrawerLayout.closeDrawers();
+
+                        int i = menuItem.getItemId();
+
+                        switch (i) {
+                            case R.id.home:
+                                goHome();
+                                break;
+                            case R.id.add_event:
+                                addEvent();
+                                break;
+                            case R.id.my_groups:
+                                myGroups();
+                                break;
+                            case R.id.settings:
+                                openSettings();
+                                break;
+                        }
+                        return true;
+                    }
+                });
+
+    }
+
+    private void setActionBarDrawerToggle() {
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
+        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    private void currentLocation() {
+        getLocationPermission();
+        getDeviceLocation();
+
+        Snackbar popUp = Snackbar.make(findViewById(android.R.id.content), "Your most recent location:\n " + mCurrentLocation, 7000).setAction("Action", null);
+        View view = popUp.getView();
+        TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        popUp.show();
+    }
+
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    private void getDeviceLocation() {
+        try {
+            if (mLocationPermissionGranted) {
+                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            mLastKnownLocation = task.getResult();
+                            mCurrentLocation = mLastKnownLocation.toString();
+                        } else {
+                            mCurrentLocation = mDefaultLocation.toString();
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void setUpList() {
         mAddresses = new ArrayList<>();
 
         mAddresses.add("Adventure Recreation Center (ARC)\n855 Woody Hayes Dr");
@@ -146,14 +235,10 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         mAddresses.add("Torres House\n187 W Lane Ave");
         mAddresses.add("University Hall\n230 N Oval Mall");
         mAddresses.add("Younkin Success Center\n1640 Neil Ave");
+    }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mAddresses);
-
-        Collections.sort(mAddresses);
-
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    private void handleSelectedItem() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String tempListView = mAddresses.get(position);
@@ -164,88 +249,32 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
                 finish();
             }
         });
-
-        currentLocation();
-        setActionBarDrawerToggle();
-        handleNavigationClickEvents();
     }
 
-    private void currentLocation() {
-        getLocationPermission();
-        getDeviceLocation();
-
-        Snackbar popUp = Snackbar.make(findViewById(android.R.id.content), "Your most recent location:\n " + mCurrentLocation, 7000).setAction("Action", null);
-        View view = popUp.getView();
-        TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        popUp.show();
-    }
-
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    private void getDeviceLocation() {
-        try {
-            if (mLocationPermissionGranted) {
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            mLastKnownLocation = task.getResult();
-                            mCurrentLocation = mLastKnownLocation.toString();
-                        } else {
-                            mCurrentLocation = mDefaultLocation.toString();
-                        }
-                    }
-                });
+    private void searchBuilding() {
+        mFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Do nothing.
             }
-        } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
-        }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mListView.setAdapter(mAdapter);
+                (BuildingsActivity.this).mAdapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Do nothing.
+            }
+        });
     }
 
-    private void handleNavigationClickEvents() {
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        menuItem.setChecked(true);
-                        mDrawerLayout.closeDrawers();
-
-                        int i = menuItem.getItemId();
-
-                        switch (i) {
-                            case R.id.home:
-                                goHome();
-                                break;
-                            case R.id.add_event:
-                                addEvent();
-                                break;
-                            case R.id.my_groups:
-                                myGroups();
-                                break;
-                            case R.id.settings:
-                                openSettings();
-                                break;
-                        }
-                        return true;
-                    }
-                });
-
-    }
-
-    private void setActionBarDrawerToggle() {
-        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
-        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    private void setList() {
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mAddresses);
+        Collections.sort(mAddresses);
+        mListView.setAdapter(mAdapter);
     }
 
     private void goHome() {

@@ -39,15 +39,14 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     private ListView mListView;
     private EditText mFilter;
     private ArrayAdapter mAdapter;
-
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
 
-    ArrayList<String> nonMembers = new ArrayList<>();
-    ArrayList<String> currentMembers = new ArrayList<>();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    private ArrayList<String> nonMembers = new ArrayList<>();
+    private ArrayList<String> currentMembers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
