@@ -30,23 +30,17 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
     private EditText mGroupName;
     private EditText mGroupDes;
     private ToggleButton mPrivateButton;
-
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
+
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
-
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        View v = navigationView.getHeaderView(0);
-        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
 
         mGroupName = findViewById(R.id.group_name);
         mGroupDes = findViewById(R.id.group_description);
@@ -55,15 +49,15 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
 
-        setSupportActionBar(mToolbar);
-
         findViewById(R.id.create_group_back_button).setOnClickListener(this);
         findViewById(R.id.create_group_next_button).setOnClickListener(this);
         findViewById(R.id.private_button).setOnClickListener(this);
         findViewById(R.id.upload_group_picture_button).setOnClickListener(this);
 
+        setSupportActionBar(mToolbar);
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        setUpUsernameDisplay();
     }
 
     private void handleNavigationClickEvents() {
@@ -102,7 +96,14 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
     }
 
-    public void toAddUsers(){
+    private void setUpUsernameDisplay() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
+    }
+
+    private void toAddUsers(){
         Map<String, Object> docInfo = new HashMap<>();
         docInfo.put("Name", mGroupName.getText().toString());
         docInfo.put("Description", mGroupDes.getText().toString());
@@ -122,32 +123,32 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         startActivity(intent);
     }
 
-    public void uploadPicture(){
+    private void uploadPicture(){
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(pickPhoto, 1);
     }
 
-    public void goHome() {
+    private void goHome() {
         Intent intent = new Intent(CreateGroupActivity.this, MainPageActivity.class);
         startActivity(intent);
     }
 
-    public void addEvent() {
+    private void addEvent() {
         Intent intent = new Intent(CreateGroupActivity.this, AddEventActivity.class);
         startActivity(intent);
     }
 
-    public void myGroups() {
+    private void myGroups() {
         Intent intent = new Intent(CreateGroupActivity.this, MyGroupsActivity.class);
         startActivity(intent);
     }
 
-    public void openSettings() {
+    private void openSettings() {
         Intent intent = new Intent(CreateGroupActivity.this, SettingsActivity.class);
         startActivity(intent);
     }
 
-    public void back(){
+    private void back(){
         Intent intent = new Intent(CreateGroupActivity.this, MainPageActivity.class);
         startActivity(intent);
     }

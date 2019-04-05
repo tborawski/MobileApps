@@ -33,7 +33,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private EditText mEmailField;
     private EditText mPasswordField;
-
     private ProgressDialog mProgress;
 
     private FirebaseAuth mAuth;

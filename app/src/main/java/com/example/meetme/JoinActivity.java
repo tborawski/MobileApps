@@ -36,15 +36,13 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
 
     private ListView mListView;
     private EditText mFilter;
-
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
+    private ArrayAdapter mAdapter;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-    private ArrayAdapter mAdapter;
 
     ArrayList<String> groupList = new ArrayList<>();
     ArrayList<String> docList = new ArrayList<>();
@@ -56,21 +54,16 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join);
 
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        View v = navigationView.getHeaderView(0);
-        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
-
         mListView = findViewById(R.id.user_event_listView);
         mFilter = findViewById(R.id.search_group);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
-
-        setList();
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        setUpUsernameDisplay();
+        setList();
         userAddList();
         userClickOnItem();
         searchGroup();
@@ -110,6 +103,13 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     private void setActionBarDrawerToggle() {
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    private void setUpUsernameDisplay() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
     }
 
     private void userAddList() {

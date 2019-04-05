@@ -27,21 +27,19 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class MainPageActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "Document";
 
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private Toolbar mToolbar;
     private ListView mListView;
     private EventAdapter mEventAdapter;
     private ArrayAdapter mAdapter;
@@ -49,10 +47,6 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-    private ActionBarDrawerToggle mActionBarDrawerToggle;
-    private DrawerLayout mDrawerLayout;
-    private Toolbar mToolbar;
 
     ArrayList<Event> userEvents = new ArrayList<>();
     ArrayList<String> eventNames = new ArrayList<>();
@@ -62,23 +56,18 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        View v = navigationView.getHeaderView(0);
-        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
-
         mListView = findViewById(R.id.user_event_listView);
         mFilter = findViewById(R.id.search_event);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
 
-        setSupportActionBar(mToolbar);
-
         findViewById(R.id.join_button).setOnClickListener(this);
         findViewById(R.id.create_group_button).setOnClickListener(this);
 
+        setSupportActionBar(mToolbar);
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        setUpUsernameDisplay();
         addEventNames();
         addUserEvent();
         checkEvent();
@@ -116,6 +105,13 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     private void setActionBarDrawerToggle() {
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    private void setUpUsernameDisplay() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
     }
 
     private void addEventNames() {

@@ -10,11 +10,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,26 +31,18 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        View v = navigationView.getHeaderView(0);
-        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
-
-        TextView textView = findViewById(R.id.username_textView);
-        textView.setText(mAuth.getCurrentUser().getEmail());
-
         mImageView = findViewById(R.id.profile_imageView);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
-
-        setSupportActionBar(mToolbar);
 
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.version_button).setOnClickListener(this);
         findViewById(R.id.upload_button).setOnClickListener(this);
 
+        setSupportActionBar(mToolbar);
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        setUpUsernameDisplay();
     }
 
     private void handleNavigationClickEvents() {
@@ -86,6 +76,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private void setActionBarDrawerToggle() {
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    private void setUpUsernameDisplay() {
+        TextView textView = findViewById(R.id.username_textView);
+        textView.setText(mAuth.getCurrentUser().getEmail());
+
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
     }
 
     public void goHome() {

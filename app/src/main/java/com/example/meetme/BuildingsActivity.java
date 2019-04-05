@@ -47,25 +47,20 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private EditText mFilter;
     private ArrayAdapter mAdapter;
     private ArrayList<String> mAddresses;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location mLastKnownLocation;
+    private String mCurrentLocation;
+
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private Location mLastKnownLocation;
-    private String mCurrentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buildings);
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        View v = navigationView.getHeaderView(0);
-        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(auth.getCurrentUser().getEmail());
 
         findViewById(R.id.buildings_back_button).setOnClickListener(this);
 
@@ -76,10 +71,10 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
-
         currentLocation();
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        setUpUsernameDisplay();
         handleSelectedItem();
         setUpList();
         setList();
@@ -120,6 +115,13 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private void setActionBarDrawerToggle() {
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    private void setUpUsernameDisplay() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
     }
 
     private void currentLocation() {

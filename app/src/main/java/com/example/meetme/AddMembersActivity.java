@@ -43,22 +43,16 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
 
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private ArrayList<String> nonMembers = new ArrayList<>();
-    private ArrayList<String> currentMembers = new ArrayList<>();
+    ArrayList<String> nonMembers = new ArrayList<>();
+    ArrayList<String> currentMembers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_members);
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        View v = navigationView.getHeaderView(0);
-        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(auth.getCurrentUser().getEmail());
 
         mListView = findViewById(R.id.add_members_listView);
         mFilter = findViewById(R.id.search_filter);
@@ -74,6 +68,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
 
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        setUpUsernameDisplay();
         getCurrentMembers();
         addMember();
         searchUser();
@@ -115,6 +110,12 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
     }
 
+    private void setUpUsernameDisplay() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
+    }
 
     private void addMember() {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

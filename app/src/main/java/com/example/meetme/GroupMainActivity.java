@@ -13,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,20 +39,18 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
 
     private static final String TAG = "Group";
 
+    private MessageAdapter mAdapter;
+    private TextView mGroupNameView;
+    private TextView mGroupDes;
+    private EditText mMessage;
+    private String mGroupId;
+    private ListView mListView;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
 
-    private MessageAdapter mAdapter;
-
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-    TextView mGroupNameView;
-    TextView mGroupDes;
-    EditText mMessage;
-    String mGroupId;
-    ListView mListView;
 
     ArrayList<Message> messages = new ArrayList<>();
 
@@ -61,11 +58,6 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_main);
-
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        View v = navigationView.getHeaderView(0);
-        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
 
         mGroupId = getIntent().getStringExtra("GROUP_ID");
         mGroupNameView = findViewById(R.id.view_group_name);
@@ -83,6 +75,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
 
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        setUpUsernameDisplay();
         getGroupInfo();
         getMessages();
         //getUpdates();
@@ -122,6 +115,13 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
     private void setActionBarDrawerToggle() {
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    private void setUpUsernameDisplay() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
     }
 
     private void setList() {

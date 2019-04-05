@@ -49,17 +49,11 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
     private int startOrEnd = -1;
 
     private EditText mName;
-
     private TextView mDate;
     private TextView mTime;
     private TextView mPlace;
     private TextView mStartTime;
     private TextView mEndTime;
-
-    private String mGroupId;
-    private boolean groupEvent = false;
-    ArrayList<String> members = new ArrayList<>();
-
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
@@ -67,15 +61,14 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    private String mGroupId;
+    private boolean groupEvent = false;
+    ArrayList<String> members = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
-
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        View v = navigationView.getHeaderView(0);
-        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
 
         mName = findViewById(R.id.activity_name);
         mStartTime = findViewById(R.id.start_time_textView);
@@ -83,33 +76,17 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
 
-        if(getIntent().hasExtra("GROUP_ID")){
-            mGroupId = getIntent().getStringExtra("GROUP_ID");
-            groupEvent = true;
-            db.collection("Groups").document(mGroupId).collection("groupUsers").get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()){
-                                for(QueryDocumentSnapshot user : task.getResult()){
-                                    members.add(user.getId());
-                                }
-                            }
-                        }
-                    });
-            Log.d(TAG, mGroupId);
-        }
-
-        setSupportActionBar(mToolbar);
-
         findViewById(R.id.date_picker_button).setOnClickListener(this);
         findViewById(R.id.start_time_picker_button).setOnClickListener(this);
         findViewById(R.id.end_time_picker_button).setOnClickListener(this);
         findViewById(R.id.place_picker_button).setOnClickListener(this);
         findViewById(R.id.add_event_button).setOnClickListener(this);
 
+        setSupportActionBar(mToolbar);
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        setUpUsernameDisplay();
+        scheduleGroupEvents();
     }
 
     private void handleNavigationClickEvents() {
@@ -143,6 +120,32 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
     private void setActionBarDrawerToggle() {
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    private void setUpUsernameDisplay() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
+    }
+
+    private void scheduleGroupEvents() {
+        if(getIntent().hasExtra("GROUP_ID")){
+            mGroupId = getIntent().getStringExtra("GROUP_ID");
+            groupEvent = true;
+            db.collection("Groups").document(mGroupId).collection("groupUsers").get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                for(QueryDocumentSnapshot user : task.getResult()){
+                                    members.add(user.getId());
+                                }
+                            }
+                        }
+                    });
+            Log.d(TAG, mGroupId);
+        }
     }
 
     private void submitEvent(){

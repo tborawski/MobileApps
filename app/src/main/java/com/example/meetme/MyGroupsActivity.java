@@ -30,16 +30,15 @@ import java.util.ArrayList;
 
 public class MyGroupsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ActionBarDrawerToggle mActionBarDrawerToggle;
-    private DrawerLayout mDrawerLayout;
-    private Toolbar mToolbar;
     private ArrayAdapter mAdapter;
     private ListView mListView;
     private EditText mFilter;
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private Toolbar mToolbar;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     private String uEmail = mAuth.getCurrentUser().getEmail();
 
     ArrayList<String> groupIds = new ArrayList<>();
@@ -50,20 +49,15 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_groups);
 
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        View v = navigationView.getHeaderView(0);
-        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
-
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
         mListView = findViewById(R.id.my_group_list);
         mFilter = findViewById(R.id.my_groups_search);
 
         setSupportActionBar(mToolbar);
-
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        setUpUsernameDisplay();
         setList();
         setUpGroup();
         goToGroupChat();
@@ -101,6 +95,13 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
     private void setActionBarDrawerToggle() {
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    private void setUpUsernameDisplay() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        TextView userEmail = v.findViewById(R.id.navigation_bar_email);
+        userEmail.setText(mAuth.getCurrentUser().getEmail());
     }
 
     private void setUpGroup() {
