@@ -67,9 +67,10 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
 
-        findViewById(R.id.send_chat).setOnClickListener(this);
-        findViewById(R.id.leave_group).setOnClickListener(this);
+        findViewById(R.id.add_member).setOnClickListener(this);
         findViewById(R.id.create_group_activity).setOnClickListener(this);
+        findViewById(R.id.leave_group).setOnClickListener(this);
+        findViewById(R.id.send_chat).setOnClickListener(this);
 
         setSupportActionBar(mToolbar);
 
@@ -232,6 +233,10 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         startActivity(intent);
     }
 
+    private void addMember() {
+        // DO something to add members to current group.
+    }
+
     private void goHome() {
         Intent intent = new Intent(GroupMainActivity.this, MainPageActivity.class);
         startActivity(intent);
@@ -263,6 +268,9 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         int i = v.getId();
 
         switch (i) {
+            case R.id.add_member:
+                addMember();
+                break;
             case R.id.send_chat:
                 postChat();
                 break;
