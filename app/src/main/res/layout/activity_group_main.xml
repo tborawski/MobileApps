@@ -63,17 +63,21 @@
                     android:id="@+id/create_group_activity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
                     android:background="@color/Transparent"
                     android:contentDescription="@string/create_group_event"
+                    android:minHeight="50dp"
+                    android:onClick="onClick"
+                    android:scaleX="2"
+                    android:scaleY="2"
                     android:src="@drawable/ic_create_group_event" />
 
                 <Button
                     android:id="@+id/leave_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="260dp"
+                    android:layout_marginStart="250dp"
                     android:background="@color/Transparent"
                     android:text="@string/leave_group"
                     android:textColor="@color/Red" />
@@ -83,7 +87,7 @@
             <ListView
                 android:id="@+id/chat_view"
                 android:layout_width="match_parent"
-                android:layout_height="380dp" />
+                android:layout_height="400dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -93,18 +97,23 @@
 
                 <EditText
                     android:id="@+id/chat_message"
-                    android:layout_width="280dp"
+                    android:layout_width="310dp"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="@string/chat_message"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:scaleY="1" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/send_chat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:text="@string/send_chat" />
+                    android:layout_gravity="center"
+                    android:layout_marginStart="28dp"
+                    android:background="@color/Transparent"
+                    android:scaleX="2"
+                    android:scaleY="2"
+                    android:src="@drawable/ic_send_message" />
 
             </LinearLayout>
 

@@ -76,9 +76,9 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
 
-        findViewById(R.id.date_picker_button).setOnClickListener(this);
         findViewById(R.id.start_time_picker_button).setOnClickListener(this);
         findViewById(R.id.end_time_picker_button).setOnClickListener(this);
+        findViewById(R.id.date_picker_button).setOnClickListener(this);
         findViewById(R.id.place_picker_button).setOnClickListener(this);
         findViewById(R.id.add_event_button).setOnClickListener(this);
 

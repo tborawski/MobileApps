@@ -59,16 +59,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
+                android:layout_marginBottom="10dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <Button
+                <ImageButton
                     android:id="@+id/start_time_picker_button"
                     android:layout_width="108dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
+                    android:background="@color/Transparent"
+                    android:minHeight="50dp"
                     android:onClick="onClick"
-                    android:text="@string/star_time_picker"
+                    android:scaleX="2"
+                    android:scaleY="2"
+                    android:src="@drawable/ic_start_time"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
 
@@ -86,16 +91,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <Button
+                <ImageButton
                     android:id="@+id/end_time_picker_button"
                     android:layout_width="108dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
+                    android:background="@color/Transparent"
+                    android:minHeight="50dp"
                     android:onClick="onClick"
-                    android:text="@string/end_time_picker"
+                    android:scaleX="2"
+                    android:scaleY="2"
+                    android:src="@drawable/ic_end_time"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
 
@@ -113,16 +123,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <Button
+                <ImageButton
                     android:id="@+id/date_picker_button"
                     android:layout_width="108dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
+                    android:background="@color/Transparent"
+                    android:minHeight="50dp"
                     android:onClick="onClick"
-                    android:text="@string/date_picker"
+                    android:scaleX="2"
+                    android:scaleY="2"
+                    android:src="@drawable/ic_date"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
 
@@ -144,14 +159,17 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <Button
+                <ImageButton
                     android:id="@+id/place_picker_button"
                     android:layout_width="108dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:layout_marginBottom="10dp"
+                    android:background="@color/Transparent"
+                    android:minHeight="50dp"
                     android:onClick="onClick"
-                    android:text="@string/place_picker"
+                    android:scaleX="2"
+                    android:scaleY="2"
+                    android:src="@drawable/ic_place"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
 

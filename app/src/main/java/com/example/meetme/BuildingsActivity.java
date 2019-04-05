@@ -243,10 +243,10 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String tempListView = mAddresses.get(position);
+                String temp = parent.getAdapter().getItem(position).toString();
 
                 Intent returnIntent = new Intent(BuildingsActivity.this, AddEventActivity.class);
-                returnIntent.putExtra(KEY, tempListView);
+                returnIntent.putExtra(KEY, temp);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }

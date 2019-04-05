@@ -22,7 +22,6 @@
     <style name="App_EditTextStyle" parent="@android:style/Widget.EditText">
         <item name="android:background">@drawable/edit_text_style</item>
         <item name="android:textColor">#808080</item>
-        <item name="android:drawableLeft">@android:drawable/ic_menu_search</item>
         <item name="android:drawablePadding">15dp</item>
         <item name="android:padding">8dp</item>
     </style>
