@@ -73,21 +73,9 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         findViewById(R.id.add_members_back_button).setOnClickListener(this);
         findViewById(R.id.done_button).setOnClickListener(this);
 
-        db.collection("Groups").document(groupName).collection("groupUsers").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            for(QueryDocumentSnapshot cUser : task.getResult()){
-                                currentMembers.add(cUser.getId());
-                            }
-                            getNonMembers();
-                        }
-                    }
-                });
-
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        getCurrentMembers();
         addMember();
         searchUser();
     }
@@ -163,13 +151,28 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-    private void getNonMembers(){
+    private void getCurrentMembers() {
+        db.collection("Groups").document(groupName).collection("groupUsers").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot cUser : task.getResult()) {
+                                currentMembers.add(cUser.getId());
+                            }
+                            getNonMembers();
+                        }
+                    }
+                });
+    }
+
+    private void getNonMembers() {
         db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()) {
-                    for(QueryDocumentSnapshot document : task.getResult()) {
-                        if(!currentMembers.contains(document.getId())){
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (!currentMembers.contains(document.getId())) {
                             nonMembers.add(document.getId());
                         }
                     }

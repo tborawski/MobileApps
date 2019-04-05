@@ -58,7 +58,7 @@
                     android:id="@+id/search_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="10dp"
                     android:hint="@string/search_text"
                     android:imeActionId="6"
                     android:imeOptions="actionUnspecified"
@@ -71,8 +71,7 @@
             <ListView
                 android:id="@+id/buildings_listView"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
     </LinearLayout>

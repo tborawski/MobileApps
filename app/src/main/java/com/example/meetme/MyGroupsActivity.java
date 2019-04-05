@@ -9,10 +9,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,6 +35,7 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
     private Toolbar mToolbar;
     private ArrayAdapter mAdapter;
     private ListView mListView;
+    private EditText mFilter;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -54,50 +58,16 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
         mListView = findViewById(R.id.my_group_list);
+        mFilter = findViewById(R.id.my_groups_search);
 
         setSupportActionBar(mToolbar);
 
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
         setList();
-
-        db.collection("Groups").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (final QueryDocumentSnapshot group : task.getResult()) {
-                        group.getReference().collection("groupUsers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot unames : task.getResult()) {
-                                        if (unames.getId().equals(uEmail)) {
-                                            groupNames.add(group.get("Name").toString());
-                                            groupIds.add(group.getId());
-                                            mAdapter.notifyDataSetChanged();
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MyGroupsActivity.this, GroupMainActivity.class);
-                intent.putExtra("GROUP_ID", groupIds.get(position));
-                startActivity(intent);
-            }
-        });
-    }
-
-    private void setList() {
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, groupNames);
-        mListView.setAdapter(mAdapter);
+        setUpGroup();
+        goToGroupChat();
+        searchGroup();
     }
 
     private void handleNavigationClickEvents() {
@@ -131,6 +101,68 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
     private void setActionBarDrawerToggle() {
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+    }
+
+    private void setUpGroup() {
+        db.collection("Groups").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (final QueryDocumentSnapshot group : task.getResult()) {
+                        group.getReference().collection("groupUsers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot unames : task.getResult()) {
+                                        if (unames.getId().equals(uEmail)) {
+                                            groupNames.add(group.get("Name").toString());
+                                            groupIds.add(group.getId());
+                                            mAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    private void goToGroupChat() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MyGroupsActivity.this, GroupMainActivity.class);
+                intent.putExtra("GROUP_ID", groupIds.get(position));
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void searchGroup() {
+        mFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mListView.setAdapter(mAdapter);
+                (MyGroupsActivity.this).mAdapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Do nothing.
+            }
+        });
+    }
+
+    private void setList() {
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, groupNames);
+        mListView.setAdapter(mAdapter);
     }
 
     public void goHome() {
