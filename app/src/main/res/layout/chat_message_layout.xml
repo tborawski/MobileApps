@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/chat_message_style"
+    android:drawablePadding="15dp"
     android:orientation="vertical"
+    android:padding="8dp"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -13,7 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
-        android:text="@string/chat_sender"/>
+        android:text="@string/chat_sender"
+        android:textColor="@color/Black"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/chat_message"
@@ -21,6 +26,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
         android:layout_marginTop="1dp"
-        android:text="@string/chat_message_text" />
+        android:text="@string/chat_message_text"
+        android:textColor="@color/Black"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/current_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="@color/Black" />
 
 </LinearLayout>

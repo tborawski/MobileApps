@@ -32,7 +32,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.Nullable;
 
 public class GroupMainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -73,7 +72,6 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.send_chat).setOnClickListener(this);
 
         setSupportActionBar(mToolbar);
-
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
         setUpUsernameDisplay();
@@ -173,17 +171,19 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
                             return;
                         }
 
-                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                            switch (dc.getType()) {
-                                case ADDED:
-                                    Message m = new Message(dc.getDocument());
-                                    messages.add(m);
-                                    mAdapter.notifyDataSetChanged();
-                                    break;
-                                case REMOVED:
-                                    messages.remove(dc.getDocument());
-                                    mAdapter.notifyDataSetChanged();
-                                    break;
+                        if (snapshots != null) {
+                            for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                                switch (dc.getType()) {
+                                    case ADDED:
+                                        Message m = new Message(dc.getDocument());
+                                        messages.add(m);
+                                        mAdapter.notifyDataSetChanged();
+                                        break;
+                                    case REMOVED:
+                                        messages.remove(dc.getDocument());
+                                        mAdapter.notifyDataSetChanged();
+                                        break;
+                                }
                             }
                         }
                     }
