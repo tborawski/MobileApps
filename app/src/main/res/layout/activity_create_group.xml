@@ -39,6 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/Transparent"
+                    android:contentDescription="@string/back_button_description"
                     android:onClick="onClick"
                     android:src="@drawable/ic_back"
                     android:textColor="@android:color/black"
@@ -50,34 +51,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="300dp"
                     android:background="@color/Transparent"
+                    android:contentDescription="@string/back_button_description"
                     android:onClick="onClick"
                     android:src="@drawable/ic_next"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
 
             </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp">
-
-                <ImageView
-                    android:id="@+id/group_imageView"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:contentDescription="@string/group_profile_picture" />
-
-                <Button
-                    android:id="@+id/upload_group_picture_button"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/group_imageView"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/edit_picture" />
-
-            </RelativeLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

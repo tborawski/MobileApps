@@ -1,7 +1,6 @@
 package com.example.meetme;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -13,7 +12,6 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -26,7 +24,6 @@ import java.util.Map;
 
 public class CreateGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ImageView mImageView;
     private EditText mGroupName;
     private EditText mGroupDes;
     private ToggleButton mPrivateButton;
@@ -44,7 +41,6 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
         mGroupName = findViewById(R.id.group_name);
         mGroupDes = findViewById(R.id.group_description);
-        mImageView = findViewById(R.id.group_imageView);
         mPrivateButton = findViewById(R.id.private_button);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
@@ -52,7 +48,6 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         findViewById(R.id.create_group_back_button).setOnClickListener(this);
         findViewById(R.id.create_group_next_button).setOnClickListener(this);
         findViewById(R.id.private_button).setOnClickListener(this);
-        findViewById(R.id.upload_group_picture_button).setOnClickListener(this);
 
         setSupportActionBar(mToolbar);
         setActionBarDrawerToggle();
@@ -103,7 +98,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         userEmail.setText(mAuth.getCurrentUser().getEmail());
     }
 
-    private void toAddUsers(){
+    private void toAddUsers() {
         Map<String, Object> docInfo = new HashMap<>();
         docInfo.put("Name", mGroupName.getText().toString());
         docInfo.put("Description", mGroupDes.getText().toString());
@@ -121,11 +116,6 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         Intent intent = new Intent(CreateGroupActivity.this, AddMembersActivity.class);
         intent.putExtra("GROUP_NAME", newGroupRef.getId());
         startActivity(intent);
-    }
-
-    private void uploadPicture(){
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickPhoto, 1);
     }
 
     private void goHome() {
@@ -148,17 +138,9 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         startActivity(intent);
     }
 
-    private void back(){
+    private void back() {
         Intent intent = new Intent(CreateGroupActivity.this, MainPageActivity.class);
         startActivity(intent);
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            Uri selectedImage = imageReturnedIntent.getData();
-            mImageView.setImageURI(selectedImage);
-        }
     }
 
     @Override
@@ -176,14 +158,11 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
                 back();
                 break;
             case R.id.create_group_next_button:
-                if(TextUtils.isEmpty(mGroupName.getText().toString())) {
+                if (TextUtils.isEmpty(mGroupName.getText().toString())) {
                     mGroupName.setError("Name must not be blank.");
-                } else{
+                } else {
                     toAddUsers();
                 }
-                break;
-            case R.id.upload_group_picture_button:
-                uploadPicture();
                 break;
             case R.id.private_button:
                 //Do something to make group private.
