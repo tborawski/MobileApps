@@ -42,12 +42,15 @@
     <string name="chat_sender">Text</string>
     <string name="chat_message_text">TextView</string>
 
-    <!-- Strings related to login -->
+    <!-- Strings related to login and sign up -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
+    <string name="prompt_first_name">First Name</string>
+    <string name="prompt_last_name">Last Name</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_up">Sign up</string>
     <string name="action_sign_out">Sign out</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="agreement">By clicking Sign Up, you agree to MeetMe\'s User Agreement and Privacy Police.</string>
 
 </resources>
