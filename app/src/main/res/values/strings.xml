@@ -53,4 +53,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="agreement">By clicking Sign Up, you agree to MeetMe\'s User Agreement and Privacy Police.</string>
 
+    <!--String related to google maps API key-->
+    <string name="google_maps_key">AIzaSyAc9pTEtLLT5Ftx7fLvi_dqWbCAJnVu1-A</string>
+
 </resources>
