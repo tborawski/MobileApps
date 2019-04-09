@@ -31,10 +31,11 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/current_time"
+        android:id="@+id/message_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:textColor="@color/Black" />
+        android:textColor="@color/Black"
+        android:textSize="12sp" />
 
 </LinearLayout>

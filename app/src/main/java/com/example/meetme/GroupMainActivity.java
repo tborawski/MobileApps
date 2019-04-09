@@ -1,5 +1,6 @@
 package com.example.meetme;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -29,9 +30,16 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Nullable;
 
 public class GroupMainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -43,6 +51,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
     private TextView mGroupDes;
     private EditText mMessage;
     private String mGroupId;
+    private String mCurrentTime;
     private ListView mListView;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -71,9 +80,8 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.leave_group).setOnClickListener(this);
         findViewById(R.id.send_chat).setOnClickListener(this);
 
-        setSupportActionBar(mToolbar);
-        setActionBarDrawerToggle();
         handleNavigationClickEvents();
+        setActionBarDrawerToggle();
         setUpUsernameDisplay();
         getGroupInfo();
         getMessages();
@@ -125,7 +133,23 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
 
     private void setList() {
         mAdapter = new MessageAdapter(this, messages);
+        compareMessages();
         mListView.setAdapter(mAdapter);
+    }
+
+    private void compareMessages() {
+        Collections.sort(messages, new Comparator<Message>() {
+            @SuppressLint("SimpleDateFormat")
+            DateFormat f = new SimpleDateFormat("dd/MM/yyyy     HH:mm");
+
+            public int compare(Message msg1, Message msg2) {
+                try {
+                    return f.parse(msg1.time).compareTo(f.parse(msg2.time));
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        });
     }
 
     private void getGroupInfo() {
@@ -191,10 +215,12 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void postChat() {
+        getCurrentDateTime();
         if (!mMessage.getText().equals("")) {
             Map<String, Object> newMessage = new HashMap<>();
             newMessage.put("Sender", mAuth.getCurrentUser().getEmail() + ":");
             newMessage.put("Message", mMessage.getText().toString());
+            newMessage.put("Time", mCurrentTime);
             db.collection("Groups").document(mGroupId).collection("Chat").document().set(newMessage);
             mMessage.setText("");
         }
@@ -225,6 +251,12 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
             }
         });
         builder.create().show();
+    }
+
+    private void getCurrentDateTime() {
+        Date date = new Date();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy     HH:mm");
+        mCurrentTime = formatter.format(date);
     }
 
     private void createGroupEvent() {
