@@ -62,6 +62,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private String mGroupId;
+    private String mGroupName;
     private boolean groupEvent = false;
     ArrayList<String> members = new ArrayList<>();
 
@@ -132,6 +133,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
     private void scheduleGroupEvents() {
         if(getIntent().hasExtra("GROUP_ID")){
             mGroupId = getIntent().getStringExtra("GROUP_ID");
+            mGroupName = getIntent().getStringExtra("GROUP_NAME");
             groupEvent = true;
             db.collection("Groups").document(mGroupId).collection("groupUsers").get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -157,6 +159,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         newEvent.put("Place", mPlace.getText());
 
         if(groupEvent){
+            newEvent.put("Name", mGroupName + ": " + mName.getText());
             for(String mem : members){
                 db.collection("Events").document(mem).collection("uEvents").document().set(newEvent);
             }
