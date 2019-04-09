@@ -25,9 +25,13 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         TextView mSender = convertView.findViewById(R.id.chat_sender);
         TextView mMessage = convertView.findViewById(R.id.chat_message);
+        TextView mCurrentTime = convertView.findViewById(R.id.message_time);
 
-        mSender.setText(m.sender);
-        mMessage.setText(m.message);
+        if (m != null) {
+            mSender.setText(m.sender);
+            mMessage.setText(m.message);
+            mCurrentTime.setText(m.time);
+        }
 
         return convertView;
     }
