@@ -85,7 +85,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         setUpUsernameDisplay();
         getGroupInfo();
         getMessages();
-        //getUpdates();
+        getUpdates();
     }
 
     private void handleNavigationClickEvents() {
@@ -128,7 +128,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         NavigationView navigationView = findViewById(R.id.navigation_view);
         View v = navigationView.getHeaderView(0);
         TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
+        userEmail.setText(mAuth.getCurrentUser().getDisplayName());
     }
 
     private void setList() {

@@ -50,7 +50,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.sign_up_button).setOnClickListener(this);
     }
 
-    private boolean validateForm(){
+    private boolean validateForm() {
         boolean valid = true;
 
         String email = mEmailField.getText().toString();
@@ -58,27 +58,27 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         String first = mFirstName.getText().toString();
         String last = mLastName.getText().toString();
 
-        if(TextUtils.isEmpty(email)){
+        if (TextUtils.isEmpty(email)) {
             mEmailField.setError("Required.");
             valid = false;
-        } else if(!email.contains("@")){
+        } else if (!email.contains("@")) {
             mEmailField.setError("Email does not meet requirements");
             valid = false;
         }
 
-        if(TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             mPasswordField.setError("Required.");
             valid = false;
         } else if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")) {
             mPasswordField.setError("Password does not meet requirements.");
-            //valid = false;
+            valid = false;
         }
 
         return valid;
     }
 
-    private void createAccount(String email, String password, String first, String last){
-        if(!validateForm()){
+    private void createAccount(String email, String password, String first, String last) {
+        if (!validateForm()) {
             return;
         }
         final String e = email;
@@ -87,7 +87,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     FirebaseUser user = mAuth.getCurrentUser();
                     Map<String, Object> addUser = new HashMap<>();
                     addUser.put("Email", e);
@@ -95,13 +95,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     addUser.put("Last", l);
                     db.collection("users").document(user.getEmail()).set(addUser);
 
-                    UserProfileChangeRequest update = new UserProfileChangeRequest.Builder()
-                            .setDisplayName(f + " " + l).build();
+                    UserProfileChangeRequest update = new UserProfileChangeRequest.Builder().setDisplayName(f + " " + l).build();
                     user.updateProfile(update);
                     Intent intent = new Intent(SignUpActivity.this, MainPageActivity.class);
                     startActivity(intent);
-                } else{
-                    Toast toast = Toast.makeText(SignUpActivity.this, "Sign up failed.", Toast.LENGTH_SHORT);
+                } else {
+                    Toast toast = Toast.makeText(SignUpActivity.this, "Sign up failed or email is already in use.", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }

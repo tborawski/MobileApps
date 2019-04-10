@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -103,12 +104,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     private void setUpUsernameDisplay() {
         TextView textView = findViewById(R.id.username_textView);
-        textView.setText(mAuth.getCurrentUser().getEmail());
+        textView.setText(mAuth.getCurrentUser().getDisplayName());
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
         View v = navigationView.getHeaderView(0);
         TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
+        userEmail.setText(mAuth.getCurrentUser().getDisplayName());
     }
 
     private void setUpProfilePicture() {

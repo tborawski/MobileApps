@@ -3,8 +3,6 @@ package com.example.meetme;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -121,7 +119,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         NavigationView navigationView = findViewById(R.id.navigation_view);
         View v = navigationView.getHeaderView(0);
         TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
+        userEmail.setText(mAuth.getCurrentUser().getDisplayName());
     }
 
     private void addEventNames() {
@@ -224,8 +222,8 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onTextChanged(final CharSequence s, final int start, int before, int count) {
-                mListView.setAdapter(mAdapter);
-                (MainPageActivity.this).mAdapter.getFilter().filter(s);
+                mListView.setAdapter(mEventAdapter);
+                (MainPageActivity.this).mEventAdapter.getFilter().filter(s);
             }
 
             @Override
