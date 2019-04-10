@@ -1,23 +1,28 @@
 package com.example.meetme;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
-import android.support.annotation.NonNull;
+import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,15 +31,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class BuildingsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,15 +49,12 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private EditText mFilter;
     private ArrayAdapter mAdapter;
     private ArrayList<String> mAddresses;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private Location mLastKnownLocation;
-    private String mCurrentLocation;
+    private LocationManager mLocationManager;
+    private String mLastKnownLocation;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private boolean mLocationPermissionGranted;
-    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,21 +63,20 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
         findViewById(R.id.buildings_back_button).setOnClickListener(this);
 
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         mFilter = findViewById(R.id.search_text);
         mListView = findViewById(R.id.buildings_listView);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
-        currentLocation();
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
         setUpUsernameDisplay();
         handleSelectedItem();
+        displayLocation();
+        searchBuilding();
         setUpList();
         setList();
-        searchBuilding();
     }
 
     private void handleNavigationClickEvents() {
@@ -122,48 +120,6 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         View v = navigationView.getHeaderView(0);
         TextView userEmail = v.findViewById(R.id.navigation_bar_email);
         userEmail.setText(mAuth.getCurrentUser().getEmail());
-    }
-
-    private void currentLocation() {
-        getLocationPermission();
-        getDeviceLocation();
-
-        Snackbar popUp = Snackbar.make(findViewById(android.R.id.content), "Your most recent location:\n " + mCurrentLocation, 7000).setAction("Action", null);
-        View view = popUp.getView();
-        TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        popUp.show();
-    }
-
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    private void getDeviceLocation() {
-        try {
-            if (mLocationPermissionGranted) {
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            mLastKnownLocation = task.getResult();
-                            mCurrentLocation = mLastKnownLocation.toString();
-                        } else {
-                            mCurrentLocation = mDefaultLocation.toString();
-                        }
-                    }
-                });
-            }
-        } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
-        }
     }
 
     private void setUpList() {
@@ -253,6 +209,96 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
+    private void displayLocation() {
+        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+
+        } else if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            getLocation();
+        }
+
+        Snackbar popUp = Snackbar.make(findViewById(android.R.id.content), "Your most recent location:\n " + mLastKnownLocation, 7000)
+                .setAction("Action", null);
+        View view = popUp.getView();
+        TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        popUp.show();
+    }
+
+    private void getLocation() {
+        Geocoder locationAddress = new Geocoder(this);
+
+        if (ActivityCompat.checkSelfPermission(BuildingsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                (BuildingsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(BuildingsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+        } else {
+            Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            Location location1 = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location2 = mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+            if (location != null) {
+                double lat = location.getLatitude();
+                double lng = location.getLongitude();
+
+                try {
+                    List<Address> addresses = locationAddress.getFromLocation(lat, lng, 1);
+                    mLastKnownLocation = addresses.get(0).getLocality();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (location1 != null) {
+                double lat = location1.getLatitude();
+                double lng = location1.getLongitude();
+
+                try {
+                    List<Address> addresses = locationAddress.getFromLocation(lat, lng, 1);
+                    mLastKnownLocation = addresses.get(0).getLocality();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (location2 != null) {
+                double lat = location2.getLatitude();
+                double lng = location2.getLongitude();
+
+                try {
+                    List<Address> addresses = locationAddress.getFromLocation(lat, lng, 1);
+                    mLastKnownLocation = addresses.get(0).getLocality();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                mLastKnownLocation = "Unable to trace your location.";
+            }
+        }
+    }
+
+    protected void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Please Turn ON your GPS Connection")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        builder.create().show();
+    }
+
     private void searchBuilding() {
         mFilter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -297,18 +343,6 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private void openSettings() {
         Intent intent = new Intent(BuildingsActivity.this, SettingsActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
-            }
-        }
     }
 
     @Override
