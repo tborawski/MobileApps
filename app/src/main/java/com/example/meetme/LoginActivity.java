@@ -193,8 +193,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
                 break;
             case R.id.sign_up:
-                mProgress.show();
-                createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+                startActivity(intent);
                 break;
             case R.id.sign_out_button:
                 signOut();
