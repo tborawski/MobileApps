@@ -1,5 +1,6 @@
 package com.example.meetme;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -33,7 +34,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainPageActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -123,7 +129,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                if(document.exists()) {
+                                if (document.exists()) {
                                     Log.d(TAG, document.getId());
                                     Object e = document.get("Name");
                                     eventNames.add(e.toString());
@@ -158,14 +164,14 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainPageActivity.this);
-                builder.setTitle(userEvents.get(position).name);
 
+                String name = userEvents.get(position).name;
                 String date = userEvents.get(position).date;
                 String startTime = userEvents.get(position).startTime;
                 String endTime = userEvents.get(position).endTime;
                 String loc = userEvents.get(position).loc;
 
-                builder.setMessage("Date: " + date + "\n\nStart Time: " + startTime + "\n\nEnd Time: " + endTime + "\n\nPlace: " + loc);
+                builder.setMessage("Name: " + name + "\n\nDate: " + date + "\n\nStart Time: " + startTime + "\n\nEnd Time: " + endTime + "\n\nPlace: " + loc);
 
                 builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
@@ -227,8 +233,24 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
+    private void compareEvents() {
+        Collections.sort(userEvents, new Comparator<Event>() {
+            @SuppressLint("SimpleDateFormat")
+            DateFormat f = new SimpleDateFormat("EEEE, MMMM dd, YYYY");
+
+            public int compare(Event e1, Event e2) {
+                try {
+                    return f.parse(e2.date).compareTo(f.parse(e1.date));
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        });
+    }
+
     private void setList() {
         mEventAdapter = new EventAdapter(this, userEvents);
+        compareEvents();
         mListView.setAdapter(mEventAdapter);
     }
 

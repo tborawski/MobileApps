@@ -131,7 +131,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
     }
 
     private void scheduleGroupEvents() {
-        if(getIntent().hasExtra("GROUP_ID")){
+        if (getIntent().hasExtra("GROUP_ID")) {
             mGroupId = getIntent().getStringExtra("GROUP_ID");
             mGroupName = getIntent().getStringExtra("GROUP_NAME");
             groupEvent = true;
@@ -139,8 +139,8 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()){
-                                for(QueryDocumentSnapshot user : task.getResult()){
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot user : task.getResult()) {
                                     members.add(user.getId());
                                 }
                             }
@@ -150,7 +150,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         }
     }
 
-    private void submitEvent(){
+    private void submitEvent() {
         Map<String, Object> newEvent = new HashMap<>();
         newEvent.put("Name", mName.getText().toString());
         newEvent.put("Start Time", mStartTime.getText());
@@ -158,9 +158,9 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         newEvent.put("Date", mDate.getText());
         newEvent.put("Place", mPlace.getText());
 
-        if(groupEvent){
+        if (groupEvent) {
             newEvent.put("Name", mGroupName + ": " + mName.getText());
-            for(String mem : members){
+            for (String mem : members) {
                 db.collection("Events").document(mem).collection("uEvents").document().set(newEvent);
             }
         } else {
@@ -204,29 +204,26 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        if(startOrEnd == 0) {
+        if (startOrEnd == 0) {
             mTime = findViewById(R.id.start_time_textView);
-        } else if(startOrEnd == 1) {
+        } else if (startOrEnd == 1) {
             mTime = findViewById(R.id.end_time_textView);
         }
 
-        if(hourOfDay >= 12) {
-            if(minute == 0) {
+        if (hourOfDay >= 12) {
+            if (minute == 0) {
                 mTime.setText(new StringBuilder().append(hourOfDay).append(" : ").append(minute).append("0 PM").toString());
-            }
-            else if(minute < 10) {
+            } else if (minute < 10) {
                 mTime.setText(new StringBuilder().append(hourOfDay).append(" : 0").append(minute).append(" PM").toString());
             } else {
                 mTime.setText(new StringBuilder().append(hourOfDay).append(" : ").append(minute).append(" PM").toString());
             }
         } else {
-            if(hourOfDay < 10) {
+            if (hourOfDay < 10) {
                 mTime.setText(new StringBuilder().append("0").append(hourOfDay).append(" : ").append(minute).append("0 AM").toString());
-            }
-            else if(minute == 0) {
+            } else if (minute == 0) {
                 mTime.setText(new StringBuilder().append(hourOfDay).append(" : ").append(minute).append("0 AM").toString());
-            }
-            else if(minute < 10) {
+            } else if (minute < 10) {
                 mTime.setText(new StringBuilder().append(hourOfDay).append(" : 0").append(minute).append(" AM").toString());
             } else {
                 mTime.setText(new StringBuilder().append(hourOfDay).append(" : ").append(minute).append(" AM").toString());
@@ -245,7 +242,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 result = data.getStringExtra(KEY);
                 mPlace = findViewById(R.id.place_textView);
                 mPlace.setText(result);
@@ -277,10 +274,10 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
                 startActivityForResult(pickPlace, 1);
                 break;
             case R.id.add_event_button:
-                if(canSubmit) {
-                    if(TextUtils.isEmpty(mName.getText().toString())) {
+                if (canSubmit) {
+                    if (TextUtils.isEmpty(mName.getText().toString())) {
                         mName.setError("Name must not be blank.");
-                    } else{
+                    } else {
                         submitEvent();
                     }
                 }
