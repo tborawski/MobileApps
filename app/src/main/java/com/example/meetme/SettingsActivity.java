@@ -1,7 +1,12 @@
 package com.example.meetme;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -10,20 +15,37 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
-public class SettingsActivity extends AppCompatActivity implements View.OnClickListener{
+import java.io.IOException;
+import java.util.UUID;
+
+public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView mImageView;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
+    private Uri mImageUri;
+    private Bitmap mBitmap;
+    private StorageTask mUploadTask;
 
+    private FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
+    private StorageReference mStorageReference = mFirebaseStorage.getReference();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
@@ -37,12 +59,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.version_button).setOnClickListener(this);
-        findViewById(R.id.upload_button).setOnClickListener(this);
+        findViewById(R.id.choose_picture_button).setOnClickListener(this);
+        findViewById(R.id.upload_picture_button).setOnClickListener(this);
 
         setSupportActionBar(mToolbar);
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
         setUpUsernameDisplay();
+        setUpProfilePicture();
     }
 
     private void handleNavigationClickEvents() {
@@ -88,6 +112,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         userEmail.setText(mAuth.getCurrentUser().getEmail());
     }
 
+    private void setUpProfilePicture() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View v = navigationView.getHeaderView(0);
+        ImageView profilePicture = v.findViewById(R.id.profile_picture);
+        profilePicture.setImageBitmap(mBitmap);
+    }
+
     public void goHome() {
         Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
         startActivity(intent);
@@ -117,16 +148,56 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         popUp.show();
     }
 
-    public void uploadPicture() {
+    @SuppressLint("IntentReset")
+    public void choosePicture() {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickPhoto.setType("image/*");
+        pickPhoto.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(pickPhoto, 1);
+    }
+
+    private void uploadImage() {
+        if (mImageUri != null) {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.show();
+
+            StorageReference fileReference = mStorageReference.child("images/" + UUID.randomUUID().toString());
+            mUploadTask = fileReference.putFile(mImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast toast = Toast.makeText(SettingsActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                            toast.show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                        }
+                    });
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        if(requestCode == 1 && resultCode == RESULT_OK) {
-            Uri selectedImage = imageReturnedIntent.getData();
-            mImageView.setImageURI(selectedImage);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            mImageUri = imageReturnedIntent.getData();
+            try {
+                mBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
+                mImageView.setImageBitmap(mBitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -147,8 +218,15 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             case R.id.version_button:
                 showVersion(v);
                 break;
-            case R.id.upload_button:
-                uploadPicture();
+            case R.id.choose_picture_button:
+                choosePicture();
+                break;
+            case R.id.upload_picture_button:
+                if (mUploadTask != null && mUploadTask.isInProgress()) {
+                    Toast.makeText(SettingsActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                } else {
+                    uploadImage();
+                }
                 break;
         }
     }

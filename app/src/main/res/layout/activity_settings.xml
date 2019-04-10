@@ -60,7 +60,7 @@
                     android:contentDescription="@string/profile_picture" />
 
                 <Button
-                    android:id="@+id/upload_button"
+                    android:id="@+id/choose_picture_button"
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/profile_imageView"
@@ -69,10 +69,20 @@
 
             </RelativeLayout>
 
+            <ImageButton
+                android:id="@+id/upload_picture_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@color/Transparent"
+                android:contentDescription="@string/upload_button_description"
+                android:src="@drawable/ic_upload" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
