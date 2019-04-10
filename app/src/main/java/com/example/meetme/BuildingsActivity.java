@@ -249,7 +249,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
                 try {
                     List<Address> addresses = locationAddress.getFromLocation(lat, lng, 1);
-                    mLastKnownLocation = addresses.get(0).getLocality();
+                    mLastKnownLocation = addresses.get(0).getAddressLine(0);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -260,7 +260,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
                 try {
                     List<Address> addresses = locationAddress.getFromLocation(lat, lng, 1);
-                    mLastKnownLocation = addresses.get(0).getLocality();
+                    mLastKnownLocation = addresses.get(0).getAddressLine(0);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -271,7 +271,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
                 try {
                     List<Address> addresses = locationAddress.getFromLocation(lat, lng, 1);
-                    mLastKnownLocation = addresses.get(0).getLocality();
+                    mLastKnownLocation = addresses.get(0).getAddressLine(0);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -262,11 +262,14 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
     private void createGroupEvent() {
         Intent intent = new Intent(GroupMainActivity.this, AddEventActivity.class);
         intent.putExtra("GROUP_ID", mGroupId);
+        intent.putExtra("GROUP_NAME", mGroupNameView.getText());
         startActivity(intent);
     }
 
     private void addMember() {
-        // DO something to add members to current group.
+        Intent intent = new Intent(GroupMainActivity.this, AddMembersActivity.class);
+        intent.putExtra("GROUP_NAME", mGroupId);
+        startActivity(intent);
     }
 
     private void goHome() {
