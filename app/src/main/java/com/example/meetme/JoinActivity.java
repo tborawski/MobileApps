@@ -127,14 +127,14 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                                         if (doc.getId().equals(mAuth.getCurrentUser().getEmail())) {
                                             found = true;
                                         }
-                                        if (found) {
-                                            userGroups.add(document.getId());
-                                        } else {
-                                            if (document.get("isPrivate").toString().equals("OFF")) {
-                                                groupList.add(document.get("Name").toString());
-                                                docList.add(document.getId());
-                                                mAdapter.notifyDataSetChanged();
-                                            }
+                                    }
+                                    if (found) {
+                                        userGroups.add(document.getId());
+                                    } else {
+                                        if (document.get("isPrivate").toString().equals("OFF")) {
+                                            groupList.add(document.get("Name").toString());
+                                            docList.add(document.getId());
+                                            mAdapter.notifyDataSetChanged();
                                         }
                                     }
                                 }
