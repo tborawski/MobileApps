@@ -62,6 +62,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
 
     ArrayList<Message> messages = new ArrayList<>();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -181,6 +182,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
                             }
                         }
                         setList();
+                        getUpdates();
                     }
                 });
     }
@@ -232,20 +234,20 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
                         if (e != null) {
                             return;
                         }
-
+                        boolean scroll = false;
+                        if(mListView.getLastVisiblePosition() == mAdapter.getCount() - 1){
+                            scroll = true;
+                        }
                         if (snapshots != null) {
-                            for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                                switch (dc.getType()) {
-                                    case ADDED:
-                                        Message m = new Message(dc.getDocument());
-                                        messages.add(m);
-                                        mAdapter.notifyDataSetChanged();
-                                        break;
-                                    case REMOVED:
-                                        messages.remove(dc.getDocument());
-                                        mAdapter.notifyDataSetChanged();
-                                        break;
-                                }
+                            messages.clear();
+                            for (QueryDocumentSnapshot doc : snapshots) {
+                                Message m = new Message(doc);
+                                messages.add(m);
+                            }
+                            compareMessages();
+                            mAdapter.notifyDataSetChanged();
+                            if(scroll) {
+                                mListView.smoothScrollToPosition(mAdapter.getCount() - 1);
                             }
                         }
                     }
