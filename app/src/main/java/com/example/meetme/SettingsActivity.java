@@ -66,7 +66,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
         setUpUsernameDisplay();
-        setUpProfilePicture();
     }
 
     private void handleNavigationClickEvents() {
@@ -119,35 +118,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         profilePicture.setImageBitmap(mBitmap);
     }
 
-    public void goHome() {
-        Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
-        startActivity(intent);
-    }
-
-    public void addEvent() {
-        Intent intent = new Intent(SettingsActivity.this, AddEventActivity.class);
-        startActivity(intent);
-    }
-
-    public void myGroups() {
-        Intent intent = new Intent(SettingsActivity.this, MyGroupsActivity.class);
-        startActivity(intent);
-    }
-
-    public void signOutOfApp() {
-        mAuth.signOut();
-        Intent signOut = new Intent(SettingsActivity.this, LoginActivity.class);
-        startActivity(signOut);
-    }
-
-    public void showVersion(View v) {
-        Snackbar popUp = Snackbar.make(v, "Version 1.0.0", Snackbar.LENGTH_LONG).setAction("Action", null);
-        View view = popUp.getView();
-        TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        popUp.show();
-    }
-
     @SuppressLint("IntentReset")
     public void choosePicture() {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -195,10 +165,40 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             try {
                 mBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
                 mImageView.setImageBitmap(mBitmap);
+                setUpProfilePicture();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void showVersion(View v) {
+        Snackbar popUp = Snackbar.make(v, "Version 1.0.0", Snackbar.LENGTH_LONG).setAction("Action", null);
+        View view = popUp.getView();
+        TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        popUp.show();
+    }
+
+    public void goHome() {
+        Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
+        startActivity(intent);
+    }
+
+    public void addEvent() {
+        Intent intent = new Intent(SettingsActivity.this, AddEventActivity.class);
+        startActivity(intent);
+    }
+
+    public void myGroups() {
+        Intent intent = new Intent(SettingsActivity.this, MyGroupsActivity.class);
+        startActivity(intent);
+    }
+
+    public void signOutOfApp() {
+        mAuth.signOut();
+        Intent signOut = new Intent(SettingsActivity.this, LoginActivity.class);
+        startActivity(signOut);
     }
 
     @Override
