@@ -185,35 +185,6 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
                 });
     }
 
-    private void getUpdates() {
-        db.collection("Groups").document(mGroupId).collection("Chat")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
-
-                        if (e != null) {
-                            return;
-                        }
-
-                        if (snapshots != null) {
-                            for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                                switch (dc.getType()) {
-                                    case ADDED:
-                                        Message m = new Message(dc.getDocument());
-                                        messages.add(m);
-                                        mAdapter.notifyDataSetChanged();
-                                        break;
-                                    case REMOVED:
-                                        messages.remove(dc.getDocument());
-                                        mAdapter.notifyDataSetChanged();
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                });
-    }
-
     private void postChat() {
         getCurrentDateTime();
         if (!mMessage.getText().equals("")) {
@@ -251,6 +222,34 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
             }
         });
         builder.create().show();
+    }
+
+    private void getUpdates() {
+        db.collection("Groups").document(mGroupId).collection("Chat")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            return;
+                        }
+
+                        if (snapshots != null) {
+                            for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                                switch (dc.getType()) {
+                                    case ADDED:
+                                        Message m = new Message(dc.getDocument());
+                                        messages.add(m);
+                                        mAdapter.notifyDataSetChanged();
+                                        break;
+                                    case REMOVED:
+                                        messages.remove(dc.getDocument());
+                                        mAdapter.notifyDataSetChanged();
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     private void getCurrentDateTime() {
