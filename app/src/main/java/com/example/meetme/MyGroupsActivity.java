@@ -28,9 +28,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
-public class MyGroupsActivity extends AppCompatActivity implements View.OnClickListener {
+public class MyGroupsActivity extends AppCompatActivity {
 
     private ArrayAdapter mAdapter;
     private ListView mListView;
@@ -121,6 +120,7 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
                                             groupNames.add(group.get("Name").toString());
                                             groupIds.add(group.getId());
                                             mAdapter.notifyDataSetChanged();
+                                            Collections.sort(groupNames, String.CASE_INSENSITIVE_ORDER);
                                         }
                                     }
                                 }
@@ -165,12 +165,6 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
 
     private void setList() {
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, groupNames);
-        Collections.sort(groupNames, new Comparator<String>() {
-            @Override
-            public int compare(String s1, String s2) {
-                return 0;
-            }
-        });
         mListView.setAdapter(mAdapter);
     }
 
@@ -193,14 +187,5 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mActionBarDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-
-        switch (i) {
-            // In case we still need onClick.
-        }
     }
 }
