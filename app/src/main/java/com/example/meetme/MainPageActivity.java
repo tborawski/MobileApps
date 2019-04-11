@@ -236,11 +236,11 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     private void compareEvents() {
         Collections.sort(userEvents, new Comparator<Event>() {
             @SuppressLint("SimpleDateFormat")
-            DateFormat f = new SimpleDateFormat("EEEE, MMMM dd, YYYY");
+            DateFormat f = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
 
             public int compare(Event e1, Event e2) {
                 try {
-                    return f.parse(e2.date).compareTo(f.parse(e1.date));
+                    return f.parse(e1.date).compareTo(f.parse(e2.date));
                 } catch (ParseException e) {
                     throw new IllegalArgumentException(e);
                 }

@@ -77,19 +77,21 @@
                     android:id="@+id/add_member"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/Transparent"
                     android:layout_marginStart="130dp"
+                    android:background="@color/Transparent"
+                    android:contentDescription="@string/add_member_description"
                     android:minHeight="50dp"
                     android:scaleX="2"
                     android:scaleY="2"
-                    android:src="@drawable/ic_add_member"/>
+                    android:src="@drawable/ic_add_member" />
 
                 <ImageButton
                     android:id="@+id/leave_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="150dp"
+                    android:layout_marginStart="140dp"
                     android:background="@color/Transparent"
+                    android:contentDescription="@string/leave_group_description"
                     android:minHeight="50dp"
                     android:scaleX="2"
                     android:scaleY="2"
@@ -124,6 +126,7 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="28dp"
                     android:background="@color/Transparent"
+                    android:contentDescription="@string/send_chat_description"
                     android:scaleX="2"
                     android:scaleY="2"
                     android:src="@drawable/ic_send_message" />

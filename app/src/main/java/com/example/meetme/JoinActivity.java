@@ -29,6 +29,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -127,14 +129,14 @@ public class JoinActivity extends AppCompatActivity {
                                         if (doc.getId().equals(mAuth.getCurrentUser().getEmail())) {
                                             found = true;
                                         }
-                                        if (found) {
-                                            userGroups.add(document.getId());
-                                        } else {
-                                            if (document.get("isPrivate").toString().equals("OFF")) {
-                                                groupList.add(document.get("Name").toString());
-                                                docList.add(document.getId());
-                                                mAdapter.notifyDataSetChanged();
-                                            }
+                                    }
+                                    if (found) {
+                                        userGroups.add(document.getId());
+                                    } else {
+                                        if (document.get("isPrivate").toString().equals("OFF")) {
+                                            groupList.add(document.get("Name").toString());
+                                            docList.add(document.getId());
+                                            mAdapter.notifyDataSetChanged();
                                         }
                                     }
                                 }
@@ -200,6 +202,12 @@ public class JoinActivity extends AppCompatActivity {
 
     private void setList() {
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, groupList);
+        Collections.sort(groupList, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return 0;
+            }
+        });
         mListView.setAdapter(mAdapter);
     }
 

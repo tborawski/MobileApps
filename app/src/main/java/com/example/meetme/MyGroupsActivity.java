@@ -27,6 +27,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MyGroupsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -163,6 +165,12 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
 
     private void setList() {
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, groupNames);
+        Collections.sort(groupNames, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return 0;
+            }
+        });
         mListView.setAdapter(mAdapter);
     }
 

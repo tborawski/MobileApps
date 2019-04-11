@@ -22,7 +22,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -85,7 +84,6 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         setUpUsernameDisplay();
         getGroupInfo();
         getMessages();
-        getUpdates();
     }
 
     private void handleNavigationClickEvents() {
@@ -181,6 +179,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
                             }
                         }
                         setList();
+                        getUpdates();
                     }
                 });
     }
@@ -189,7 +188,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         getCurrentDateTime();
         if (!mMessage.getText().equals("")) {
             Map<String, Object> newMessage = new HashMap<>();
-            newMessage.put("Sender", mAuth.getCurrentUser().getEmail() + ":");
+            newMessage.put("Sender", mAuth.getCurrentUser().getDisplayName());
             newMessage.put("Message", mMessage.getText().toString());
             newMessage.put("Time", mCurrentTime);
             db.collection("Groups").document(mGroupId).collection("Chat").document().set(newMessage);
@@ -232,20 +231,20 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
                         if (e != null) {
                             return;
                         }
-
+                        boolean scroll = false;
+                        if(mListView.getLastVisiblePosition() == mAdapter.getCount() - 1){
+                            scroll = true;
+                        }
                         if (snapshots != null) {
-                            for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                                switch (dc.getType()) {
-                                    case ADDED:
-                                        Message m = new Message(dc.getDocument());
-                                        messages.add(m);
-                                        mAdapter.notifyDataSetChanged();
-                                        break;
-                                    case REMOVED:
-                                        messages.remove(dc.getDocument());
-                                        mAdapter.notifyDataSetChanged();
-                                        break;
-                                }
+                            messages.clear();
+                            for (QueryDocumentSnapshot doc : snapshots) {
+                                Message m = new Message(doc);
+                                messages.add(m);
+                            }
+                            compareMessages();
+                            mAdapter.notifyDataSetChanged();
+                            if(scroll) {
+                                mListView.smoothScrollToPosition(mAdapter.getCount() - 1);
                             }
                         }
                     }
