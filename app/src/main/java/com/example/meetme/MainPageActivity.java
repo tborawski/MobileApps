@@ -1,6 +1,5 @@
 package com.example.meetme;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,7 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,8 +35,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainPageActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -76,6 +76,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
         setUpUsernameDisplay();
+        deleteExpiredEvent();
         addEventNames();
         addUserEvent();
         checkEvent();
@@ -120,6 +121,16 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         View v = navigationView.getHeaderView(0);
         TextView userEmail = v.findViewById(R.id.navigation_bar_email);
         userEmail.setText(mAuth.getCurrentUser().getDisplayName());
+    }
+
+    private void deleteExpiredEvent() {
+        DateFormat f = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.US);
+        Date date = Calendar.getInstance().getTime();
+        for (int i = 0; i < userEvents.size(); i++) {
+            if ((f.format(date).compareTo(userEvents.get(i).date)) > 0) {
+                deleteEvent(i);
+            }
+        }
     }
 
     private void addEventNames() {
@@ -235,8 +246,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
     private void compareEvents() {
         Collections.sort(userEvents, new Comparator<Event>() {
-            @SuppressLint("SimpleDateFormat")
-            DateFormat f = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
+            DateFormat f = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.US);
 
             public int compare(Event e1, Event e2) {
                 try {
@@ -273,6 +283,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         Intent intent = new Intent(MainPageActivity.this, SettingsActivity.class);
         startActivity(intent);
     }
+
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {

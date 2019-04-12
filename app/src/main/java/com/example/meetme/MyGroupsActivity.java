@@ -120,7 +120,6 @@ public class MyGroupsActivity extends AppCompatActivity {
                                             groupNames.add(group.get("Name").toString());
                                             groupIds.add(group.getId());
                                             mAdapter.notifyDataSetChanged();
-                                            Collections.sort(groupNames, String.CASE_INSENSITIVE_ORDER);
                                         }
                                     }
                                 }

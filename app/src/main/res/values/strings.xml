@@ -39,6 +39,7 @@
     <string name="add_member_description">Add member</string>
     <string name="leave_group_description">Leave group</string>
     <string name="send_chat_description">Send chat</string>
+    <string name="show_members_text">Members</string>
     <string name="chat_message">Message</string>
     <string name="send_chat">Send</string>
     <string name="leave_group">Leave Group</string>

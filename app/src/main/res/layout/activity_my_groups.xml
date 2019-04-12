@@ -59,7 +59,9 @@
             <ListView
                 android:id="@+id/my_group_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:divider="@color/LightBlue"
+                android:dividerHeight="1dp" />
 
         </LinearLayout>
 

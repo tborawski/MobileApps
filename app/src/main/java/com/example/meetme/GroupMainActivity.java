@@ -81,6 +81,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.send_chat).setOnClickListener(this);
         findViewById(R.id.show_members).setOnClickListener(this);
 
+        setSupportActionBar(mToolbar);
         handleNavigationClickEvents();
         setActionBarDrawerToggle();
         setUpUsernameDisplay();
@@ -292,17 +293,18 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         startActivity(intent);
     }
 
+    private void showMembers(){
+        Intent intent = new Intent(GroupMainActivity.this, ShowMembersActivity.class);
+        intent.putExtra("GROUP_ID", mGroupId);
+        startActivity(intent);
+    }
+
     @Override
     protected void onPostCreate(@android.support.annotation.Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mActionBarDrawerToggle.syncState();
     }
 
-    private void showMembers(){
-        Intent intent = new Intent(GroupMainActivity.this, ShowMembersActivity.class);
-        intent.putExtra("GROUP_ID", mGroupId);
-        startActivity(intent);
-    }
 
     @Override
     public void onClick(View v) {

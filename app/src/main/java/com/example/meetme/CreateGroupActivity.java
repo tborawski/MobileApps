@@ -44,8 +44,7 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         mPrivateButton = findViewById(R.id.private_button);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
-
-        findViewById(R.id.create_group_back_button).setOnClickListener(this);
+        
         findViewById(R.id.create_group_next_button).setOnClickListener(this);
         findViewById(R.id.private_button).setOnClickListener(this);
 
@@ -154,9 +153,6 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         int i = v.getId();
 
         switch (i) {
-            case R.id.create_group_back_button:
-                back();
-                break;
             case R.id.create_group_next_button:
                 if (TextUtils.isEmpty(mGroupName.getText().toString())) {
                     mGroupName.setError("Name must not be blank.");
