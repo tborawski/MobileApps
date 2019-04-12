@@ -29,10 +29,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JoinActivity extends AppCompatActivity implements View.OnClickListener {
+public class JoinActivity extends AppCompatActivity {
 
     private ListView mListView;
     private EditText mFilter;
@@ -109,7 +110,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         NavigationView navigationView = findViewById(R.id.navigation_view);
         View v = navigationView.getHeaderView(0);
         TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
+        userEmail.setText(mAuth.getCurrentUser().getDisplayName());
     }
 
     private void userAddList() {
@@ -227,14 +228,5 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mActionBarDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-
-        switch (i) {
-            // Just in case we still need onClick.
-        }
     }
 }

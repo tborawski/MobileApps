@@ -5,19 +5,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class EventAdapter extends ArrayAdapter<Event> {
-    public EventAdapter(Context context, ArrayList<Event> events){
+public class EventAdapter extends ArrayAdapter<Event> implements Filterable {
+    public EventAdapter(Context context, ArrayList<Event> events) {
         super(context, 0, events);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         Event e = getItem(position);
-        if(convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.user_event_listview, parent, false);
         }
         TextView eName = convertView.findViewById(R.id.label);

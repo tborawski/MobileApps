@@ -27,8 +27,7 @@
         android:layout_marginStart="3dp"
         android:layout_marginTop="1dp"
         android:text="@string/chat_message_text"
-        android:textColor="@color/Black"
-        android:textStyle="bold" />
+        android:textColor="@color/Black" />
 
     <TextView
         android:id="@+id/message_time"

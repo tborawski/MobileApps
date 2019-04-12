@@ -114,7 +114,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         NavigationView navigationView = findViewById(R.id.navigation_view);
         View v = navigationView.getHeaderView(0);
         TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
+        userEmail.setText(mAuth.getCurrentUser().getDisplayName());
     }
 
     private void addMember() {

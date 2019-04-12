@@ -27,8 +27,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class MyGroupsActivity extends AppCompatActivity implements View.OnClickListener {
+public class MyGroupsActivity extends AppCompatActivity {
 
     private ArrayAdapter mAdapter;
     private ListView mListView;
@@ -101,7 +102,7 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
         NavigationView navigationView = findViewById(R.id.navigation_view);
         View v = navigationView.getHeaderView(0);
         TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
+        userEmail.setText(mAuth.getCurrentUser().getDisplayName());
     }
 
     private void setUpGroup() {
@@ -119,6 +120,7 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
                                             groupNames.add(group.get("Name").toString());
                                             groupIds.add(group.getId());
                                             mAdapter.notifyDataSetChanged();
+                                            Collections.sort(groupNames, String.CASE_INSENSITIVE_ORDER);
                                         }
                                     }
                                 }
@@ -185,14 +187,5 @@ public class MyGroupsActivity extends AppCompatActivity implements View.OnClickL
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mActionBarDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-
-        switch (i) {
-            // In case we still need onClick.
-        }
     }
 }

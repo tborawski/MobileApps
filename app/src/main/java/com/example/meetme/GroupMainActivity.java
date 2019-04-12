@@ -22,7 +22,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -87,7 +86,6 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         setUpUsernameDisplay();
         getGroupInfo();
         getMessages();
-        //getUpdates();
     }
 
     private void handleNavigationClickEvents() {
@@ -130,7 +128,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         NavigationView navigationView = findViewById(R.id.navigation_view);
         View v = navigationView.getHeaderView(0);
         TextView userEmail = v.findViewById(R.id.navigation_bar_email);
-        userEmail.setText(mAuth.getCurrentUser().getEmail());
+        userEmail.setText(mAuth.getCurrentUser().getDisplayName());
     }
 
     private void setList() {
@@ -192,7 +190,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         getCurrentDateTime();
         if (!mMessage.getText().equals("")) {
             Map<String, Object> newMessage = new HashMap<>();
-            newMessage.put("Sender", mAuth.getCurrentUser().getEmail() + ":");
+            newMessage.put("Sender", mAuth.getCurrentUser().getDisplayName());
             newMessage.put("Message", mMessage.getText().toString());
             newMessage.put("Time", mCurrentTime);
             db.collection("Groups").document(mGroupId).collection("Chat").document().set(newMessage);

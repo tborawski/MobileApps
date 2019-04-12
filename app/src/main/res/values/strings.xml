@@ -36,6 +36,9 @@
     <string name="drawer_close">Drawer_close</string>
     <string name="back_button_description">Back button</string>
     <string name="upload_button_description">Upload button</string>
+    <string name="add_member_description">Add member</string>
+    <string name="leave_group_description">Leave group</string>
+    <string name="send_chat_description">Send chat</string>
     <string name="chat_message">Message</string>
     <string name="send_chat">Send</string>
     <string name="leave_group">Leave Group</string>
