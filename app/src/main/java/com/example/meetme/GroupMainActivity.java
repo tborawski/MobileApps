@@ -80,6 +80,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.create_group_activity).setOnClickListener(this);
         findViewById(R.id.leave_group).setOnClickListener(this);
         findViewById(R.id.send_chat).setOnClickListener(this);
+        findViewById(R.id.show_members).setOnClickListener(this);
 
         handleNavigationClickEvents();
         setActionBarDrawerToggle();
@@ -299,6 +300,12 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         mActionBarDrawerToggle.syncState();
     }
 
+    private void showMembers(){
+        Intent intent = new Intent(GroupMainActivity.this, ShowMembersActivity.class);
+        intent.putExtra("GROUP_ID", mGroupId);
+        startActivity(intent);
+    }
+
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -315,6 +322,9 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.create_group_activity:
                 createGroupEvent();
+                break;
+            case R.id.show_members:
+                showMembers();
                 break;
         }
     }
