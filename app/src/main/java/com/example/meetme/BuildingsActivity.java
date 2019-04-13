@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
@@ -40,7 +41,8 @@ import java.util.List;
 
 public class BuildingsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String KEY = "Address";
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final String KEY = "Address";
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -48,20 +50,22 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private ListView mListView;
     private EditText mFilter;
     private ArrayAdapter mAdapter;
-    private ArrayList<String> mAddresses;
     private LocationManager mLocationManager;
-    private String mLastKnownLocation;
+    private String mLastKnownLocation, mSuggestion1, mSuggestion2, mSuggestion3;
+    private Location mLocation1;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private float SMALLEST_DISTANCE = -1;
 
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    ArrayList<String> mAddresses = new ArrayList<>();
+    ArrayList<LatLng> mLatLng = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buildings);
 
-        findViewById(R.id.buildings_back_button).setOnClickListener(this);
+        findViewById(R.id.suggestions_button).setOnClickListener(this);
 
         mFilter = findViewById(R.id.search_text);
         mListView = findViewById(R.id.buildings_listView);
@@ -75,7 +79,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         handleSelectedItem();
         displayLocation();
         searchBuilding();
-        setUpList();
+        setUpBuildingsList();
         setList();
     }
 
@@ -122,10 +126,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         userEmail.setText(mAuth.getCurrentUser().getDisplayName());
     }
 
-    private void setUpList() {
-        mAddresses = new ArrayList<>();
-
-        mAddresses.add("Adventure Recreation Center (ARC)\n855 Woody Hayes Dr");
+    private void setUpBuildingsList() {
         mAddresses.add("Animal Science Building\n2029 Fyffe Rd");
         mAddresses.add("Archer House\n2130 Neil Ave");
         mAddresses.add("Aronoff Laboratory\n318 W 12th Ave");
@@ -148,7 +149,6 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         mAddresses.add("Drinko Hall\n55 W 12th Ave");
         mAddresses.add("Eighteenth Avenue Library\n175 W 18th Ave");
         mAddresses.add("Enarson Classroom Building\n2009 Millikin Rd");
-        mAddresses.add("Evans Hall\n520 King Ave");
         mAddresses.add("Evans Laboratory\n88 W 18th Ave");
         mAddresses.add("Fawcett Center for Tomorrow\n2400 Olentangy River Rd");
         mAddresses.add("Fisher Hall\n2100 Neil Ave");
@@ -166,7 +166,6 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         mAddresses.add("MacQuigg Laboratory\n105 W Woodruff Ave");
         mAddresses.add("Mason Hall\n250 W Woodruff Ave");
         mAddresses.add("McPherson Chemical Laboratory\n140 W 18th Ave");
-        mAddresses.add("Mendenhall Laboratory\n125 S Oval Mall");
         mAddresses.add("Morril Tower\n1900 Cannon Dr");
         mAddresses.add("Morrison Tower\n196 W 11th Ave");
         mAddresses.add("North Recreation Center\n149 W Lane Ave");
@@ -193,6 +192,74 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         mAddresses.add("Torres House\n187 W Lane Ave");
         mAddresses.add("University Hall\n230 N Oval Mall");
         mAddresses.add("Younkin Success Center\n1640 Neil Ave");
+    }
+
+    private void setUpLatLngList() {
+        mLatLng.add(new LatLng(40.003647, -83.028633));
+        mLatLng.add(new LatLng(40.005378, -83.0141));
+        mLatLng.add(new LatLng(39.996701, -83.016743));
+        mLatLng.add(new LatLng(39.9967985, -83.0105888));
+        mLatLng.add(new LatLng(40.0016851, -83.0159304));
+        mLatLng.add(new LatLng(40.0042743, -83.0126187));
+        mLatLng.add(new LatLng(40.0031498, -83.0148524));
+        mLatLng.add(new LatLng(39.9965293, -83.0129184));
+        mLatLng.add(new LatLng(40.0046977, -83.0092981));
+        mLatLng.add(new LatLng(40.002415, -83.015033));
+        mLatLng.add(new LatLng(39.9977753, -83.0158234));
+        mLatLng.add(new LatLng(39.9960507, -83.0132601));
+        mLatLng.add(new LatLng(40.002888, -83.013685));
+        mLatLng.add(new LatLng(40.0012907, -83.0150313));
+        mLatLng.add(new LatLng(39.9986745, -83.0170397));
+        mLatLng.add(new LatLng(40.0042832, -83.0109543));
+        mLatLng.add(new LatLng(40.0013193, -83.012536));
+        mLatLng.add(new LatLng(40.0003459, -83.0120677));
+        mLatLng.add(new LatLng(40.0022061, -83.0158436));
+        mLatLng.add(new LatLng(39.9968085, -83.0087004));
+        mLatLng.add(new LatLng(40.0015949, -83.0133316));
+        mLatLng.add(new LatLng(40.0022112, -83.0167914));
+        mLatLng.add(new LatLng(40.0023822, -83.0108684));
+        mLatLng.add(new LatLng(40.0103278, -83.0223228));
+        mLatLng.add(new LatLng(40.0048344, -83.0159791));
+        mLatLng.add(new LatLng(40.0033153, -83.0119478));
+        mLatLng.add(new LatLng(39.998904, -83.010009));
+        mLatLng.add(new LatLng(40.003526, -83.0153655));
+        mLatLng.add(new LatLng(40.0003459, -83.0120677));
+        mLatLng.add(new LatLng(40.0058515, -83.0117212));
+        mLatLng.add(new LatLng(39.9921595, -83.0140289));
+        mLatLng.add(new LatLng(39.9967692, -83.0154358));
+        mLatLng.add(new LatLng(40.0020133, -83.0150373));
+        mLatLng.add(new LatLng(39.9966994, -83.0138192));
+        mLatLng.add(new LatLng(40.0035993, -83.0165923));
+        mLatLng.add(new LatLng(39.9984329, -83.0219665));
+        mLatLng.add(new LatLng(40.0035396, -83.0116613));
+        mLatLng.add(new LatLng(40.0044393, -83.015542));
+        mLatLng.add(new LatLng(40.0025415, -83.0123793));
+        mLatLng.add(new LatLng(39.9998465, -83.0219281));
+        mLatLng.add(new LatLng(39.9960141, -83.0128952));
+        mLatLng.add(new LatLng(40.0052748, -83.0127879));
+        mLatLng.add(new LatLng(40.0047335, -83.0137567));
+        mLatLng.add(new LatLng(40.0048678, -83.012146));
+        mLatLng.add(new LatLng(39.9976605, -83.0085321));
+        mLatLng.add(new LatLng(39.9958423, -83.0107059));
+        mLatLng.add(new LatLng(39.9964296, -83.0128473));
+        mLatLng.add(new LatLng(39.9997246, -83.0173421));
+        mLatLng.add(new LatLng(40.003382, -83.0142529));
+        mLatLng.add(new LatLng(39.9985554, -83.0162271));
+        mLatLng.add(new LatLng(39.9992124, -83.017992));
+        mLatLng.add(new LatLng(39.9946575, -83.013481));
+        mLatLng.add(new LatLng(40.0065016, -83.0185681));
+        mLatLng.add(new LatLng(40.0044726, -83.0146437));
+        mLatLng.add(new LatLng(40.0043872, -83.0133751));
+        mLatLng.add(new LatLng(40.0023138, -83.0144077));
+        mLatLng.add(new LatLng(39.9959804, -83.0122849));
+        mLatLng.add(new LatLng(40.0023916, -83.0132783));
+        mLatLng.add(new LatLng(39.995802, -83.0094998));
+        mLatLng.add(new LatLng(40.0018437, -83.0109258));
+        mLatLng.add(new LatLng(40.0057997, -83.0106577));
+        mLatLng.add(new LatLng(39.9990591, -83.0153077));
+        mLatLng.add(new LatLng(40.0059581, -83.0136565));
+        mLatLng.add(new LatLng(40.00051, -83.0144294));
+        mLatLng.add(new LatLng(39.9949753, -83.0141675));
     }
 
     private void handleSelectedItem() {
@@ -240,7 +307,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
         } else {
             Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            Location location1 = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            mLocation1 = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             Location location2 = mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
             if (location != null) {
@@ -254,9 +321,9 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
                     e.printStackTrace();
                 }
 
-            } else if (location1 != null) {
-                double lat = location1.getLatitude();
-                double lng = location1.getLongitude();
+            } else if (mLocation1 != null) {
+                double lat = mLocation1.getLatitude();
+                double lng = mLocation1.getLongitude();
 
                 try {
                     List<Address> addresses = locationAddress.getFromLocation(lat, lng, 1);
@@ -280,6 +347,67 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
                 mLastKnownLocation = "Unable to trace your location.";
             }
         }
+    }
+
+    private void suggestBuildings() {
+        setUpLatLngList();
+
+        Geocoder location = new Geocoder(this);
+        ArrayList<Address> suggestions = new ArrayList<>();
+
+        LatLng current = new LatLng(mLocation1.getLatitude(), mLocation1.getLongitude());
+
+        for (int i = 0; i < mLatLng.size(); i++) {
+            float distance = getDistance(current, mLatLng.get(i));
+
+            if (distance < SMALLEST_DISTANCE) {
+                try {
+                    suggestions.add((Address) location.getFromLocation(mLatLng.get(i).latitude, mLatLng.get(i).longitude, 1));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                SMALLEST_DISTANCE = distance;
+            }
+            if (suggestions.size() == 3) {
+                return;
+            }
+        }
+
+        mSuggestion1 = suggestions.get(0).getAddressLine(0);
+        mSuggestion2 = suggestions.get(1).getAddressLine(1);
+        mSuggestion3 = suggestions.get(2).getAddressLine(2);
+
+        buildAlertSuggestions();
+    }
+
+    private float getDistance(LatLng current, LatLng last) {
+        if (last == null) {
+            return 0;
+        }
+        Location currentLoc = new Location("");
+        currentLoc.setLatitude(current.latitude);
+        currentLoc.setLongitude(current.longitude);
+
+        Location lastLoc = new Location("");
+        lastLoc.setLatitude(last.latitude);
+        lastLoc.setLongitude(last.longitude);
+
+        return lastLoc.distanceTo(currentLoc);
+    }
+
+    private void buildAlertSuggestions() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(BuildingsActivity.this);
+
+        dialog.setTitle("Suggested Buildings:");
+        dialog.setMessage("1. " + mSuggestion1 + "\n\n2. " + mSuggestion2 + "\n\n3. " + mSuggestion3);
+
+        dialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.create().show();
     }
 
     protected void buildAlertMessageNoGps() {
@@ -356,9 +484,8 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         int i = v.getId();
 
         switch (i) {
-            case R.id.buildings_back_button:
-                Intent intent = new Intent(BuildingsActivity.this, AddEventActivity.class);
-                startActivity(intent);
+            case R.id.suggestions_button:
+                suggestBuildings();
                 break;
         }
     }
