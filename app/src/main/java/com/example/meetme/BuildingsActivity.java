@@ -56,8 +56,12 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private String mLastKnownLocation, mSuggestion1, mSuggestion2, mSuggestion3;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private float SMALLEST_DISTANCE = 100000;
 
+    private float FIRST_DISTANCE = 100000;
+    private float SECOND_DISTANCE = 100000;
+    private float THIRD_DISTANCE = 100000;
+    private boolean first = false;
+    private boolean second = false;
     ArrayList<String> mAddresses = new ArrayList<>();
     ArrayList<LatLng> mLatLng = new ArrayList<>();
 
@@ -365,32 +369,38 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         for (int i = 0; i < mLatLng.size(); i++) {
             float distance = getDistance(mCurrent, mLatLng.get(i));
 
-            if (distance < SMALLEST_DISTANCE) {
-                suggestions.add(mAddresses.get(i));
-                SMALLEST_DISTANCE = distance;
+            if (distance < THIRD_DISTANCE) {
+                if(distance < SECOND_DISTANCE){
+                    if(distance < FIRST_DISTANCE){
+                        suggestions.add(0, mAddresses.get(i));
+                        if(first){
+                            SECOND_DISTANCE = FIRST_DISTANCE;
+                        }
+                        FIRST_DISTANCE = distance;
+                        first = true;
+                    } else {
+                        suggestions.add(1, mAddresses.get(i));
+                        if(second){
+                            THIRD_DISTANCE = SECOND_DISTANCE;
+                        }
+                        SECOND_DISTANCE = distance;
+                        second = true;
+                    }
+                } else {
+                    suggestions.add(2, mAddresses.get(i));
+                    THIRD_DISTANCE = distance;
+                }
             }
         }
 
-        if (suggestions.size() >= 3) {
-            mSuggestion1 = suggestions.get(0);
-            mSuggestion2 = suggestions.get(1);
-            mSuggestion3 = suggestions.get(2);
-            //return;
-        } else if (suggestions.size() == 2) {
-            mSuggestion1 = suggestions.get(0);
-            mSuggestion2 = suggestions.get(1);
-            mSuggestion3 = "";
-        } else if (suggestions.size() == 1) {
-            mSuggestion1 = suggestions.get(0);
-            mSuggestion2 = "";
-            mSuggestion3 = "";
-        } else {
-            mSuggestion1 = "";
-            mSuggestion2 = "";
-            mSuggestion3 = "";
-        }
 
-        SMALLEST_DISTANCE = 100000;
+        mSuggestion1 = suggestions.get(0);
+        mSuggestion2 = suggestions.get(1);
+        mSuggestion3 = suggestions.get(2);
+
+        FIRST_DISTANCE = 100000;
+        SECOND_DISTANCE = 100000;
+        THIRD_DISTANCE = 100000;
         buildAlertSuggestions();
     }
 
