@@ -79,6 +79,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         displayLocation();
         searchBuilding();
         setUpBuildingsList();
+        setUpLatLngList();
         setList();
     }
 
@@ -362,7 +363,6 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void suggestBuildings() {
-        setUpLatLngList();
 
         ArrayList<String> suggestions = new ArrayList<>();
 
@@ -401,6 +401,8 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         FIRST_DISTANCE = 100000;
         SECOND_DISTANCE = 100000;
         THIRD_DISTANCE = 100000;
+        first = false;
+        second = false;
         buildAlertSuggestions();
     }
 
