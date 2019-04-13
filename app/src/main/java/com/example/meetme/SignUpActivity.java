@@ -22,9 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * A sign up screen that offers sign up via first name/last name/email/password.
- */
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "SignUp";
@@ -42,6 +39,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        setUpViews();
+    }
+
+    private void setUpViews() {
         mFirstName = findViewById(R.id.first_name);
         mLastName = findViewById(R.id.last_name);
         mEmailField = findViewById(R.id.email);
@@ -81,9 +82,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         if (!validateForm()) {
             return;
         }
+
         final String e = email;
         final String f = first;
         final String l = last;
+
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {

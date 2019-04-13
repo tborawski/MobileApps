@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class BuildingsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -54,8 +55,9 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private LatLng mCurrent;
     private String mLastKnownLocation, mSuggestion1, mSuggestion2, mSuggestion3;
 
+    private float mSmallestDistance = -1;
+
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private float SMALLEST_DISTANCE = -1;
 
     ArrayList<String> mAddresses = new ArrayList<>();
     ArrayList<LatLng> mLatLng = new ArrayList<>();
@@ -65,13 +67,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buildings);
 
-        findViewById(R.id.suggestions_button).setOnClickListener(this);
-
-        mFilter = findViewById(R.id.search_text);
-        mListView = findViewById(R.id.buildings_listView);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mToolbar = findViewById(R.id.toolbar);
-
+        setUpViews();
         setSupportActionBar(mToolbar);
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
@@ -81,6 +77,15 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         searchBuilding();
         setUpBuildingsList();
         setList();
+    }
+
+    private void setUpViews() {
+        mFilter = findViewById(R.id.search_text);
+        mListView = findViewById(R.id.buildings_listView);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
+
+        findViewById(R.id.suggestions_button).setOnClickListener(this);
     }
 
     private void handleNavigationClickEvents() {
@@ -296,7 +301,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void getLocation() {
-        Geocoder locationAddress = new Geocoder(this);
+        Geocoder locationAddress = new Geocoder(this, Locale.US);
 
         if (ActivityCompat.checkSelfPermission(BuildingsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
@@ -356,19 +361,20 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private void suggestBuildings() {
         setUpLatLngList();
 
-        Geocoder location = new Geocoder(this);
+        Geocoder location = new Geocoder(this, Locale.US);
         ArrayList<Address> suggestions = new ArrayList<>();
 
         for (int i = 0; i < mLatLng.size(); i++) {
             float distance = getDistance(mCurrent, mLatLng.get(i));
 
-            if (distance < SMALLEST_DISTANCE) {
+            if (distance < mSmallestDistance) {
                 try {
-                    suggestions.add((Address) location.getFromLocation(mLatLng.get(i).latitude, mLatLng.get(i).longitude, 1));
+                    List<Address> addresses = location.getFromLocation(mLatLng.get(i).latitude, mLatLng.get(i).longitude, 1);
+                    suggestions.add(addresses.get(0));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                SMALLEST_DISTANCE = distance;
+                mSmallestDistance = distance;
             }
             if (suggestions.size() == 3) {
                 mSuggestion1 = suggestions.get(0).getAddressLine(0);
@@ -377,7 +383,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
                 return;
             }
         }
-        
+
         buildAlertSuggestions();
     }
 

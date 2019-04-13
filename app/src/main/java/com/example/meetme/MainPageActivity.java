@@ -50,7 +50,6 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     private Toolbar mToolbar;
     private ListView mListView;
     private EventAdapter mEventAdapter;
-    private ArrayAdapter mAdapter;
     private EditText mFilter;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -64,14 +63,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
-        mListView = findViewById(R.id.user_event_listView);
-        mFilter = findViewById(R.id.search_event);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mToolbar = findViewById(R.id.toolbar);
-
-        findViewById(R.id.join_button).setOnClickListener(this);
-        findViewById(R.id.create_group_button).setOnClickListener(this);
-
+        setUpViews();
         setSupportActionBar(mToolbar);
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
@@ -81,6 +73,16 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         addUserEvent();
         checkEvent();
         searchEvent();
+    }
+
+    private void setUpViews() {
+        mListView = findViewById(R.id.user_event_listView);
+        mFilter = findViewById(R.id.search_event);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
+
+        findViewById(R.id.join_button).setOnClickListener(this);
+        findViewById(R.id.create_group_button).setOnClickListener(this);
     }
 
     private void handleNavigationClickEvents() {
@@ -265,21 +267,21 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setEventNameList() {
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventNames);
-        mListView.setAdapter(mAdapter);
+        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventNames);
+        mListView.setAdapter(adapter);
     }
 
-    public void addEvent() {
+    private void addEvent() {
         Intent intent = new Intent(MainPageActivity.this, AddEventActivity.class);
         startActivity(intent);
     }
 
-    public void myGroups() {
+    private void myGroups() {
         Intent intent = new Intent(MainPageActivity.this, MyGroupsActivity.class);
         startActivity(intent);
     }
 
-    public void openSettings() {
+    private void openSettings() {
         Intent intent = new Intent(MainPageActivity.this, SettingsActivity.class);
         startActivity(intent);
     }

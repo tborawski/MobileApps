@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -54,6 +53,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        setUpViews();
+        setSupportActionBar(mToolbar);
+        setActionBarDrawerToggle();
+        handleNavigationClickEvents();
+        setUpUsernameDisplay();
+    }
+
+    private void setUpViews() {
         mImageView = findViewById(R.id.profile_imageView);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
@@ -62,11 +69,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.version_button).setOnClickListener(this);
         findViewById(R.id.choose_picture_button).setOnClickListener(this);
         findViewById(R.id.upload_picture_button).setOnClickListener(this);
-
-        setSupportActionBar(mToolbar);
-        setActionBarDrawerToggle();
-        handleNavigationClickEvents();
-        setUpUsernameDisplay();
     }
 
     private void handleNavigationClickEvents() {
@@ -173,7 +175,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public void showVersion(View v) {
+    private void showVersion(View v) {
         Snackbar popUp = Snackbar.make(v, "Version 1.0.0", Snackbar.LENGTH_LONG).setAction("Action", null);
         View view = popUp.getView();
         TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
@@ -181,25 +183,33 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         popUp.show();
     }
 
-    public void goHome() {
+    private void uploadInProgress(View v) {
+        Snackbar popUp = Snackbar.make(v, "Upload in progress", Snackbar.LENGTH_LONG).setAction("Action", null);
+        View view = popUp.getView();
+        TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        popUp.show();
+    }
+
+    private void signOutOfApp() {
+        mAuth.signOut();
+        Intent signOut = new Intent(SettingsActivity.this, LoginActivity.class);
+        startActivity(signOut);
+    }
+
+    private void goHome() {
         Intent intent = new Intent(SettingsActivity.this, MainPageActivity.class);
         startActivity(intent);
     }
 
-    public void addEvent() {
+    private void addEvent() {
         Intent intent = new Intent(SettingsActivity.this, AddEventActivity.class);
         startActivity(intent);
     }
 
-    public void myGroups() {
+    private void myGroups() {
         Intent intent = new Intent(SettingsActivity.this, MyGroupsActivity.class);
         startActivity(intent);
-    }
-
-    public void signOutOfApp() {
-        mAuth.signOut();
-        Intent signOut = new Intent(SettingsActivity.this, LoginActivity.class);
-        startActivity(signOut);
     }
 
     @Override
@@ -224,7 +234,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.upload_picture_button:
                 if (mUploadTask != null && mUploadTask.isInProgress()) {
-                    Toast.makeText(SettingsActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                    uploadInProgress(v);
                 } else {
                     uploadImage();
                 }

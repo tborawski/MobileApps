@@ -29,7 +29,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,11 +54,7 @@ public class JoinActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join);
 
-        mListView = findViewById(R.id.user_event_listView);
-        mFilter = findViewById(R.id.search_group);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mToolbar = findViewById(R.id.toolbar);
-
+        setUpViews();
         setSupportActionBar(mToolbar);
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
@@ -68,6 +63,13 @@ public class JoinActivity extends AppCompatActivity {
         userAddList();
         userClickOnItem();
         searchGroup();
+    }
+
+    private void setUpViews() {
+        mListView = findViewById(R.id.user_event_listView);
+        mFilter = findViewById(R.id.search_group);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
     }
 
     private void handleNavigationClickEvents() {
@@ -204,22 +206,22 @@ public class JoinActivity extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
     }
 
-    public void goHome() {
+    private void goHome() {
         Intent intent = new Intent(JoinActivity.this, MainPageActivity.class);
         startActivity(intent);
     }
 
-    public void addEvent() {
+    private void addEvent() {
         Intent intent = new Intent(JoinActivity.this, AddEventActivity.class);
         startActivity(intent);
     }
 
-    public void myGroups() {
+    private void myGroups() {
         Intent intent = new Intent(JoinActivity.this, MyGroupsActivity.class);
         startActivity(intent);
     }
 
-    public void openSettings() {
+    private void openSettings() {
         Intent intent = new Intent(JoinActivity.this, SettingsActivity.class);
         startActivity(intent);
     }

@@ -42,11 +42,6 @@ import static com.example.meetme.BuildingsActivity.KEY;
 public class AddEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, View.OnClickListener {
 
     public final static String TAG = "Schedule";
-    public static String result;
-
-    private boolean canSubmit = false;
-
-    private int startOrEnd = -1;
 
     private EditText mName;
     private TextView mDate;
@@ -63,7 +58,11 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
 
     private String mGroupId;
     private String mGroupName;
+    public static String result;
+    private int startOrEnd = -1;
     private boolean groupEvent = false;
+    private boolean canSubmit = false;
+
     ArrayList<String> members = new ArrayList<>();
 
     @Override
@@ -71,6 +70,15 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
+        setUpViews();
+        setSupportActionBar(mToolbar);
+        setActionBarDrawerToggle();
+        handleNavigationClickEvents();
+        setUpUsernameDisplay();
+        scheduleGroupEvents();
+    }
+
+    private void setUpViews() {
         mName = findViewById(R.id.activity_name);
         mStartTime = findViewById(R.id.start_time_textView);
         mEndTime = findViewById(R.id.end_time_textView);
@@ -82,12 +90,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         findViewById(R.id.date_picker_button).setOnClickListener(this);
         findViewById(R.id.place_picker_button).setOnClickListener(this);
         findViewById(R.id.add_event_button).setOnClickListener(this);
-
-        setSupportActionBar(mToolbar);
-        setActionBarDrawerToggle();
-        handleNavigationClickEvents();
-        setUpUsernameDisplay();
-        scheduleGroupEvents();
     }
 
     private void handleNavigationClickEvents() {
@@ -158,9 +160,9 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         newEvent.put("Date", mDate.getText());
         newEvent.put("Place", mPlace.getText());
 
-        if(groupEvent){
+        if (groupEvent) {
             newEvent.put("Name", mGroupName + ": " + mName.getText());
-            for(String mem : members){
+            for (String mem : members) {
                 db.collection("Events").document(mem).collection("uEvents").document().set(newEvent);
             }
         } else {
@@ -172,17 +174,17 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         startActivity(intent);
     }
 
-    public void goHome() {
+    private void goHome() {
         Intent intent = new Intent(AddEventActivity.this, MainPageActivity.class);
         startActivity(intent);
     }
 
-    public void myGroups() {
+    private void myGroups() {
         Intent intent = new Intent(AddEventActivity.this, MyGroupsActivity.class);
         startActivity(intent);
     }
 
-    public void openSettings() {
+    private void openSettings() {
         Intent intent = new Intent(AddEventActivity.this, SettingsActivity.class);
         startActivity(intent);
     }

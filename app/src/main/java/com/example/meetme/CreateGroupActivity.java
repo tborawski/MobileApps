@@ -39,19 +39,22 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
+        setUpViews();
+        setSupportActionBar(mToolbar);
+        setActionBarDrawerToggle();
+        handleNavigationClickEvents();
+        setUpUsernameDisplay();
+    }
+
+    private void setUpViews() {
         mGroupName = findViewById(R.id.group_name);
         mGroupDes = findViewById(R.id.group_description);
         mPrivateButton = findViewById(R.id.private_button);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToolbar = findViewById(R.id.toolbar);
-        
+
         findViewById(R.id.create_group_next_button).setOnClickListener(this);
         findViewById(R.id.private_button).setOnClickListener(this);
-
-        setSupportActionBar(mToolbar);
-        setActionBarDrawerToggle();
-        handleNavigationClickEvents();
-        setUpUsernameDisplay();
     }
 
     private void handleNavigationClickEvents() {
@@ -134,11 +137,6 @@ public class CreateGroupActivity extends AppCompatActivity implements View.OnCli
 
     private void openSettings() {
         Intent intent = new Intent(CreateGroupActivity.this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
-    private void back() {
-        Intent intent = new Intent(CreateGroupActivity.this, MainPageActivity.class);
         startActivity(intent);
     }
 
