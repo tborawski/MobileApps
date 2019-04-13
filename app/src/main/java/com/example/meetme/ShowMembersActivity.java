@@ -27,7 +27,6 @@ public class ShowMembersActivity extends AppCompatActivity {
 
     private String mGroupID;
     private ListView mListView;
-    private ArrayAdapter mAdapter;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
@@ -42,17 +41,20 @@ public class ShowMembersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_members);
 
-        mGroupID = getIntent().getStringExtra("GROUP_ID");
-
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mToolbar = findViewById(R.id.toolbar);
-        mListView = findViewById(R.id.group_member_list);
-
+        setUpViews();
         setSupportActionBar(mToolbar);
         handleNavigationClickEvents();
         setActionBarDrawerToggle();
         setUpUsernameDisplay();
         getMembers();
+    }
+
+    private void setUpViews() {
+        mGroupID = getIntent().getStringExtra("GROUP_ID");
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
+        mListView = findViewById(R.id.group_member_list);
     }
 
     private void handleNavigationClickEvents() {
@@ -98,15 +100,15 @@ public class ShowMembersActivity extends AppCompatActivity {
         userEmail.setText(mAuth.getCurrentUser().getDisplayName());
     }
 
-    private void getMembers(){
+    private void getMembers() {
         db.collection("Groups").document(mGroupID).collection("groupUsers").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            for(QueryDocumentSnapshot user : task.getResult()){
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot user : task.getResult()) {
                                 String name = user.getId();
-                                if(name.contains("@")) {
+                                if (name.contains("@")) {
                                     members.add(user.getId());
                                 }
                             }
@@ -116,9 +118,9 @@ public class ShowMembersActivity extends AppCompatActivity {
                 });
     }
 
-    private void setList(){
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, members);
-        mListView.setAdapter(mAdapter);
+    private void setList() {
+        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, members);
+        mListView.setAdapter(adapter);
     }
 
     private void goHome() {

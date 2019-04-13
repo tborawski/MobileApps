@@ -27,7 +27,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class MyGroupsActivity extends AppCompatActivity {
 
@@ -50,11 +49,7 @@ public class MyGroupsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_groups);
 
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mToolbar = findViewById(R.id.toolbar);
-        mListView = findViewById(R.id.my_group_list);
-        mFilter = findViewById(R.id.my_groups_search);
-
+        setUpViews();
         setSupportActionBar(mToolbar);
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
@@ -63,6 +58,13 @@ public class MyGroupsActivity extends AppCompatActivity {
         setUpGroup();
         goToGroupChat();
         searchGroup();
+    }
+
+    private void setUpViews() {
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
+        mListView = findViewById(R.id.my_group_list);
+        mFilter = findViewById(R.id.my_groups_search);
     }
 
     private void handleNavigationClickEvents() {
@@ -167,17 +169,17 @@ public class MyGroupsActivity extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
     }
 
-    public void goHome() {
+    private void goHome() {
         Intent intent = new Intent(MyGroupsActivity.this, MainPageActivity.class);
         startActivity(intent);
     }
 
-    public void addEvent() {
+    private void addEvent() {
         Intent intent = new Intent(MyGroupsActivity.this, AddEventActivity.class);
         startActivity(intent);
     }
 
-    public void openSettings() {
+    private void openSettings() {
         Intent intent = new Intent(MyGroupsActivity.this, SettingsActivity.class);
         startActivity(intent);
     }

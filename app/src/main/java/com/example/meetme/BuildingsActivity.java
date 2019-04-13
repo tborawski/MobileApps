@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class BuildingsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -65,13 +66,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buildings);
 
-        findViewById(R.id.suggestions_button).setOnClickListener(this);
-
-        mFilter = findViewById(R.id.search_text);
-        mListView = findViewById(R.id.buildings_listView);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mToolbar = findViewById(R.id.toolbar);
-
+        setUpViews();
         setSupportActionBar(mToolbar);
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
@@ -81,6 +76,15 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         searchBuilding();
         setUpBuildingsList();
         setList();
+    }
+
+    private void setUpViews() {
+        mFilter = findViewById(R.id.search_text);
+        mListView = findViewById(R.id.buildings_listView);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
+
+        findViewById(R.id.suggestions_button).setOnClickListener(this);
     }
 
     private void handleNavigationClickEvents() {
@@ -296,7 +300,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void getLocation() {
-        Geocoder locationAddress = new Geocoder(this);
+        Geocoder locationAddress = new Geocoder(this, Locale.US);
 
         if (ActivityCompat.checkSelfPermission(BuildingsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
@@ -372,24 +376,25 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
                 SMALLEST_DISTANCE = distance;
             }
         }
-            if (suggestions.size() >= 3) {
-                mSuggestion1 = suggestions.get(0);
-                mSuggestion2 = suggestions.get(1);
-                mSuggestion3 = suggestions.get(2);
-                //return;
-            } else if (suggestions.size() == 2){
-                mSuggestion1 = suggestions.get(0);
-                mSuggestion2 = suggestions.get(1);
-                mSuggestion3 = "";
-            } else if(suggestions.size() == 1){
-                mSuggestion1 = suggestions.get(0);
-                mSuggestion2 = "";
-                mSuggestion3 = "";
-            } else{
-                mSuggestion1 = "";
-                mSuggestion2 = "";
-                mSuggestion3 = "";
-            }
+
+        if (suggestions.size() >= 3) {
+            mSuggestion1 = suggestions.get(0);
+            mSuggestion2 = suggestions.get(1);
+            mSuggestion3 = suggestions.get(2);
+            //return;
+        } else if (suggestions.size() == 2){
+            mSuggestion1 = suggestions.get(0);
+            mSuggestion2 = suggestions.get(1);
+            mSuggestion3 = "";
+        } else if(suggestions.size() == 1){
+            mSuggestion1 = suggestions.get(0);
+            mSuggestion2 = "";
+            mSuggestion3 = "";
+        } else{
+            mSuggestion1 = "";
+            mSuggestion2 = "";
+            mSuggestion3 = "";
+        }
 
         SMALLEST_DISTANCE = 100000;
         buildAlertSuggestions();

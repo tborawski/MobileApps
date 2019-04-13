@@ -54,24 +54,26 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_members);
 
-        mListView = findViewById(R.id.add_members_listView);
-        mFilter = findViewById(R.id.search_filter);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mToolbar = findViewById(R.id.toolbar);
-
+        setUpViews();
         setSupportActionBar(mToolbar);
-
-        groupName = getIntent().getStringExtra("GROUP_NAME");
-
-        findViewById(R.id.add_members_back_button).setOnClickListener(this);
-        findViewById(R.id.done_button).setOnClickListener(this);
-
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
         setUpUsernameDisplay();
         getCurrentMembers();
         addMember();
         searchUser();
+    }
+
+    private void setUpViews() {
+        groupName = getIntent().getStringExtra("GROUP_NAME");
+
+        mListView = findViewById(R.id.add_members_listView);
+        mFilter = findViewById(R.id.search_filter);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolbar = findViewById(R.id.toolbar);
+
+        findViewById(R.id.add_members_back_button).setOnClickListener(this);
+        findViewById(R.id.done_button).setOnClickListener(this);
     }
 
     private void handleNavigationClickEvents() {
@@ -207,22 +209,22 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         mListView.setAdapter(mAdapter);
     }
 
-    public void goHome() {
+    private void goHome() {
         Intent intent = new Intent(AddMembersActivity.this, MainPageActivity.class);
         startActivity(intent);
     }
 
-    public void addEvent() {
+    private void addEvent() {
         Intent intent = new Intent(AddMembersActivity.this, AddEventActivity.class);
         startActivity(intent);
     }
 
-    public void myGroups() {
+    private void myGroups() {
         Intent intent = new Intent(AddMembersActivity.this, MyGroupsActivity.class);
         startActivity(intent);
     }
 
-    public void openSettings() {
+    private void openSettings() {
         Intent intent = new Intent(AddMembersActivity.this, SettingsActivity.class);
         startActivity(intent);
     }

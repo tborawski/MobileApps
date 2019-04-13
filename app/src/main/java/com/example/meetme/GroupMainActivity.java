@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -67,6 +68,16 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_main);
 
+        setUpViews();
+        setSupportActionBar(mToolbar);
+        handleNavigationClickEvents();
+        setActionBarDrawerToggle();
+        setUpUsernameDisplay();
+        getGroupInfo();
+        getMessages();
+    }
+
+    private void setUpViews() {
         mGroupId = getIntent().getStringExtra("GROUP_ID");
         mGroupNameView = findViewById(R.id.view_group_name);
         mGroupDes = findViewById(R.id.view_group_description);
@@ -80,13 +91,6 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.leave_group).setOnClickListener(this);
         findViewById(R.id.send_chat).setOnClickListener(this);
         findViewById(R.id.show_members).setOnClickListener(this);
-
-        setSupportActionBar(mToolbar);
-        handleNavigationClickEvents();
-        setActionBarDrawerToggle();
-        setUpUsernameDisplay();
-        getGroupInfo();
-        getMessages();
     }
 
     private void handleNavigationClickEvents() {
@@ -140,8 +144,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
 
     private void compareMessages() {
         Collections.sort(messages, new Comparator<Message>() {
-            @SuppressLint("SimpleDateFormat")
-            DateFormat f = new SimpleDateFormat("dd/MM/yyyy     HH:mm");
+            SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy     HH:mm", Locale.US);
 
             public int compare(Message msg1, Message msg2) {
                 try {
@@ -235,7 +238,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
                             return;
                         }
                         boolean scroll = false;
-                        if(mListView.getLastVisiblePosition() == mAdapter.getCount() - 1){
+                        if (mListView.getLastVisiblePosition() == mAdapter.getCount() - 1) {
                             scroll = true;
                         }
                         if (snapshots != null) {
@@ -246,7 +249,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
                             }
                             compareMessages();
                             mAdapter.notifyDataSetChanged();
-                            if(scroll) {
+                            if (scroll) {
                                 mListView.smoothScrollToPosition(mAdapter.getCount() - 1);
                             }
                         }
@@ -256,7 +259,7 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
 
     private void getCurrentDateTime() {
         Date date = new Date();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy     HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy     HH:mm", Locale.US);
         mCurrentTime = formatter.format(date);
     }
 
@@ -270,6 +273,12 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
     private void addMember() {
         Intent intent = new Intent(GroupMainActivity.this, AddMembersActivity.class);
         intent.putExtra("GROUP_NAME", mGroupId);
+        startActivity(intent);
+    }
+
+    private void showMembers() {
+        Intent intent = new Intent(GroupMainActivity.this, ShowMembersActivity.class);
+        intent.putExtra("GROUP_ID", mGroupId);
         startActivity(intent);
     }
 
@@ -290,12 +299,6 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
 
     private void openSettings() {
         Intent intent = new Intent(GroupMainActivity.this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
-    private void showMembers(){
-        Intent intent = new Intent(GroupMainActivity.this, ShowMembersActivity.class);
-        intent.putExtra("GROUP_ID", mGroupId);
         startActivity(intent);
     }
 
