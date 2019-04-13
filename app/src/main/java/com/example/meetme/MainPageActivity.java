@@ -126,13 +126,25 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void deleteExpiredEvent() {
-        DateFormat f = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.US);
-        Date date = Calendar.getInstance().getTime();
-        for (int i = 0; i < userEvents.size(); i++) {
-            if ((f.format(date).compareTo(userEvents.get(i).date)) > 0) {
-                deleteEvent(i);
+        SimpleDateFormat f = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.US);
+
+        try {
+            Date current = f.parse(Calendar.getInstance().getTime().toString());
+            for (int i = 0; i < userEvents.size(); i++) {
+                Date userEvent = f.parse(userEvents.get(i).date);
+                if (current.after(userEvent)) {
+                    deleteEvent(i);
+                }
             }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+//        for (int i = 0; i < userEvents.size(); i++) {
+//            if (((userEvents.get(i).date).compareTo(f.format(date))) < 0) {
+//                deleteEvent(i);
+//            }
+//        }
     }
 
     private void addEventNames() {
@@ -161,9 +173,11 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId());
-                                Event e = new Event(document);
-                                userEvents.add(e);
+                                if (document.exists()) {
+                                    Log.d(TAG, document.getId());
+                                    Event e = new Event(document);
+                                    userEvents.add(e);
+                                }
                             }
                         }
                         Log.d(TAG, userEvents.toString());

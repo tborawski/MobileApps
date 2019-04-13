@@ -360,19 +360,13 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private void suggestBuildings() {
         setUpLatLngList();
 
-        Geocoder location = new Geocoder(this);
         ArrayList<String> suggestions = new ArrayList<>();
 
         for (int i = 0; i < mLatLng.size(); i++) {
             float distance = getDistance(mCurrent, mLatLng.get(i));
 
             if (distance < SMALLEST_DISTANCE) {
-                try {
-                    List<Address> addresses = location.getFromLocation(mLatLng.get(i).latitude, mLatLng.get(i).longitude, 1);
-                    suggestions.add(0, mAddresses.get(i));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                suggestions.add(mAddresses.get(i));
                 SMALLEST_DISTANCE = distance;
             }
         }
@@ -382,15 +376,15 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
             mSuggestion2 = suggestions.get(1);
             mSuggestion3 = suggestions.get(2);
             //return;
-        } else if (suggestions.size() == 2){
+        } else if (suggestions.size() == 2) {
             mSuggestion1 = suggestions.get(0);
             mSuggestion2 = suggestions.get(1);
             mSuggestion3 = "";
-        } else if(suggestions.size() == 1){
+        } else if (suggestions.size() == 1) {
             mSuggestion1 = suggestions.get(0);
             mSuggestion2 = "";
             mSuggestion3 = "";
-        } else{
+        } else {
             mSuggestion1 = "";
             mSuggestion2 = "";
             mSuggestion3 = "";
