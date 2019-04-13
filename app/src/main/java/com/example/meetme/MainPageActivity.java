@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -132,7 +133,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
             Date current = f.parse(Calendar.getInstance().getTime().toString());
             for (int i = 0; i < userEvents.size(); i++) {
                 Date userEvent = f.parse(userEvents.get(i).date);
-                if (current.after(userEvent)) {
+                if (userEvent.compareTo(current) < 0) {
                     deleteEvent(i);
                 }
             }
