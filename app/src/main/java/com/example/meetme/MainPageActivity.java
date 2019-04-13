@@ -125,17 +125,22 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void deleteExpiredEvent() {
+        SimpleDateFormat f = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.US);
 
-        Calendar c = Calendar.getInstance();
-        c.setTime(Calendar.getInstance().getTime());
-        c.add(Calendar.DATE, -1);
-        Date current = c.getTime();
-        for (int i = 0; i < userEvents.size(); i++) {
-            Date userEvent = f.parse(userEvents.get(i).date);
-            if (current.after(userEvent)) {
-                deleteEvent(i);
-                mEventAdapter.notifyDataSetChanged();
+        try {
+            Calendar c = Calendar.getInstance();
+            c.setTime(Calendar.getInstance().getTime());
+            c.add(Calendar.DATE, -1);
+            Date current = c.getTime();
+            for (int i = 0; i < userEvents.size(); i++) {
+                Date userEvent = f.parse(userEvents.get(i).date);
+                if (current.after(userEvent)) {
+                    deleteEvent(i);
+                    mEventAdapter.notifyDataSetChanged();
+                }
             }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 
