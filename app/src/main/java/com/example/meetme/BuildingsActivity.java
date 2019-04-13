@@ -57,11 +57,12 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-    private float FIRST_DISTANCE = 100000;
-    private float SECOND_DISTANCE = 100000;
-    private float THIRD_DISTANCE = 100000;
+    private float FIRST_DISTANCE = Integer.MAX_VALUE;
+    private float SECOND_DISTANCE = Integer.MAX_VALUE;
+    private float THIRD_DISTANCE = Integer.MAX_VALUE;
     private boolean first = false;
     private boolean second = false;
+
     ArrayList<String> mAddresses = new ArrayList<>();
     ArrayList<LatLng> mLatLng = new ArrayList<>();
 
@@ -363,24 +364,23 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void suggestBuildings() {
-
         ArrayList<String> suggestions = new ArrayList<>();
 
         for (int i = 0; i < mLatLng.size(); i++) {
             float distance = getDistance(mCurrent, mLatLng.get(i));
 
             if (distance < THIRD_DISTANCE) {
-                if(distance < SECOND_DISTANCE){
-                    if(distance < FIRST_DISTANCE){
+                if (distance < SECOND_DISTANCE) {
+                    if (distance < FIRST_DISTANCE) {
                         suggestions.add(0, mAddresses.get(i));
-                        if(first){
+                        if (first) {
                             SECOND_DISTANCE = FIRST_DISTANCE;
                         }
                         FIRST_DISTANCE = distance;
                         first = true;
                     } else {
                         suggestions.add(1, mAddresses.get(i));
-                        if(second){
+                        if (second) {
                             THIRD_DISTANCE = SECOND_DISTANCE;
                         }
                         SECOND_DISTANCE = distance;
@@ -393,16 +393,16 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
             }
         }
 
-
         mSuggestion1 = suggestions.get(0);
         mSuggestion2 = suggestions.get(1);
         mSuggestion3 = suggestions.get(2);
 
-        FIRST_DISTANCE = 100000;
-        SECOND_DISTANCE = 100000;
-        THIRD_DISTANCE = 100000;
+        FIRST_DISTANCE = Integer.MAX_VALUE;
+        SECOND_DISTANCE = Integer.MAX_VALUE;
+        THIRD_DISTANCE = Integer.MAX_VALUE;
         first = false;
         second = false;
+
         buildAlertSuggestions();
     }
 
