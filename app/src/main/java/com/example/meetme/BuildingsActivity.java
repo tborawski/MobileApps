@@ -371,14 +371,13 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
                 SMALLEST_DISTANCE = distance;
             }
             if (suggestions.size() == 3) {
+                mSuggestion1 = suggestions.get(0).getAddressLine(0);
+                mSuggestion2 = suggestions.get(1).getAddressLine(0);
+                mSuggestion3 = suggestions.get(2).getAddressLine(0);
                 return;
             }
         }
-
-        mSuggestion1 = suggestions.get(0).getAddressLine(0);
-        mSuggestion2 = suggestions.get(1).getAddressLine(1);
-        mSuggestion3 = suggestions.get(2).getAddressLine(2);
-
+        
         buildAlertSuggestions();
     }
 
