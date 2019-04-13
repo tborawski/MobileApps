@@ -68,7 +68,6 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         setActionBarDrawerToggle();
         handleNavigationClickEvents();
         setUpUsernameDisplay();
-        deleteExpiredEvent();
         addEventNames();
         addUserEvent();
         checkEvent();
@@ -126,25 +125,18 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void deleteExpiredEvent() {
-        SimpleDateFormat f = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.US);
 
-        try {
-            Date current = f.parse(Calendar.getInstance().getTime().toString());
-            for (int i = 0; i < userEvents.size(); i++) {
-                Date userEvent = f.parse(userEvents.get(i).date);
-                if (current.after(userEvent)) {
-                    deleteEvent(i);
-                }
+        Calendar c = Calendar.getInstance();
+        c.setTime(Calendar.getInstance().getTime());
+        c.add(Calendar.DATE, -1);
+        Date current = c.getTime();
+        for (int i = 0; i < userEvents.size(); i++) {
+            Date userEvent = f.parse(userEvents.get(i).date);
+            if (current.after(userEvent)) {
+                deleteEvent(i);
+                mEventAdapter.notifyDataSetChanged();
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
-
-//        for (int i = 0; i < userEvents.size(); i++) {
-//            if (((userEvents.get(i).date).compareTo(f.format(date))) < 0) {
-//                deleteEvent(i);
-//            }
-//        }
     }
 
     private void addEventNames() {
@@ -182,6 +174,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                         }
                         Log.d(TAG, userEvents.toString());
                         setList();
+                        deleteExpiredEvent();
                     }
                 });
     }
