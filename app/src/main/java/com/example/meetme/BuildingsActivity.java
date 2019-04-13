@@ -42,7 +42,7 @@ import java.util.List;
 public class BuildingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final String KEY = "Address";
+    public static final String KEY = "Address";
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -51,8 +51,8 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private EditText mFilter;
     private ArrayAdapter mAdapter;
     private LocationManager mLocationManager;
+    private LatLng mCurrent;
     private String mLastKnownLocation, mSuggestion1, mSuggestion2, mSuggestion3;
-    private Location mLocation1;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private float SMALLEST_DISTANCE = -1;
@@ -307,12 +307,13 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
 
         } else {
             Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            mLocation1 = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location1 = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             Location location2 = mLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
             if (location != null) {
                 double lat = location.getLatitude();
                 double lng = location.getLongitude();
+                mCurrent = new LatLng(location.getLatitude(), location.getLongitude());
 
                 try {
                     List<Address> addresses = locationAddress.getFromLocation(lat, lng, 1);
@@ -321,9 +322,11 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
                     e.printStackTrace();
                 }
 
-            } else if (mLocation1 != null) {
-                double lat = mLocation1.getLatitude();
-                double lng = mLocation1.getLongitude();
+            } else if (location1 != null) {
+                double lat = location1.getLatitude();
+                double lng = location1.getLongitude();
+                mCurrent = new LatLng(location1.getLatitude(), location1.getLongitude());
+
 
                 try {
                     List<Address> addresses = locationAddress.getFromLocation(lat, lng, 1);
@@ -335,6 +338,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
             } else if (location2 != null) {
                 double lat = location2.getLatitude();
                 double lng = location2.getLongitude();
+                mCurrent = new LatLng(location2.getLatitude(), location2.getLongitude());
 
                 try {
                     List<Address> addresses = locationAddress.getFromLocation(lat, lng, 1);
@@ -355,10 +359,8 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         Geocoder location = new Geocoder(this);
         ArrayList<Address> suggestions = new ArrayList<>();
 
-        LatLng current = new LatLng(mLocation1.getLatitude(), mLocation1.getLongitude());
-
         for (int i = 0; i < mLatLng.size(); i++) {
-            float distance = getDistance(current, mLatLng.get(i));
+            float distance = getDistance(mCurrent, mLatLng.get(i));
 
             if (distance < SMALLEST_DISTANCE) {
                 try {
@@ -384,6 +386,7 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
         if (last == null) {
             return 0;
         }
+
         Location currentLoc = new Location("");
         currentLoc.setLatitude(current.latitude);
         currentLoc.setLongitude(current.longitude);
