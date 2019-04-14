@@ -190,18 +190,29 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainPageActivity.this);
 
-                String name = userEvents.get(position).name;
-                String date = userEvents.get(position).date;
-                String startTime = userEvents.get(position).startTime;
-                String endTime = userEvents.get(position).endTime;
-                String loc = userEvents.get(position).loc;
+                String name = mEventAdapter.getItem(position).name;
+                String date = mEventAdapter.getItem(position).date;
+                String startTime = mEventAdapter.getItem(position).startTime;
+                String endTime = mEventAdapter.getItem(position).endTime;
+                String loc = mEventAdapter.getItem(position).loc;
 
                 builder.setMessage("Name: " + name + "\n\nDate: " + date + "\n\nStart Time: " + startTime + "\n\nEnd Time: " + endTime + "\n\nPlace: " + loc);
 
                 builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteEvent(position);
+                        String eid = mEventAdapter.getItem(position).id;
+                        int index = -1;
+                        for(int i = 0; i < userEvents.size(); i++){
+                            String originalId = userEvents.get(i).id;
+                            if(eid.equals(originalId)){
+                                index = i;
+                            }
+                        }
+                        deleteEvent(index);
+                        mFilter.setText("");
+                        setList();
+                        mEventAdapter.notifyDataSetChanged();
                     }
                 });
                 builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
@@ -247,7 +258,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onTextChanged(final CharSequence s, final int start, int before, int count) {
-                mListView.setAdapter(mEventAdapter);
+                //mListView.setAdapter(mEventAdapter);
                 (MainPageActivity.this).mEventAdapter.getFilter().filter(s);
             }
 

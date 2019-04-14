@@ -139,7 +139,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             valid = false;
         } else if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")) {
             mPasswordField.setError("Password does not meet requirements.");
-            valid = false;
+            //valid = false;
         } else {
             mPasswordField.setError(null);
         }

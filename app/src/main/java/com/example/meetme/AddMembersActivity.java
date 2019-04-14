@@ -60,8 +60,8 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
         handleNavigationClickEvents();
         setUpUsernameDisplay();
         getCurrentMembers();
-        addMember();
-        searchUser();
+        //addMember();
+        //searchUser();
     }
 
     private void setUpViews() {
@@ -126,7 +126,8 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddMembersActivity.this);
                 builder.setTitle("");
 
-                final String name = nonMembers.get(position);
+                final String name = mAdapter.getItem(position).toString();
+                final int index = nonMembers.indexOf(name);
 
                 builder.setMessage("Would you like to add this member to your group?");
 
@@ -138,7 +139,9 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                         newMember.put("User", name);
 
                         db.collection("Groups").document(groupName).collection("groupUsers").document(name).set(newMember);
-                        nonMembers.remove(position);
+                        nonMembers.remove(index);
+                        mFilter.setText("");
+                        setList();
                         mAdapter.notifyDataSetChanged();
                     }
                 });
@@ -180,6 +183,8 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
                     }
                 }
                 setList();
+                addMember();
+                searchUser();
             }
         });
     }
@@ -193,7 +198,7 @@ public class AddMembersActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mListView.setAdapter(mAdapter);
+                //mListView.setAdapter(mAdapter);
                 (AddMembersActivity.this).mAdapter.getFilter().filter(s);
             }
 

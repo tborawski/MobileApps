@@ -48,6 +48,8 @@ public class JoinActivity extends AppCompatActivity {
     ArrayList<String> docList = new ArrayList<>();
     ArrayList<String> userGroups = new ArrayList<>();
 
+    Map<String, String> docs = new HashMap<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +137,7 @@ public class JoinActivity extends AppCompatActivity {
                                         userGroups.add(document.getId());
                                     } else {
                                         if (document.get("isPrivate").toString().equals("OFF")) {
+                                            docs.put(document.getId(), document.get("Name").toString());
                                             groupList.add(document.get("Name").toString());
                                             docList.add(document.getId());
                                             mAdapter.notifyDataSetChanged();
@@ -163,10 +166,16 @@ public class JoinActivity extends AppCompatActivity {
                         Map<String, Object> userJoin = new HashMap<>();
                         userJoin.put("Level", "Base");
                         userJoin.put("User", mAuth.getCurrentUser().getEmail());
-                        db.collection("Groups").document(docList.get(position)).collection("groupUsers")
+                        String docName = mAdapter.getItem(position).toString();
+                        int index = groupList.indexOf(docName);
+                        String docId = docList.get(index);
+                        db.collection("Groups").document(docId).collection("groupUsers")
                                 .document(mAuth.getCurrentUser().getEmail()).set(userJoin);
-                        groupList.remove(position);
-                        docList.remove(position);
+                        EditText s = findViewById(R.id.search_group);
+                        s.setText("");
+                        groupList.remove(index);
+                        docList.remove(index);
+                        setList();
                         mAdapter.notifyDataSetChanged();
                     }
                 });
@@ -190,7 +199,7 @@ public class JoinActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mListView.setAdapter(mAdapter);
+                //mListView.setAdapter(mAdapter);
                 (JoinActivity.this).mAdapter.getFilter().filter(s);
             }
 

@@ -138,7 +138,8 @@ public class MyGroupsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(MyGroupsActivity.this, GroupMainActivity.class);
-                intent.putExtra("GROUP_ID", groupIds.get(position));
+                int index = groupNames.indexOf(mAdapter.getItem(position).toString());
+                intent.putExtra("GROUP_ID", groupIds.get(index));
                 startActivity(intent);
             }
         });
