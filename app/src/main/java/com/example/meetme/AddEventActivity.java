@@ -90,6 +90,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         findViewById(R.id.date_picker_button).setOnClickListener(this);
         findViewById(R.id.place_picker_button).setOnClickListener(this);
         findViewById(R.id.add_event_button).setOnClickListener(this);
+        findViewById(R.id.update_event_button).setOnClickListener(this);
     }
 
     private void handleNavigationClickEvents() {
@@ -172,6 +173,10 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
 
         Intent intent = new Intent(AddEventActivity.this, MainPageActivity.class);
         startActivity(intent);
+    }
+
+    private void updateEvent() {
+        //Do something to update event.
     }
 
     private void goHome() {
@@ -283,6 +288,9 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
                         submitEvent();
                     }
                 }
+                break;
+            case R.id.update_event_button:
+                updateEvent();
                 break;
         }
     }

@@ -29,6 +29,7 @@
     <string name="join_text">Join Group</string>
     <string name="schedule_text">Event</string>
     <string name="settings_text">Settings</string>
+    <string name="update_button">Update Event</string>
     <string name="edit_picture">Choose Picture</string>
     <string name="home">Home</string>
     <string name="my_groups">My Groups</string>

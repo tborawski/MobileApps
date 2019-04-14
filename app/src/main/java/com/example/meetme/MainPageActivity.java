@@ -218,7 +218,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                 builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        updateEvent();
+                        addEvent();
                     }
                 });
                 builder.create().show();
@@ -243,10 +243,6 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                         Log.w(TAG, "Error deleting document", e);
                     }
                 });
-    }
-
-    private void updateEvent() {
-        // DO something to allow user to update event.
     }
 
     private void searchEvent() {
