@@ -366,36 +366,44 @@ public class BuildingsActivity extends AppCompatActivity implements View.OnClick
     private void suggestBuildings() {
         ArrayList<String> suggestions = new ArrayList<>();
 
-        for (int i = 0; i < mLatLng.size(); i++) {
-            float distance = getDistance(mCurrent, mLatLng.get(i));
+        if(!mLastKnownLocation.equals("Unable to trace your location.")) {
+            for (int i = 0; i < mLatLng.size(); i++) {
+                float distance = getDistance(mCurrent, mLatLng.get(i));
 
-            if (distance < THIRD_DISTANCE) {
-                if (distance < SECOND_DISTANCE) {
-                    if (distance < FIRST_DISTANCE) {
-                        suggestions.add(0, mAddresses.get(i));
-                        if (first) {
-                            SECOND_DISTANCE = FIRST_DISTANCE;
+                if (distance < THIRD_DISTANCE) {
+                    if (distance < SECOND_DISTANCE) {
+                        if (distance < FIRST_DISTANCE) {
+                            suggestions.add(0, mAddresses.get(i));
+                            if (first) {
+                                SECOND_DISTANCE = FIRST_DISTANCE;
+                            }
+                            FIRST_DISTANCE = distance;
+                            first = true;
+                        } else {
+                            suggestions.add(1, mAddresses.get(i));
+                            if (second) {
+                                THIRD_DISTANCE = SECOND_DISTANCE;
+                            }
+                            SECOND_DISTANCE = distance;
+                            second = true;
                         }
-                        FIRST_DISTANCE = distance;
-                        first = true;
                     } else {
-                        suggestions.add(1, mAddresses.get(i));
-                        if (second) {
-                            THIRD_DISTANCE = SECOND_DISTANCE;
-                        }
-                        SECOND_DISTANCE = distance;
-                        second = true;
+                        suggestions.add(2, mAddresses.get(i));
+                        THIRD_DISTANCE = distance;
                     }
-                } else {
-                    suggestions.add(2, mAddresses.get(i));
-                    THIRD_DISTANCE = distance;
                 }
             }
         }
 
-        mSuggestion1 = suggestions.get(0);
-        mSuggestion2 = suggestions.get(1);
-        mSuggestion3 = suggestions.get(2);
+        if(suggestions.size() > 0) {
+            mSuggestion1 = suggestions.get(0);
+            mSuggestion2 = suggestions.get(1);
+            mSuggestion3 = suggestions.get(2);
+        } else {
+            mSuggestion1 = "";
+            mSuggestion2 = "";
+            mSuggestion3 = "";
+        }
 
         FIRST_DISTANCE = Integer.MAX_VALUE;
         SECOND_DISTANCE = Integer.MAX_VALUE;
