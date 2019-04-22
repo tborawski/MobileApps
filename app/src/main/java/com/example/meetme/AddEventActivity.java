@@ -226,8 +226,10 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
                 mTime.setText(new StringBuilder().append(hourOfDay).append(" : ").append(minute).append(" PM").toString());
             }
         } else {
-            if (hourOfDay < 10) {
+            if (hourOfDay < 10 && minute < 10) {
                 mTime.setText(new StringBuilder().append("0").append(hourOfDay).append(" : ").append(minute).append("0 AM").toString());
+            } else if (hourOfDay < 10) {
+                mTime.setText(new StringBuilder().append("0").append(hourOfDay).append(" : ").append(minute).append(" AM").toString());
             } else if (minute == 0) {
                 mTime.setText(new StringBuilder().append(hourOfDay).append(" : ").append(minute).append("0 AM").toString());
             } else if (minute < 10) {

@@ -203,9 +203,9 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                     public void onClick(DialogInterface dialog, int which) {
                         String eid = mEventAdapter.getItem(position).id;
                         int index = -1;
-                        for(int i = 0; i < userEvents.size(); i++){
+                        for (int i = 0; i < userEvents.size(); i++) {
                             String originalId = userEvents.get(i).id;
-                            if(eid.equals(originalId)){
+                            if (eid.equals(originalId)) {
                                 index = i;
                             }
                         }
