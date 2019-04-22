@@ -36,10 +36,15 @@ public class SignUpTest {
 
     @Test
     public void loginActivityTest() {
-        onView(withId(R.id.first_name)).perform(typeText(firstNameToBeTyped), closeSoftKeyboard());
-        onView(withId(R.id.last_name)).perform(typeText(lastNameToBeTyped), closeSoftKeyboard());
-        onView(withId(R.id.email)).perform(typeText(emailToBeTyped), closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(typeText(passwordToBeTyped), closeSoftKeyboard());
-        onView(withId(R.id.sign_up_button)).perform(click());
+        try {
+            Thread.sleep(5000);
+            onView(withId(R.id.first_name)).perform(typeText(firstNameToBeTyped), closeSoftKeyboard());
+            onView(withId(R.id.last_name)).perform(typeText(lastNameToBeTyped), closeSoftKeyboard());
+            onView(withId(R.id.email)).perform(typeText(emailToBeTyped), closeSoftKeyboard());
+            onView(withId(R.id.password)).perform(typeText(passwordToBeTyped), closeSoftKeyboard());
+            onView(withId(R.id.sign_up_button)).perform(click());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.example.meetme;
 
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,7 +29,12 @@ public class SearchEventTest {
 
     @Test
     public void searchEventTest() {
-        onView(withId(R.id.search_event)).perform(typeText(stringToBeTyped), closeSoftKeyboard());
+        try {
+            Thread.sleep(5000);
+            onView(withId(R.id.search_event)).perform(typeText(stringToBeTyped), closeSoftKeyboard());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 

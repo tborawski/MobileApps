@@ -1,6 +1,5 @@
 package com.example.meetme;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -29,7 +28,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,7 +59,6 @@ public class GroupMainActivity extends AppCompatActivity implements View.OnClick
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     ArrayList<Message> messages = new ArrayList<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

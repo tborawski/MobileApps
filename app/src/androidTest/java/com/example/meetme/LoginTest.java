@@ -32,8 +32,13 @@ public class LoginTest {
 
     @Test
     public void loginActivityTest() {
-        onView(withId(R.id.email)).perform(typeText(emailToBeTyped), closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(typeText(passwordToBeTyped), closeSoftKeyboard());
-        onView(withId(R.id.sign_in)).perform(click());
+        try {
+            Thread.sleep(5000);
+            onView(withId(R.id.email)).perform(typeText(emailToBeTyped), closeSoftKeyboard());
+            onView(withId(R.id.password)).perform(typeText(passwordToBeTyped), closeSoftKeyboard());
+            onView(withId(R.id.sign_in)).perform(click());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
